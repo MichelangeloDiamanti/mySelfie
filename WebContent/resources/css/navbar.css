@@ -1,0 +1,175 @@
+/* barra di navigazione         °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`*/
+#custom-bootstrap-menu.navbar-default .navbar-brand {
+    color: rgba(248, 248, 248, 1);
+}
+#custom-bootstrap-menu.navbar-default {
+    font-size: 14px;
+    background-color: rgba(0, 87, 130, 1);
+    border-bottom-width: 1px;
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a {
+    color: rgba(248, 248, 248, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(227, 211, 211, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:hover,
+#custom-bootstrap-menu.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(248, 248, 248, 1);
+    background-color: rgba(0, 52, 79, 1);
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle {
+    border-color: #00344f;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus {
+    background-color: #00344f;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle .icon-bar {
+    background-color: #00344f;
+}
+#custom-bootstrap-menu.navbar-default .navbar-toggle:hover .icon-bar,
+#custom-bootstrap-menu.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #005782;
+}
+/* logo         °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`*/
+
+#logo
+{
+	position:relative;
+	width:100px; 
+	top:-10px;
+}
+
+
+/* barra di ricerca         °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`*/
+#searchdiv
+{
+	position: relative;
+	margin-left: 30px;
+	top: 13px;
+	float: left;
+}
+
+#search
+{
+	position: relative;
+	width: 275px;
+	height: 24px;
+	border:0px solid;
+	color : #555;
+	font-size: 16px;
+	padding-left: 7px;
+	padding-right: 7px;
+	border-radius: 4px 0px 0px 4px;
+}
+
+#searchbtn
+{
+	position: absolute;
+	top:0px;
+	left: 275px;
+	width: 24px;
+	height: 24px;
+	border:0px solid;
+	border-radius: 0px 4px 4px 0px;
+	background-color: #FFF;
+}
+#searchbtn:active
+{
+	background-color: #EEE;
+}
+
+#separator
+{
+	position: absolute; 
+	top: 3px;
+	left: 273px; 
+	width: 1px; 
+	height: 18px; 
+	border-right: 1px solid #555;"
+}
+
+#magnifierGlass
+{
+	position: absolute;
+	top:3px;
+	left: 3px;
+	width: 18px;
+	height: 18px;
+}
+
+
+/* upload, home e profilo utente         °º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`°º¤ø,¸¸,ø¤º°`°º¤ø,¸,ø¤°º¤ø,¸¸,ø¤º°`*/
+#buttons
+{
+	position: relative;
+	margin-top: 5px;
+}
+
+#profilepicdiv
+{
+	position: relative;
+	float: right;
+	width: 40px;
+	height: 40px;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	border-radius: 50%;
+	background-size: 40px 40px;
+	margin-left: 5px;
+}
+
+.iconsdiv
+{
+	position: relative;
+	float: right;
+	width: 40px;
+	height: 40px;
+	margin-right: 5px;
+	margin-left: 5px;
+}
+
+.icon
+{
+	position: relative;
+	float: right;
+	width: 34px;
+	height: 34px;
+	padding-right: 5px;
+}
+
+
+.circle {    
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+    background: #D8D8D8;
+    overflow: hidden;
+    
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+
+    -webkit-transform: scale( 0 );
+    -moz-transform: scale( 0 );
+    -o-transform: scale( 0 );
+    -ms-transform: scale( 0 );
+    transform: scale( 0 );
+}
+
+ /* l' evento hover viene reindirizzato al div contenuto */
+.iconsdiv:hover > .circle {
+    -webkit-transform: scale( 1 );
+    -moz-transform: scale( 1 );
+    -o-transform: scale( 1 );
+    -ms-transform: scale( 1 );
+    transform: scale( 1 );
+}

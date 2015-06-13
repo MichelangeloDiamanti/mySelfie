@@ -1,0 +1,295 @@
+body
+{
+	overflow:hidden;
+}
+
+#blur_img_container
+{
+	overflow: hidden;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+.blur_img
+{
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	overflow: hidden;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+#blur_img_1
+{
+	background-image: url('/mySelfie/resources/images/blurbg1.png');
+	opacity: 1;
+}
+#blur_img_2
+{
+	background-image: url('/mySelfie/resources/images/blurbg2.png');
+	opacity: 0;
+}
+#blur_img_3
+{
+	background-image: url('/mySelfie/resources/images/blurbg3.png');
+	opacity: 0;
+}
+#blur_img_4
+{
+	background-image: url('/mySelfie/resources/images/blurbg4.png');
+	opacity: 0;
+}
+#blur_img_5
+{
+	background-image: url('/mySelfie/resources/images/blurbg5.png');
+	opacity: 0;
+}
+#blur_img_6
+{
+	background-image: url('/mySelfie/resources/images/blurbg6.png');
+	opacity: 0;
+}
+#blur_img_7
+{
+	background-image: url('/mySelfie/resources/images/blurbg7.png');
+	opacity: 0;
+}
+#blur_img_8
+{
+	background-image: url('/mySelfie/resources/images/blurbg8.png');
+	opacity: 0;
+}
+
+
+#black
+{
+	background-color: rgba(0,0,0,0.1);
+	overflow: hidden;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+}
+
+#title
+{
+	position: absolute;
+	top: 10%;
+	margin-left: 30%;
+	width: 40%
+}
+
+#logo
+{
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	width: 3%;
+	transition:all 0.2s ease-in-out;
+    -webkit-transition:all 0.2s ease-in-out;
+    -moz-transition:all 0.2s ease-in-out;
+    -o-transition:all 0.2s ease-in-out;
+    -ms-transition:all 0.2s ease-in-out;
+ }
+
+#logo:hover
+{
+    transform:scale(1.1);
+	-webkit-transition:scale(1.1);
+    -moz-transition:scale(1.1);
+    -o-transition:scale(1.1);
+    -ms-transition:scale(1.1);
+}
+
+
+#login_form
+{
+	background-image: url('/mySelfie/resources/images/boxform.png');
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+
+	position: relative;
+	top: 30%;
+	left: 0px;
+	margin: auto;
+	width: 50%;
+	height: 60%;
+	overflow: hidden;
+ }
+
+.textbox
+{
+	position: relative;
+	left:20%;
+	height: 9%;
+	width: 60%;
+}
+
+
+
+#username
+{
+	top: 20%;
+}
+
+#password
+{
+	top: 30%;
+
+}
+
+#loginbtn
+{
+	position: absolute;
+	width: 16%;
+	height: 8%;
+	left: 42%;
+	top: 60%;
+	border:0px solid;
+	background-color: #00344F;
+	color: #D8D8D8;
+	cursor: pointer;
+	border-radius: 4px 4px 4px 4px;
+}
+
+#loginbtn:hover
+{
+	-webkit-box-shadow: 0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	-moz-box-shadow:    0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	-o-box-shadow:      0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	box-shadow:         0px 1px 7px 0px rgba(0, 51, 79, 0.75);	
+}
+
+
+#rm
+{
+	position: absolute;
+	left: 8%;
+	top: 80%;
+}
+#rmlbl
+{
+	position: absolute;
+	left: 12%;
+	top: 80%;
+	color: #001C2B;
+}
+
+#signup
+{
+	position: absolute;
+	left: 82%;
+	top: 80%;
+	text-decoration: underline;
+	color: #00344F;
+	cursor: pointer;
+}
+
+#signup:hover, #rmlbl:hover
+{
+	text-shadow: 0px 0px 9px rgba(255, 255, 255, 1);
+}
+
+
+#signup_form
+{
+	position: absolute;
+	top: 10%;
+	left: 100%;
+	width: 35%;
+	height: 90%;
+	background-image: url('/mySelfie/resources/images/boxform.png');
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	display: none;
+	overflow: hidden;
+ }
+
+#signup_form_container
+{
+	overflow-y: scroll;
+	overflow-x: hidden;
+	position: relative;
+	margin-left: 50px;
+	margin-top: 70px;
+	padding-bottom: 10px;	
+}
+
+
+
+#glyph_login_antinj
+{
+	position: absolute;
+	top: 9%;
+	left: 10%;
+	text-shadow: 0px 0px 9px rgba(255, 255, 255, 1);
+	
+}
+
+
+#lbl_login_antinj
+{
+	position: absolute;
+	top: 11%;
+	left: 16%;
+	text-shadow: 0px 0px 9px rgba(255, 255, 255, 1);
+}
+
+#login_antinj
+{
+	display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#slogan
+{
+	position: absolute;
+	top: 0%;
+	font-family: impact,sans-serif;
+	color: #00344F;
+	font-size: 20px;
+	font-weight: bold;
+	text-shadow: 0px 0px 10px rgba(255, 255, 255, 1);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

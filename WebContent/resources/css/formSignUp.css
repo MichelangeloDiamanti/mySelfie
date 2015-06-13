@@ -1,0 +1,32 @@
+@import url("/mySelfie/resources/css/fileInput/fileinput.css");
+
+.SUtxtbox
+{
+	position: relative;
+	top: 0%;
+	left: 5%;
+	width: 90%;
+	height: 6%;
+}
+
+
+#signupbtn
+{
+	border:0px solid;
+	background-color: #00344F;
+	color: #D8D8D8;
+	border-radius: 4px 4px 4px 4px;
+}
+#signupbtn:hover
+{
+	-webkit-box-shadow: 0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	-moz-box-shadow:    0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	-o-box-shadow:      0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	box-shadow:         0px 1px 7px 0px rgba(0, 51, 79, 0.75);	
+}
+
+.file-preview-frame
+{
+	
+	height: 10%;
+}
