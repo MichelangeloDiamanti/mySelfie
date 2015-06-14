@@ -121,7 +121,8 @@
 	background-position: 50%;
 	border-radius: 50%;
 	background-size: 40px 40px;
-	margin-left: 5px;
+	margin-left: -5px;
+	margin-top: -15px;		/* a causa del link la posizione si sballa */
 }
 
 .iconsdiv

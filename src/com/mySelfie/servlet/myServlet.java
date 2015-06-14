@@ -36,8 +36,27 @@ public class myServlet extends HttpServlet {
         	String status = "";		// stato della registrazione
         	String reason = "";		// info addizionali sullo stato della registrazione
         	
-        	// controlla se le password coincidono
-        	if(request.getParameter("password").equals(request.getParameter("checkPassword")))
+        	boolean check = true;	// controllo parametri inseriti
+        	
+        	// controlla se i parametri inseriti sono validi
+        	if(
+        		// se almeno un parametro è vuoto 
+        		request.getParameter("nickname").isEmpty() ||
+        		request.getParameter("password").isEmpty() ||
+        		request.getParameter("email").isEmpty() ||
+        		request.getParameter("profilePic").isEmpty() ||
+        		
+        		// o le password non corrispondono
+        		!(request.getParameter("password").equals(request.getParameter("checkPassword")))
+        	   )
+        	{
+        		// il controllo fallisce
+        		check = false;
+        	}
+        		
+        	
+        	// se il controllo è andato a buon fine
+        	if(check)
         	{
         		
 	        	// SAVLATAGGIO IMMAGINE NEL FILESYSTEM DEL SERVER
@@ -105,12 +124,21 @@ public class myServlet extends HttpServlet {
         else System.out.println("i'm not the Servlet you're looking for");  
     }
     
-    @Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		super.doGet(req, resp);
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		// in base all'URL che viene ricevuto avviene un redirect alla pagina corretta
+		String requestURL = request.getRequestURL().toString();
+		if(requestURL.toLowerCase().contains("index.jsp"))
+			response.sendRedirect("/mySelfie/index.jsp");
+		if(requestURL.toLowerCase().contains("homepage.jsp"))
+			response.sendRedirect("/mySelfie/homepage.jsp");
+		if(requestURL.toLowerCase().contains("profile.jsp"))
+			response.sendRedirect("/mySelfie/profile.jsp");
 	}
+
 
 	// Ricava il nome del file dalla form
 	private static String getFileName(Part part) {
