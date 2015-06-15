@@ -20,16 +20,16 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		<!-- se si proviene dalla registrazione viene visualizzato un toast message -->
 		<c:if test="${param.status == 'success' }">
-			<script>toastr.success('ora sei dentro!', 'registrazione effettuata');</script>
+			<script>toastr.success('welcome aboard!', 'Registration successful');</script>
 		</c:if>
 
 		<c:if test="${param.status == 'fail' }">
 		    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		    <c:if test="${param.reason == 'nickNameInUseException' }">
-				<script>toastr.error('il nickname scelto non è disponibile!', 'registrazione fallita');</script>
+				<script>toastr.error('nickname already in use', 'Registration failed');</script>
 		    </c:if>
 		    <c:if test="${param.reason == 'badInput' }">
-				<script>toastr.error('i dati forniti non sono validi!', 'registrazione fallita');</script>
+				<script>toastr.error('invalid data', 'Registration failed');</script>
 		    </c:if>
 		</c:if>
 		
@@ -82,7 +82,7 @@
 		<script type="text/javascript">
 		
 			$("#nickname").on({
-				'input focus':function () 
+				'change':function () 
 				{ 
 					var my_txt = $(this).val();
 					var len = my_txt.length;
@@ -92,15 +92,16 @@
 							url : 'homepage/checkNickname',
 							data : {
 								nickName : $('#nickname').val(),
-								checkNick : "true"
+								reqType : "checkNick"
 							},
 							success : function(responseText) {
+								$('#nickname').css({ borderBottomLeftRadius: 0, borderBottomRightRadius: 0});
 								if(responseText==="true")
 									$('#nicknameAlert').html(
 											"<div class=\"alert alert-success\" role=\"alert\">" +
 											"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
 											"  <span class=\"sr-only\">Error:</span>" +
-											"  username disponibile" +
+											"  username available" +
 											"</div>"			
 									);
 								else 
@@ -108,7 +109,7 @@
 											"<div class=\"alert alert-danger\" role=\"alert\">" +
 											"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
 											"  <span class=\"sr-only\">Error:</span>" +
-											"  username non disponibile" +
+											"  username not available" +
 											"</div>"		
 									);
 							}
@@ -116,10 +117,7 @@
 					}else{
 						$('#nicknameAlert').html("");
 					}
-			},
-			'blur':function (){
-				$('#nicknameAlert').html("");
-			} 
+			}
 		});
 			
 		</script>
@@ -137,7 +135,7 @@
 				}
 				else
 				{
-					toastr.error('le password non coincidono!', 'registrazione fallita');
+					toastr.error('Passwords don\'t match', 'Registration failed');
 					var d = document.getElementById('supassword').parentNode;
 					var cd = document.getElementById('suchkpassword').parentNode;
 					
@@ -163,6 +161,52 @@
 			
 		</script>	
 		
+		<script type="text/javascript">
+	
+	    	$(document).ready(function() 
+	    	{
+				$('#formlogin').submit(function() 
+				{
+					$.ajax(
+					{
+						url : 'homepage/ajax',
+						data : 
+						{ 
+							reqType: "chkLogIn", 
+							username: $('#username').val(), 
+							password: $('#password').val() //le password non dovrebbero viaggiare in chiaro 
+						},
+						success : function(responseText) 
+						{
+							if(responseText === "invalidUsername")
+							{
+								toastr.error('Invalid username', 'Error on LogIn');
+								document.getElementById("usernameContainer").className += " has-error";
+							}
+							if(responseText === "wrongPassword")
+							{
+								toastr.error('Wrong password', 'Error on LogIn');
+								document.getElementById("passwordContainer").className += " has-error";
+							}
+							if(responseText === "loginOK")
+							{
+								window.location = "http://goo.gl/ExcF7P";
+								// similar behavior as an HTTP redirect				window.location.replace("http://stackoverflow.com");
+								// similar behavior as clicking on a link			window.location.href = "http://stackoverflow.com";
+							}
+							if(responseText !== "invalidUsername" && responseText !== "wrongPassword" && responseText !== "loginOK")
+							{
+								toastr.error('', 'Error on LogIn');
+								document.getElementById("usernameContainer").className += " has-error";
+								document.getElementById("passwordContainer").className += " has-error";
+							}
+
+						}
+					});
+				});
+			});
+		</script>
+
 	</jsp:attribute>
     
     <jsp:body>
@@ -187,12 +231,7 @@
 		
 		<!-- form di login -->
 		<div id="login_form">
-			<input type="text" id="username" class="textbox form-control" placeholder="Username">	
-			<input type="password" id="password" class="textbox form-control" placeholder="Password">
-			<button type="submit" id="loginbtn"> LogIn </button>
-			<input type="checkbox" id="rm">
-			<label id="rmlbl" for="rm">Remember me</label>
-			<label id="signup" onClick="showsignupform()"> SignUp </label>
+			<jsp:include page="/WEB-INF/pages/formLogIn.jsp" />
 		</div>
 		
 		<!-- form di registrazione -->

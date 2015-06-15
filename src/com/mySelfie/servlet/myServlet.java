@@ -20,6 +20,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.mySelfie.exception.NickNameInUseException;
 import com.mySelfie.function.UserSignUp;
+import com.mySelfie.function.checkLogIn;
 
 @MultipartConfig	// Serve per supportare l'upload di files, form multipart
 @SuppressWarnings("serial")
@@ -43,7 +44,7 @@ public class myServlet extends HttpServlet {
         	String password = request.getParameter("password");       	
         	String checkPassword = request.getParameter("checkPassword");       	
         	String email = request.getParameter("email");       	
-        	String profilePic = request.getParameter("profilePic");       	
+        	//String profilePic = request.getParameter("profilePic");       	
         	
         	// controlla se i parametri inseriti sono validi
         	if(
@@ -52,7 +53,7 @@ public class myServlet extends HttpServlet {
     			(password != null && !password.isEmpty()) &&
     			(checkPassword != null && !checkPassword.isEmpty()) &&
     			(email != null && !email.isEmpty()) &&
-    			(profilePic != null && !profilePic.isEmpty()) &&
+    			//(profilePic != null && !profilePic.isEmpty()) &&
         		(request.getParameter("password").equals(request.getParameter("checkPassword")))
         	   )
         	{
@@ -134,29 +135,65 @@ public class myServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// intercetta la richiesta ajax "controlla username"
-		if (request.getParameter("checkNick") != null) {
-			String nickname = request.getParameter("nickName").trim();
-			
-			boolean check = false;
-			String free = "";
-        	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
-            try {
-                // salva le credenziali nel database
-                check = UserSignUp.checkUsername(nickname);
-                if(check){
-                	free = "true";
-                }else{
-                	free = "false";
+		
+      	String reqType = request.getParameter("reqType");
+        
+    	switch(reqType)
+        {
+    		// controllo login
+        	case "chkLogIn":
+        	{
+        	   	String usr = request.getParameter("username");
+              	String pwd = request.getParameter("password");
+              	String ctrlRes = "";
+              	
+              	try 
+              	{
+              		ctrlRes = checkLogIn.checkLoginQuery(usr, pwd);
+                } 
+              	catch (NamingException e) 
+              	{
+ 	                e.printStackTrace();
+              	}
+              	            	
+        		response.setContentType("text/plain");
+        		response.getWriter().write(ctrlRes);
+        	}
+        	break;
+        	
+        	// intercetta la richiesta ajax "controlla username"
+        	case "checkNick":
+        	{
+        		String nickname = request.getParameter("nickName").trim();
+    			
+    			boolean check = false;
+    			String free = "";
+            	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
+                try {
+                    // salva le credenziali nel database
+                    check = UserSignUp.checkUsername(nickname);
+                    if(check){
+                    	free = "true";
+                    }else{
+                    	free = "false";
+                    }
+                } catch (NamingException e) {
+                    e.printStackTrace();
                 }
-            } catch (NamingException e) {
-                e.printStackTrace();
-            }
-			
-			
-			response.setContentType("text/plain");
-			response.getWriter().write(free);
-		}
+    			
+    			response.setContentType("text/plain");
+    			response.getWriter().write(free);
+        	}
+        	
+        }
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 
