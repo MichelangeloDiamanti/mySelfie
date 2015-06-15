@@ -28,8 +28,8 @@
 		    <c:if test="${param.reason == 'nickNameInUseException' }">
 				<script>toastr.error('il nickname scelto non è disponibile!', 'registrazione fallita');</script>
 		    </c:if>
-		    <c:if test="${param.reason == 'passwordDontMatch' }">
-				<script>toastr.error('le password non coincidono!', 'registrazione fallita');</script>
+		    <c:if test="${param.reason == 'badInput' }">
+				<script>toastr.error('i dati forniti non sono validi!', 'registrazione fallita');</script>
 		    </c:if>
 		</c:if>
 		
@@ -78,6 +78,52 @@
 			}	
 			
 		</script>	
+		
+		<script type="text/javascript">
+		
+			$("#nickname").on({
+				'input focus':function () 
+				{ 
+					var my_txt = $(this).val();
+					var len = my_txt.length;
+					if(len > 0)
+					{
+					 	$.ajax({
+							url : 'homepage/checkNickname',
+							data : {
+								nickName : $('#nickname').val(),
+								checkNick : "true"
+							},
+							success : function(responseText) {
+								if(responseText==="true")
+									$('#nicknameAlert').html(
+											"<div class=\"alert alert-success\" role=\"alert\">" +
+											"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
+											"  <span class=\"sr-only\">Error:</span>" +
+											"  username disponibile" +
+											"</div>"			
+									);
+								else 
+									$('#nicknameAlert').html(
+											"<div class=\"alert alert-danger\" role=\"alert\">" +
+											"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
+											"  <span class=\"sr-only\">Error:</span>" +
+											"  username non disponibile" +
+											"</div>"		
+									);
+							}
+						});
+					}else{
+						$('#nicknameAlert').html("");
+					}
+			},
+			'blur':function (){
+				$('#nicknameAlert').html("");
+			} 
+		});
+			
+		</script>
+		
 		
 		<script type="text/javascript">
 			

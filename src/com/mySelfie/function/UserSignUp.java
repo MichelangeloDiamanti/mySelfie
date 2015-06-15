@@ -80,4 +80,39 @@ public final class UserSignUp {
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(out); }
         }
     }
+    
+    // la funzione controlla se lo username passato è in uso, in caso affermativo torna falso, altrimenti vero
+    public static boolean checkUsername(String nickname) throws NamingException {
+        Context context = null;			// contesto
+        DataSource datasource = null;	// dove pescare i dati
+        Connection connect = null;		// connessione al DB
+        
+        boolean resEmpty = false;		// true se lo username NON è in uso, falso altrimenti
+        
+        try{
+            // Get the context and create a connection
+            context = new InitialContext();
+            // Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
+            datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
+            connect = datasource.getConnection();
+            
+            // verifica che lo username non sia gia in uso
+            String uniqueNickStr = "SELECT id_user FROM User WHERE nickname = ? ";
+            PreparedStatement uniqueNickSQL = connect.prepareStatement(uniqueNickStr);
+            uniqueNickSQL.setString(1, nickname);
+            ResultSet uniqueNickRes = uniqueNickSQL.executeQuery();
+            
+            resEmpty = !(uniqueNickRes.next());	// se c'è un risultato (nickname in uso) la 
+            									// funzione uniqueNickRes.next() torna vero
+            									// quindi negato torna falso
+            
+        }catch (SQLException e) { e.printStackTrace();
+        }finally {
+        // chiude la connessione
+        try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+        
+		return resEmpty;
+    }
+    
 }
