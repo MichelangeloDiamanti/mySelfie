@@ -1,4 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:template>
@@ -15,7 +16,12 @@
     <jsp:body>
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
-
+		
+		<c:out value="${sessionScope.user.id_user}" />
+		<c:out value="${sessionScope.user.nickname}" />
+		<c:out value="${sessionScope.user.email}" />
+		<c:out value="${sessionScope.user.profilepic}" />
+		<img src="/mySelfie/images/profilePics/<c:out value="${sessionScope.user.profilepic}" />">
     </jsp:body>
         
 </t:template>

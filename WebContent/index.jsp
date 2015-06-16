@@ -169,38 +169,26 @@
 				{
 					$.ajax(
 					{
-						url : 'homepage/ajax',
+						method: "POST",
+						url : '/mySelfie/userValidator',
 						data : 
 						{ 
-							reqType: "chkLogIn", 
 							username: $('#username').val(), 
-							password: $('#password').val() //le password non dovrebbero viaggiare in chiaro 
+							password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
+							redURL: $('#redURL').val()
 						},
 						success : function(responseText) 
 						{
-							if(responseText === "invalidUsername")
+							if(responseText === "loginFAIL")
 							{
-								toastr.error('Invalid username', 'Error on LogIn');
-								document.getElementById("usernameContainer").className += " has-error";
-							}
-							if(responseText === "wrongPassword")
-							{
-								toastr.error('Wrong password', 'Error on LogIn');
-								document.getElementById("passwordContainer").className += " has-error";
-							}
-							if(responseText === "loginOK")
-							{
-								window.location = "http://goo.gl/ExcF7P";
-								// similar behavior as an HTTP redirect				window.location.replace("http://stackoverflow.com");
-								// similar behavior as clicking on a link			window.location.href = "http://stackoverflow.com";
-							}
-							if(responseText !== "invalidUsername" && responseText !== "wrongPassword" && responseText !== "loginOK")
-							{
-								toastr.error('', 'Error on LogIn');
+								toastr.error('credentials are not valid', 'Error on LogIn');
 								document.getElementById("usernameContainer").className += " has-error";
 								document.getElementById("passwordContainer").className += " has-error";
 							}
-
+							else
+							{
+								window.location = responseText;
+							}
 						}
 					});
 				});

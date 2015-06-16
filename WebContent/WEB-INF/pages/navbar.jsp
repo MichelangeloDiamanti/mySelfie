@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -41,7 +42,7 @@
                 </li>       
                 <li>
                 	<a href="${pageContext.request.contextPath}/profile.jsp">
-						<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/resources/images/micheledindi.png')" ></span>
+						<span id="profilepicdiv" style="background-image: url('/mySelfie/images/profilePics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
                 	</a>
                 </li>                           
             </ul>

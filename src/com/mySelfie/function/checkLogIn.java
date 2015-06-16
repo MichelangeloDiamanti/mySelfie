@@ -9,13 +9,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-
+import com.mySelfie.entity.User;
 
 public final class checkLogIn {
-
-    public static String checkLoginQuery(String username, String password) throws NamingException
+	
+    public static User checkLoginQuery(String username, String password) throws NamingException
     {
-    	String controlResult = "";
+    	User user = new User();			// istanzio un nuovo utente vuoto
         Context context = null;			// contesto
         DataSource datasource = null;	// dove pescare i dati
         Connection connect = null;		// connessione al DB
@@ -28,45 +28,39 @@ public final class checkLogIn {
             datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
             connect = datasource.getConnection();
             
-            // verifica che lo username esista
-            String idusrQuery = "SELECT id_user FROM User WHERE nickname = ? ";
-            PreparedStatement idusrSQL = connect.prepareStatement(idusrQuery);
-            idusrSQL.setString(1, username);
-            ResultSet idusrRes = idusrSQL.executeQuery();
+            // verifica che username e password inseriti facciano riferimento ad uno user valido
+            String userQuery = "SELECT * FROM User WHERE nickname = ? AND password = ?";
+            PreparedStatement userSQL = connect.prepareStatement(userQuery);
+            userSQL.setString(1, username);
+            userSQL.setString(2, password);
+            ResultSet queryRes = userSQL.executeQuery();
             
-            boolean usrExists = idusrRes.next();
-              
-            //se lo username esiste
+            boolean usrExists = queryRes.next();
+            
+            // se c'è un risultato per la query
             if (usrExists)
             {
-            	int user_id = idusrRes.getInt("id_user");
-            	            	
-            	//ricava la password per confrontarla
-            	String pwdQuery = "SELECT password FROM User WHERE id_user = ? ";
-                PreparedStatement pwdSQL = connect.prepareStatement(pwdQuery);
-                pwdSQL.setInt(1, user_id);
-                ResultSet pwdRes = pwdSQL.executeQuery();
-                                
-                String actualPwd = "";
-                while (pwdRes.next()) 
-                	actualPwd = pwdRes.getString("password");
-                
-                
-            	
-                //se le password corrispondono
-                if(actualPwd.equals(password))
-                {
-                	controlResult = "loginOK";
-                }
-                else
-                {
-                	controlResult = "wrongPassword";
-                }
+            	// vengono valorizzati i vari attributi dell'istanza dell'utente
+            	user.setId_user(queryRes.getInt("id_user"));
+            	user.setNickname(queryRes.getString("nickname"));
+            	user.setPassword(queryRes.getString("password"));
+            	user.setEmail(queryRes.getString("email"));
+            	user.setPhone(queryRes.getString("phone"));
+            	user.setName(queryRes.getString("name"));
+            	user.setSurname(queryRes.getString("surname"));
+            	user.setGender(queryRes.getString("gender"));
+            	user.setNotes(queryRes.getString("notes"));
+            	user.setCity(queryRes.getString("city"));
+            	user.setProfilepic(queryRes.getString("profilepic"));
+            	user.setBirthdate(queryRes.getDate("birthdate"));
+            	// viene impostato l'untente a valido
+            	user.setValid(true);
             }
-            else
+            else 
             {
-            	controlResult = "invalidUsername";
-            }
+            	// altrimenti l'untente non è valido
+            	user.setValid(false);
+			}
            
            
         } catch (SQLException e) { e.printStackTrace();
@@ -75,6 +69,7 @@ public final class checkLogIn {
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
         }
         
-        return controlResult;
+        // viene restituito l'utente
+        return user;
     }
 }

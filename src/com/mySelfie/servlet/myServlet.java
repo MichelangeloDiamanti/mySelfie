@@ -140,26 +140,6 @@ public class myServlet extends HttpServlet {
         
     	switch(reqType)
         {
-    		// controllo login
-        	case "chkLogIn":
-        	{
-        	   	String usr = request.getParameter("username");
-              	String pwd = request.getParameter("password");
-              	String ctrlRes = "";
-              	
-              	try 
-              	{
-              		ctrlRes = checkLogIn.checkLoginQuery(usr, pwd);
-                } 
-              	catch (NamingException e) 
-              	{
- 	                e.printStackTrace();
-              	}
-              	            	
-        		response.setContentType("text/plain");
-        		response.getWriter().write(ctrlRes);
-        	}
-        	break;
         	
         	// intercetta la richiesta ajax "controlla username"
         	case "checkNick":
