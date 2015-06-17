@@ -21,7 +21,7 @@
 		<c:out value="${sessionScope.user.nickname}" />
 		<c:out value="${sessionScope.user.email}" />
 		<c:out value="${sessionScope.user.profilepic}" />
-		<img src="/mySelfie/images/profilePics/<c:out value="${sessionScope.user.profilepic}" />">
+		<img src="${pageContext.request.contextPath}/protected/resources/images/profilePics/<c:out value="${sessionScope.user.profilepic}" />" >
     </jsp:body>
         
 </t:template>

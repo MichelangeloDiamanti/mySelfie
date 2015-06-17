@@ -42,7 +42,7 @@
                 </li>       
                 <li>
                 	<a href="${pageContext.request.contextPath}/profile.jsp">
-						<span id="profilepicdiv" style="background-image: url('/mySelfie/images/profilePics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
+						<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/images/profilePics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
                 	</a>
                 </li>                           
             </ul>
