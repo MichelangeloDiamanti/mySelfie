@@ -20,7 +20,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.mySelfie.exception.NickNameInUseException;
 import com.mySelfie.function.UserSignUp;
-import com.mySelfie.function.checkLogIn;
 
 @MultipartConfig	// Serve per supportare l'upload di files, form multipart
 @SuppressWarnings("serial")
@@ -75,8 +74,8 @@ public class myServlet extends HttpServlet {
 	    	    //InputStream fileContent = filePart.getInputStream();	// boh? Sarà il formato del file?? Manco viene usata...
 	    	    	   
 	    	    // Imposta il percorso dove salvare l'immagine
-	    	    String homeFolder = System.getProperty("user.dir");
-	    	    String uploadPath = homeFolder + "/mySelfie/data/profilePics";
+	    		String homeFolder = System.getProperty("user.home");
+	    	    String uploadPath = homeFolder + "/mySelfie/resources/profilepics";
 	    	    
 	    	    // Istanzia un nuovo file nel path specificato
 	    	    File uploads = new File(uploadPath);		
@@ -165,14 +164,7 @@ public class myServlet extends HttpServlet {
     			response.getWriter().write(free);
         	}
         	
-        }
-		
-		
-		
-		
-		
-		
-		
+        }	
 		
 	}
 

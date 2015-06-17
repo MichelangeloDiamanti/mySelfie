@@ -28,15 +28,22 @@
     <servlet-name>UploadServlet</servlet-name>
     <url-pattern>/upload/uploadselfie.jsp</url-pattern>
   </servlet-mapping>
-<servlet>
+  <servlet>
     <servlet-name>userValidator</servlet-name>
     <servlet-class>com.mySelfie.servlet.UserValidator</servlet-class>
-</servlet>
-<servlet-mapping>
+  </servlet>
+  <servlet-mapping>
     <servlet-name>userValidator</servlet-name>
     <url-pattern>/userValidator</url-pattern>
-</servlet-mapping>
-  
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>protectedResourcesServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ProtectedResourcesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>protectedResourcesServlet</servlet-name>
+    <url-pattern>/protected/resources/*</url-pattern>
+  </servlet-mapping>
   <filter>
     <filter-name>UserCheckFilter</filter-name>
     <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>

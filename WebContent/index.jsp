@@ -89,7 +89,7 @@
 					if(len > 0)
 					{
 					 	$.ajax({
-							url : 'homepage/checkNickname',
+							url : '/mySelfie/homepage/checkNickname',
 							data : {
 								nickName : $('#nickname').val(),
 								reqType : "checkNick"

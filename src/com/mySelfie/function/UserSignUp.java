@@ -64,8 +64,6 @@ public final class UserSignUp {
 	            
 //	            statement.setDate(7, dataDiNascitaSql);
 	            
-	            // debug query
-	            System.out.println(statement);
 	            // esegue la query
 	            statement.executeUpdate();
             }
