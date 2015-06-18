@@ -21,6 +21,14 @@
     <url-pattern>/homepage/ajax</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>getPostsServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getPostsServlet</servlet-name>
+    <url-pattern>/protected/getPosts</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>
   </servlet>

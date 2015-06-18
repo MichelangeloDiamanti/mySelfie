@@ -24,7 +24,7 @@ public class UserValidator extends HttpServlet {
     	String requestURL = request.getParameter("redURL");
     	// se l'url richiesto è vuoto significa che la form di login non è stata presentata in risposta ad una richiesta passata
     	// per il filtro di controllo ma è stata acceduta direttamente dall'utente viene quindi impostato un url di redirect standard
-    	if(requestURL.equals("")) requestURL = "http://localhost:8080/mySelfie/protected/homepage.jsp";
+    	if(requestURL.equals("")) requestURL = "/mySelfie/protected/homepage.jsp";
     	
     	// vengono presi i parametri necessari per il login dalla form
         String usr = request.getParameter("username");

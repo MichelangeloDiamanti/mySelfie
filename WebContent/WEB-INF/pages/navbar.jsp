@@ -2,7 +2,7 @@
 <div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand" href="${pageContext.request.contextPath}/homepage.jsp">
+            <a class="navbar-brand" href="${pageContext.request.contextPath}/protected/homepage.jsp">
         		<img id="logo" alt="Brand" src="${pageContext.request.contextPath}/resources/images/extendedLogo.png">
         	</a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
@@ -27,7 +27,7 @@
                 <li>
                 	<div id="updiv" class="iconsdiv">
 						<div class="circle"></div>
-						<a  href="${pageContext.request.contextPath}/uploadselfie.jsp" >
+						<a  href="${pageContext.request.contextPath}/protected/uploadselfie.jsp" >
 							<img id="upload" class="icon" src="${pageContext.request.contextPath}/resources/images/upload.png"></img>
 						</a>
 					</div>
@@ -35,13 +35,13 @@
                 <li>
                 	<div id="homediv" class="iconsdiv">
 						<div class="circle"></div>
-						<a  href="${pageContext.request.contextPath}/homepage.jsp" >
+						<a  href="${pageContext.request.contextPath}/protected/homepage.jsp" >
 							<img id="home" class="icon" src="${pageContext.request.contextPath}/resources/images/home.png"></img>
 						</a>
 					</div>
                 </li>       
                 <li>
-                	<a href="${pageContext.request.contextPath}/profile.jsp">
+                	<a href="${pageContext.request.contextPath}/protected/profile.jsp">
 						<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
                 	</a>
                 </li>                           

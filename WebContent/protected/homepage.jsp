@@ -5,11 +5,15 @@
 <t:template>
     
     <jsp:attribute name="header">
-		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />       
+		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="${pageContext.request.contextPath}/resources/css/postTable.css" media="all" rel="stylesheet" type="text/css" />    
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
 		
+		<script type="text/javascript">
+			<jsp:include page="/resources/javascript/scripts/getPosts.js" />
+		</script>
 		
 	</jsp:attribute>
     
@@ -17,11 +21,8 @@
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
 		
-		<c:out value="${sessionScope.user.id_user}" />
-		<c:out value="${sessionScope.user.nickname}" />
-		<c:out value="${sessionScope.user.email}" />
-		<c:out value="${sessionScope.user.profilepic}" />
-		<img src="${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />" >
+		<!-- c:out value="${sessionScope.user.id_user}" /-->
+
     </jsp:body>
         
 </t:template>
