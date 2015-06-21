@@ -173,6 +173,7 @@
 						url : '/mySelfie/userValidator',
 						data : 
 						{ 
+							action: "login",
 							username: $('#username').val(), 
 							password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
 							redURL: $('#redURL').val()

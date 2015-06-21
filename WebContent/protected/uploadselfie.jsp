@@ -10,6 +10,8 @@
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
+	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
+    
 	<script src="${pageContext.request.contextPath}/resources/javascript/jcrop/jquery.Jcrop.js"></script>
 	
 	<!-- appena viene scelta la selfie da uplodare essa viene caricata nella pagina -->

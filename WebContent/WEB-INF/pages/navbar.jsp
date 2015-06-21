@@ -44,7 +44,10 @@
                 	<a href="${pageContext.request.contextPath}/protected/profile.jsp">
 						<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
                 	</a>
-                </li>                           
+                </li> 
+                <li>
+                	<button id="logOutBtn">LogOut</button>                
+                </li>                          
             </ul>
             </div>
         </div>
