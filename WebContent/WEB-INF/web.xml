@@ -37,7 +37,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
-    <url-pattern>/upload/uploadselfie.jsp</url-pattern>
+    <url-pattern>/protected/upload</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>userValidator</servlet-name>
