@@ -124,11 +124,11 @@
 	     	
 	    	// ricavo il valore della descrizione dell'immagine
 	        var description = $('#description').val();
-	        var tags = $('#tags').val();	        
+	        var hashtags = $('#hashtags').val();	        
 	    	
 	        // passa tutti i parametri necessari per uplodare la selfie
 	        formdata.append("action", "uploadSelfie");	// action da svolgere
-	        formdata.append("tags", tags);	// descrizione
+	        formdata.append("hashtags", hashtags);	// descrizione
 	        formdata.append("description", description);	// descrizione
 	        formdata.append("image", $('#cropbox').attr('src'));	// nome dell'immagine
 			
@@ -202,7 +202,7 @@
 			<br>
 			<div class="form-group">
 			  <label for="tags">Hashtags:</label>
-			  <input type="text" name="tags" id="tags"/>
+			  <input type="text" name="hashtags" id="hashtags"/>
 			</div>
 			
 			<div class="form-group">

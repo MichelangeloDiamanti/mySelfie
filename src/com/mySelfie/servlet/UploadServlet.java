@@ -200,23 +200,23 @@ public class UploadServlet extends HttpServlet {
 				String upImageDesc = formFields.get("description");
 				
 				// ottengo i tags dell'immagine dal campo della form				
-				String tagString = formFields.get("tags");
+				String hashtagString = formFields.get("hashtags");
 				// elimina tutti gli spazi vuoti
-				tagString = tagString.replaceAll("\\s+", "");
+				hashtagString = hashtagString.replaceAll("\\s+", "");
 				
 				// imposto il delimitatore con cui separare i vari tags (cancelletto)
 				String delims = "#";
 				// creo un vettore di stringhe contenente i tags separati
-				String[] tags = tagString.split(delims);
+				String[] hashtagStrings = hashtagString.split(delims);
 				
 				
 				ArrayList<String> hashtags = new ArrayList<String>();
 
-				// itero tutti i tag
-				for (String tag : tags) {
+				// itero tutti gli hashtags
+				for (String hashtagstring : hashtagStrings) {
 					// quelli che non sono vuoti li metto in una lista di stringhe 
 					// rimettendoci i il cancelletto tolto dalla funzione split
-					if(!tag.equals("")) hashtags.add("#" + tag);
+					if(!hashtagstring.equals("")) hashtags.add("#" + hashtagstring);
 				}
 				
 				// ricavo il nome dell'immagine e la sua estensione
