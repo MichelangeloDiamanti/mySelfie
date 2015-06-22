@@ -124,12 +124,14 @@
 	     	
 	    	// ricavo il valore della descrizione dell'immagine
 	        var description = $('#description').val();
-	        
+	        var tags = $('#tags').val();	        
+	    	
 	        // passa tutti i parametri necessari per uplodare la selfie
 	        formdata.append("action", "uploadSelfie");	// action da svolgere
+	        formdata.append("tags", tags);	// descrizione
 	        formdata.append("description", description);	// descrizione
 	        formdata.append("image", $('#cropbox').attr('src'));	// nome dell'immagine
-	
+			
 	     	// mando la richiesta tramite POST
 	        var xhr = new XMLHttpRequest();       
 	        xhr.open("POST","/mySelfie/protected/upload", true);
@@ -198,12 +200,15 @@
 			<input type="submit" name="crop" value="crop" class="btn btn-primary" id="cropBtn" style="display: none">
 			
 			<br>
+			<div class="form-group">
+			  <label for="tags">Hashtags:</label>
+			  <input type="text" name="tags" id="tags"/>
+			</div>
 			
 			<div class="form-group">
 			  <label for="comment">Description:</label>
 			  <textarea class="form-control" rows="5" id="description" style="resize: none"></textarea>
 			</div>
-			
 			<div class="col-md-12 center-block">
 			   	<input type="submit" name="cheese" value="cheese!" class="btn btn-primary center-block" id="cheeseBtn" style="display: none">
 			</div>

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -198,6 +199,26 @@ public class UploadServlet extends HttpServlet {
 				// ottengo la descrizione dell'immagine dal campo della form
 				String upImageDesc = formFields.get("description");
 				
+				// ottengo i tags dell'immagine dal campo della form				
+				String tagString = formFields.get("tags");
+				// elimina tutti gli spazi vuoti
+				tagString = tagString.replaceAll("\\s+", "");
+				
+				// imposto il delimitatore con cui separare i vari tags (cancelletto)
+				String delims = "#";
+				// creo un vettore di stringhe contenente i tags separati
+				String[] tags = tagString.split(delims);
+				
+				
+				ArrayList<String> hashtags = new ArrayList<String>();
+
+				// itero tutti i tag
+				for (String tag : tags) {
+					// quelli che non sono vuoti li metto in una lista di stringhe 
+					// rimettendoci i il cancelletto tolto dalla funzione split
+					if(!tag.equals("")) hashtags.add("#" + tag);
+				}
+				
 				// ricavo il nome dell'immagine e la sua estensione
 				String upImageName = FilenameUtils.getName(formFields.get("image"));
 				String upImageExt = FilenameUtils.getExtension(formFields.get("image"));
@@ -233,7 +254,7 @@ public class UploadServlet extends HttpServlet {
 				selfie.setDate(dateTime);
 				selfie.setPicture(upImage.getName());
 				
-				UploadSelfie.upload(selfie);
+				UploadSelfie.upload(selfie, hashtags);
 				
 				ajaxUpdateResult = "/mySelfie/protected/homepage.jsp";
 				
