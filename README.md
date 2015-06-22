@@ -9,7 +9,7 @@ IMPORTANT:
 
 2) implementare il sistema dei cookies
 
-3) implementare la funzione di upload selfie
+3) implementare la funzione di upload selfie										- FATTO
 
 4) implementare il sistema dei followers
 
