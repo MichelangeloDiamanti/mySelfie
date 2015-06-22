@@ -23,7 +23,7 @@ import com.mySelfie.function.UserUtils;
 
 @MultipartConfig	// Serve per supportare l'upload di files, form multipart
 @SuppressWarnings("serial")
-public class myServlet extends HttpServlet {
+public class indexServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
