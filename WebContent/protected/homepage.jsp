@@ -10,7 +10,7 @@
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
-		
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
 		<script type="text/javascript">
 			<jsp:include page="/resources/javascript/scripts/getPosts.js" />
 		</script>
