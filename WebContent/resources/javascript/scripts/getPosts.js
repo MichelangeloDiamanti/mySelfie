@@ -1,7 +1,13 @@
 $( document ).ready(function() 
 {
 	var queryType = "homepage";
-//immagine loading
+	
+	var postsContainer = document.createElement("div");
+	document.getElementById("bcontainer").appendChild(postsContainer);	
+	
+	//postsContainer.innerHTML = "<img src=\"/mySelfie/resources/images/loading.gif\">";
+	
+	
 	$.ajax(
 	{
 		method: "POST",
@@ -12,33 +18,12 @@ $( document ).ready(function()
 		},
 		success : function(responseText) 
 		{
-			var postsContainer = document.createElement("div");
-			postsContainer.innerHTML = responseText;
-			document.getElementById("bcontainer").appendChild(postsContainer);	
-			
-			
-			$('.comments').each(function(i, comments) 
-			{	    
-				var sh = 0;
-				var nh = 0;
-				var ch = 50;
-				
-				$('.selfie_wrapper').each(function(j, selfie) 
-				{	
-					if(i==j)
-						sh = $(selfie).height();
-				});				    
-				
-				$('.comment_sections').each(function(k, notes) 
-				{	
-					if(i==k)
-						nh = $(notes).height();
-				});				 
-							
-				$(comments).height(sh - nh -ch);
-				
-			});
 
+			
+			postsContainer.innerHTML = responseText;
+			
+	
+			$('.selfie').on('load change', resizeComments());
 
 			$(".glyphicon-heart-empty").click(function()
 			{
@@ -47,23 +32,35 @@ $( document ).ready(function()
 				$(this).removeClass("glyphicon-heart-empty");
 				$(this).removeClass("hOff");
 			});
-			$(".glyphicon-heart").click(function()
-					{
-				$(this).addClass("glyphicon-heart-empty");
-				$(this).addClass("hOff");
-				$(this).removeClass("glyphicon-heart");
-				$(this).removeClass("hOn");
-					});
-
 
 		}
 	});
 
-
-	
 	
 });
 
 
+
+function resizeComments()
+{
+	/* prende tutti i contenitori dei commenti */
+	var comment = document.getElementsByClassName("comments");
+	/* prende tutti i contenitori delle immagini */
+	var selfie = document.getElementsByClassName("selfie_wrapper");
+	/* prende tutti i contenitori delle note */
+	var notes = document.getElementsByClassName("comment_sections");
+
+	/* scorre tutti i commenti */
+	var i=0;
+	for (i = 0; i < comment.length; i++) 
+	{ 
+			/* setta l' altezza dei commenti */
+			var sh = selfie[i].offsetHeight;   	//altezza della foto
+			var nh = notes[i].offsetHeight;	   	//altezza delle note
+			var ch = 50;						//altezza input
+			comment[i].style.height = (sh - nh - ch) + "px";
+	}
+
+}
 
 	
