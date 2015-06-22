@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 
 import com.mySelfie.entity.User;
 
-public class PostsManagement {
+public class PostUtils {
 
 	public static String getPosts(String reqType, String contextPath, HttpSession session)
 	{

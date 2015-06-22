@@ -19,7 +19,7 @@ import javax.servlet.http.Part;
 import org.apache.commons.io.FilenameUtils;
 
 import com.mySelfie.exception.NickNameInUseException;
-import com.mySelfie.function.UserSignUp;
+import com.mySelfie.function.UserUtils;
 
 @MultipartConfig	// Serve per supportare l'upload di files, form multipart
 @SuppressWarnings("serial")
@@ -104,7 +104,7 @@ public class myServlet extends HttpServlet {
 	        	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
 	            try {
 	                // salva le credenziali nel database
-	                UserSignUp.signUpQuery(out, m);
+	                UserUtils.signup(out, m);
 	                // se è andata a buon fine la registrazione viene impostato il messaggio a ok
 	                status = "success";
 	                reason = "goodInput";
@@ -150,7 +150,7 @@ public class myServlet extends HttpServlet {
             	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
                 try {
                     // salva le credenziali nel database
-                    check = UserSignUp.checkUsername(nickname);
+                    check = UserUtils.usernameAvailable(nickname);
                     if(check){
                     	free = "true";
                     }else{

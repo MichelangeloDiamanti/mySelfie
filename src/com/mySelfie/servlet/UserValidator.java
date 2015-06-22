@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mySelfie.entity.User;
-import com.mySelfie.function.checkLogIn;
+import com.mySelfie.function.SecurityUtils;
  
 public class UserValidator extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -39,7 +39,7 @@ public class UserValidator extends HttpServlet {
 	      	try 
 	      	{
 	      		// viene controllato se esiste un utente con le credenziali fornite
-	      		user = checkLogIn.checkLoginQuery(usr, pwd);
+	      		user = SecurityUtils.checkLogin(usr, pwd);
 	        } 
 	      	catch (NamingException e) 
 	      	{

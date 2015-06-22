@@ -14,9 +14,9 @@ import javax.sql.DataSource;
 
 import com.mySelfie.entity.Selfie;
 
-public class UploadSelfie {
+public class SelfieUtils {
 
-	public static void upload(Selfie selfie, List<String> hashtags) throws NamingException {
+	public static void uploadSelfie(Selfie selfie, List<String> hashtags, List<String> usertags) throws NamingException {
 		Context context = null; // contesto
 		DataSource datasource = null; // dove pescare i dati
 		Connection connect = null; // connessione al DB
@@ -60,7 +60,7 @@ public class UploadSelfie {
 	        		// imposta l'id del selfie alla chiave ritornata
 	            	int id_selfie = generatedKeys.getInt(1);
 	    			
-	            	// scorre tutti i tag che devono essere messi nella selfie
+	            	// scorre tutti gli hashtags che devono essere messi nella selfie
 	            	for (String hashtag : hashtags) {
 	    				
 	    				// se l'hashtag esiste
@@ -82,6 +82,20 @@ public class UploadSelfie {
 	    				}
 	    				
 	    			}
+	            	
+	            	// scorre tutti gli usertags che devono essere messi nella selfie
+	            	for (String usertag : usertags) {
+	            		
+	            		System.out.println(usertag);
+	            		// controlla se lo user esiste
+	            		if(UserUtils.exist(usertag, connect))
+	            		{
+	            			// ricava il suo id
+	            			int id_user = UserUtils.getId(usertag, connect);
+	            			// inserisce il tag
+	            			UserUtils.userTagSelfie(id_user, id_selfie, connect);
+	            		}
+	            	}
 	            }
 	            else {
 	                throw new SQLException("Creating user failed, no ID obtained.");

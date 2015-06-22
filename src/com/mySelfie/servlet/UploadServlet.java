@@ -29,7 +29,7 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.mySelfie.entity.Selfie;
 import com.mySelfie.entity.User;
-import com.mySelfie.function.UploadSelfie;
+import com.mySelfie.function.SelfieUtils;
 
 /**
  * Servlet implementation class UploadServlet
@@ -199,7 +199,7 @@ public class UploadServlet extends HttpServlet {
 				// ottengo la descrizione dell'immagine dal campo della form
 				String upImageDesc = formFields.get("description");
 				
-				// ottengo i tags dell'immagine dal campo della form				
+				// ottengo gli hashtags dell'immagine dal campo della form				
 				String hashtagString = formFields.get("hashtags");
 				// elimina tutti gli spazi vuoti
 				hashtagString = hashtagString.replaceAll("\\s+", "");
@@ -209,7 +209,7 @@ public class UploadServlet extends HttpServlet {
 				// creo un vettore di stringhe contenente i tags separati
 				String[] hashtagStrings = hashtagString.split(delims);
 				
-				
+				// diachiaro una lista di stringhe dove inserire gli hastags effettivi
 				ArrayList<String> hashtags = new ArrayList<String>();
 
 				// itero tutti gli hashtags
@@ -217,6 +217,25 @@ public class UploadServlet extends HttpServlet {
 					// quelli che non sono vuoti li metto in una lista di stringhe 
 					// rimettendoci i il cancelletto tolto dalla funzione split
 					if(!hashtagstring.equals("")) hashtags.add("#" + hashtagstring);
+				}
+				
+				// ottengo gli usertags dell'immagine dal campo della form e trimmo la stringa
+				String usertagString = formFields.get("usertags");
+				// sostituisce i molteplici spazi vuoti con uno solo
+				usertagString = usertagString.replaceAll("\\s+", " ");
+				
+				// imposto il delimitatore con cui separare i vari tags (cancelletto)
+				delims = " ";
+				// creo un vettore di stringhe contenente i tags separati
+				String[] usertagStrings = usertagString.split(delims);
+				
+				// diachiaro una lista di stringhe dove inserire gli usertags effettivi
+				ArrayList<String> usertags = new ArrayList<String>();
+
+				// itero tutti gli usertags
+				for (String usertagstring : usertagStrings) {
+					// quelli che non sono vuoti li metto nella lista
+					if(!usertagstring.equals("")) usertags.add(usertagstring);
 				}
 				
 				// ricavo il nome dell'immagine e la sua estensione
@@ -254,7 +273,7 @@ public class UploadServlet extends HttpServlet {
 				selfie.setDate(dateTime);
 				selfie.setPicture(upImage.getName());
 				
-				UploadSelfie.upload(selfie, hashtags);
+				SelfieUtils.uploadSelfie(selfie, hashtags, usertags);
 				
 				ajaxUpdateResult = "/mySelfie/protected/homepage.jsp";
 				

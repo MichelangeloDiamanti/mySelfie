@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.mySelfie.function.PostsManagement;
+import com.mySelfie.function.PostUtils;
 
 /**
  * Servlet implementation class PostServlet
@@ -46,7 +46,7 @@ public class PostServlet extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		
-		String HTMLres = PostsManagement.getPosts("homepage", contextPath, session);
+		String HTMLres = PostUtils.getPosts("homepage", contextPath, session);
 
 		response.getWriter().write(HTMLres);
 		

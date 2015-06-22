@@ -11,9 +11,9 @@ import javax.sql.DataSource;
 
 import com.mySelfie.entity.User;
 
-public final class checkLogIn {
+public final class SecurityUtils {
 	
-    public static User checkLoginQuery(String username, String password) throws NamingException
+    public static User checkLogin(String username, String password) throws NamingException
     {
     	User user = new User();			// istanzio un nuovo utente vuoto
         Context context = null;			// contesto
