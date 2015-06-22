@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>mySelfie</display-name>
+  <welcome-file-list>
+        <welcome-file>protected/homepage.jsp</welcome-file>
+    </welcome-file-list>
   <resource-ref>
     <description>JDBC</description>
     <res-ref-name>jdbc/mySelfie</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
-  
   <servlet>
     <servlet-name>TomcatJDBC</servlet-name>
     <servlet-class>com.mySelfie.servlet.myServlet</servlet-class>
@@ -18,14 +20,51 @@
     <url-pattern>/homepage/homepage.jsp</url-pattern>
     <url-pattern>/homepage/profile.jsp</url-pattern>
     <url-pattern>/homepage/signup</url-pattern>
+    <url-pattern>/homepage/checkNickname</url-pattern>
+    <url-pattern>/homepage/ajax</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <servlet-name>getPostsServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getPostsServlet</servlet-name>
+    <url-pattern>/protected/getPosts</url-pattern>
+  </servlet-mapping>
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
-    <url-pattern>/upload/uploadselfie.jsp</url-pattern>
+    <url-pattern>/protected/upload</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>userValidator</servlet-name>
+    <servlet-class>com.mySelfie.servlet.UserValidator</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>userValidator</servlet-name>
+    <url-pattern>/userValidator</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>protectedResourcesServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ProtectedResourcesServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>protectedResourcesServlet</servlet-name>
+    <url-pattern>/protected/resources/*</url-pattern>
+  </servlet-mapping>
+  <filter>
+    <filter-name>UserCheckFilter</filter-name>
+    <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>
+    <init-param>
+      <param-name>loginActionURI</param-name>
+      <param-value>/mySelfie/userValidator</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>UserCheckFilter</filter-name>
+    <url-pattern>/protected/*</url-pattern>
+  </filter-mapping>
 </web-app>

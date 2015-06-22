@@ -36,22 +36,28 @@ public class myServlet extends HttpServlet {
         	String status = "";		// stato della registrazione
         	String reason = "";		// info addizionali sullo stato della registrazione
         	
-        	boolean check = true;	// controllo parametri inseriti
+        	boolean check = false;	// controllo parametri inseriti
+        	
+        	
+        	String nickName = request.getParameter("nickname");
+        	String password = request.getParameter("password");       	
+        	String checkPassword = request.getParameter("checkPassword");       	
+        	String email = request.getParameter("email");       	
+        	//String profilePic = request.getParameter("profilePic");       	
         	
         	// controlla se i parametri inseriti sono validi
         	if(
-        		// se almeno un parametro è vuoto 
-        		request.getParameter("nickname").isEmpty() ||
-        		request.getParameter("password").isEmpty() ||
-        		request.getParameter("email").isEmpty() ||
-        		request.getParameter("profilePic").isEmpty() ||
-        		
-        		// o le password non corrispondono
-        		!(request.getParameter("password").equals(request.getParameter("checkPassword")))
+        		// se nessun parametro è vuoto 
+    			(nickName != null && !nickName.isEmpty()) &&
+    			(password != null && !password.isEmpty()) &&
+    			(checkPassword != null && !checkPassword.isEmpty()) &&
+    			(email != null && !email.isEmpty()) &&
+    			//(profilePic != null && !profilePic.isEmpty()) &&
+        		(request.getParameter("password").equals(request.getParameter("checkPassword")))
         	   )
         	{
-        		// il controllo fallisce
-        		check = false;
+        		// il controllo ha successo
+        		check = true;
         	}
         		
         	
@@ -68,8 +74,8 @@ public class myServlet extends HttpServlet {
 	    	    //InputStream fileContent = filePart.getInputStream();	// boh? Sarà il formato del file?? Manco viene usata...
 	    	    	   
 	    	    // Imposta il percorso dove salvare l'immagine
-	    	    String homeFolder = System.getProperty("user.dir");
-	    	    String uploadPath = homeFolder + "/mySelfie/data/profilePics";
+	    		String homeFolder = System.getProperty("user.home");
+	    	    String uploadPath = homeFolder + "/mySelfie/resources/profilepics";
 	    	    
 	    	    // Istanzia un nuovo file nel path specificato
 	    	    File uploads = new File(uploadPath);		
@@ -117,7 +123,7 @@ public class myServlet extends HttpServlet {
 	          // Se le password non corrispondono viene visualizzato un messaggio di errore
         	} else {
         		status = "fail";
-        		reason = "passwordDontMatch";
+        		reason = "badInput";
         		response.sendRedirect("/mySelfie/index.jsp?status=" + status + "&reason=" + reason);
         	}
         }
@@ -129,14 +135,37 @@ public class myServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		// in base all'URL che viene ricevuto avviene un redirect alla pagina corretta
-		String requestURL = request.getRequestURL().toString();
-		if(requestURL.toLowerCase().contains("index.jsp"))
-			response.sendRedirect("/mySelfie/index.jsp");
-		if(requestURL.toLowerCase().contains("homepage.jsp"))
-			response.sendRedirect("/mySelfie/homepage.jsp");
-		if(requestURL.toLowerCase().contains("profile.jsp"))
-			response.sendRedirect("/mySelfie/profile.jsp");
+      	String reqType = request.getParameter("reqType");
+        
+    	switch(reqType)
+        {
+        	
+        	// intercetta la richiesta ajax "controlla username"
+        	case "checkNick":
+        	{
+        		String nickname = request.getParameter("nickName").trim();
+    			
+    			boolean check = false;
+    			String free = "";
+            	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
+                try {
+                    // salva le credenziali nel database
+                    check = UserSignUp.checkUsername(nickname);
+                    if(check){
+                    	free = "true";
+                    }else{
+                    	free = "false";
+                    }
+                } catch (NamingException e) {
+                    e.printStackTrace();
+                }
+    			
+    			response.setContentType("text/plain");
+    			response.getWriter().write(free);
+        	}
+        	
+        }	
+		
 	}
 
 

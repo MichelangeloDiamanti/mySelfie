@@ -20,16 +20,16 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		<!-- se si proviene dalla registrazione viene visualizzato un toast message -->
 		<c:if test="${param.status == 'success' }">
-			<script>toastr.success('ora sei dentro!', 'registrazione effettuata');</script>
+			<script>toastr.success('welcome aboard!', 'Registration successful');</script>
 		</c:if>
 
 		<c:if test="${param.status == 'fail' }">
 		    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		    <c:if test="${param.reason == 'nickNameInUseException' }">
-				<script>toastr.error('il nickname scelto non è disponibile!', 'registrazione fallita');</script>
+				<script>toastr.error('nickname already in use', 'Registration failed');</script>
 		    </c:if>
-		    <c:if test="${param.reason == 'passwordDontMatch' }">
-				<script>toastr.error('le password non coincidono!', 'registrazione fallita');</script>
+		    <c:if test="${param.reason == 'badInput' }">
+				<script>toastr.error('invalid data', 'Registration failed');</script>
 		    </c:if>
 		</c:if>
 		
@@ -80,6 +80,50 @@
 		</script>	
 		
 		<script type="text/javascript">
+		
+			$("#nickname").on({
+				'change':function () 
+				{ 
+					var my_txt = $(this).val();
+					var len = my_txt.length;
+					if(len > 0)
+					{
+					 	$.ajax({
+							url : '/mySelfie/homepage/checkNickname',
+							data : {
+								nickName : $('#nickname').val(),
+								reqType : "checkNick"
+							},
+							success : function(responseText) {
+								$('#nickname').css({ borderBottomLeftRadius: 0, borderBottomRightRadius: 0});
+								if(responseText==="true")
+									$('#nicknameAlert').html(
+											"<div class=\"alert alert-success\" role=\"alert\">" +
+											"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
+											"  <span class=\"sr-only\">Error:</span>" +
+											"  username available" +
+											"</div>"			
+									);
+								else 
+									$('#nicknameAlert').html(
+											"<div class=\"alert alert-danger\" role=\"alert\">" +
+											"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
+											"  <span class=\"sr-only\">Error:</span>" +
+											"  username not available" +
+											"</div>"		
+									);
+							}
+						});
+					}else{
+						$('#nicknameAlert').html("");
+					}
+			}
+		});
+			
+		</script>
+		
+		
+		<script type="text/javascript">
 			
 			function checkPwd()
 			{
@@ -91,7 +135,7 @@
 				}
 				else
 				{
-					toastr.error('le password non coincidono!', 'registrazione fallita');
+					toastr.error('Passwords don\'t match', 'Registration failed');
 					var d = document.getElementById('supassword').parentNode;
 					var cd = document.getElementById('suchkpassword').parentNode;
 					
@@ -117,6 +161,41 @@
 			
 		</script>	
 		
+		<script type="text/javascript">
+	
+	    	$(document).ready(function() 
+	    	{
+				$('#formlogin').submit(function() 
+				{
+					$.ajax(
+					{
+						method: "POST",
+						url : '/mySelfie/userValidator',
+						data : 
+						{ 
+							action: "login",
+							username: $('#username').val(), 
+							password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
+							redURL: $('#redURL').val()
+						},
+						success : function(responseText) 
+						{
+							if(responseText === "loginFAIL")
+							{
+								toastr.error('credentials are not valid', 'Error on LogIn');
+								document.getElementById("usernameContainer").className += " has-error";
+								document.getElementById("passwordContainer").className += " has-error";
+							}
+							else
+							{
+								window.location = responseText;
+							}
+						}
+					});
+				});
+			});
+		</script>
+
 	</jsp:attribute>
     
     <jsp:body>
@@ -141,12 +220,7 @@
 		
 		<!-- form di login -->
 		<div id="login_form">
-			<input type="text" id="username" class="textbox form-control" placeholder="Username">	
-			<input type="password" id="password" class="textbox form-control" placeholder="Password">
-			<button type="submit" id="loginbtn"> LogIn </button>
-			<input type="checkbox" id="rm">
-			<label id="rmlbl" for="rm">Remember me</label>
-			<label id="signup" onClick="showsignupform()"> SignUp </label>
+			<jsp:include page="/WEB-INF/pages/formLogIn.jsp" />
 		</div>
 		
 		<!-- form di registrazione -->

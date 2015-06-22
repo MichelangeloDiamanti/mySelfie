@@ -9,6 +9,8 @@
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">
+    	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
+    
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
 		<script type="text/javascript">
 			var city=document.getElementById('city');

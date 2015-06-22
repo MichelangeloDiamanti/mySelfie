@@ -16,7 +16,7 @@
   
   <body>
     
-	<div class="container">
+	<div id="bcontainer" class="container">
       <jsp:doBody/>
   	</div>
   </body>

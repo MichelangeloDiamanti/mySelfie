@@ -1,8 +1,9 @@
-<form action="homepage/signup" method="post" enctype="multipart/form-data" class="form-horizontal" onSubmit="return checkPwd()">
+<form action="/mySelfie/homepage/signup" method="post" enctype="multipart/form-data" class="form-horizontal" onSubmit="return checkPwd()">
     
     <div class="form-group">
       <div class="col-md-8">
 	    <input type="text" name="nickname" required="required" placeholder="nickname" class="form-control SUtxtbox" id="nickname"/>
+      	<div id="nicknameAlert" class="col-xs-12"></div>
       </div>
     </div>
     
