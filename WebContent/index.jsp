@@ -49,19 +49,12 @@
 		</c:if>
 		
 		<!-- plugin input file -->
-<<<<<<< HEAD
-		<script src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
-		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
-
-=======
 		<script
 			src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
 		
 		<script
 			src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
 		
-		
->>>>>>> b5a2d8760e7112ff0a43de99fa892062fc8004ea
 
 	</jsp:attribute>
 
@@ -83,19 +76,12 @@
 		<div id="globalContainer">
 		
 			<!-- titolo -->
-<<<<<<< HEAD
-			<img id="title" src="${pageContext.request.contextPath}/resources/images/bigtitle.png">
-	
-			<!-- logo -->
-			<img id="logo" src="${pageContext.request.contextPath}/resources/images/my.png"></img>
-=======
 			<img id="title"
 				src="${pageContext.request.contextPath}/resources/images/bigtitle.png">
 	
 			<!-- logo -->
 			<img id="logo"
 				src="${pageContext.request.contextPath}/resources/images/my.png"></img>
->>>>>>> b5a2d8760e7112ff0a43de99fa892062fc8004ea
 			
 			<!-- form di login -->
 			<div id="login_form">
