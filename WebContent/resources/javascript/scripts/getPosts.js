@@ -3,34 +3,31 @@ $( document ).ready(function()
 	var queryType = "homepage";
 	
 	var postsContainer = document.createElement("div");
-	document.getElementById("bcontainer").appendChild(postsContainer);	
+	document.getElementById("bcontainer").appendChild(postsContainer);		
 	
-	//postsContainer.innerHTML = "<img src=\"/mySelfie/resources/images/loading.gif\">";
-	
-	
+	//chiamata post con ajax per visualizzare i post 
 	$.ajax(
 	{
 		method: "POST",
 		url : '/mySelfie/protected/getPosts',
 		data : 
 		{ 
-			queryType: "queryType"
+			reqType: "getPosts",
+			queryType: queryType
 		},
 		success : function(responseText) 
 		{
-
-			
+			//viene restituito l' HTML dei post, da poter iniettare nel div
 			postsContainer.innerHTML = responseText;
 			
-	
-			$('.selfie').on('load change', resizeComments());
-
-			$(".glyphicon-heart-empty").click(function()
+			//una volta che le immagini si sono caricate, è possibile applicare il plugin unveil
+			$('.selfie').on('load change', function()
 			{
-				$(this).addClass("glyphicon-heart");
-				$(this).addClass("hOn");
-				$(this).removeClass("glyphicon-heart-empty");
-				$(this).removeClass("hOff");
+				//dopo che unveil è stato caricato, vengono resaizati i commenti
+				$("img").unveil(10, function()
+				{
+					resizeComments();
+				});
 			});
 
 		}
@@ -42,7 +39,7 @@ $( document ).ready(function()
 
 
 function resizeComments()
-{
+{	
 	/* prende tutti i contenitori dei commenti */
 	var comment = document.getElementsByClassName("comments");
 	/* prende tutti i contenitori delle immagini */
@@ -59,8 +56,54 @@ function resizeComments()
 			var nh = notes[i].offsetHeight;	   	//altezza delle note
 			var ch = 50;						//altezza input
 			comment[i].style.height = (sh - nh - ch) + "px";
-	}
-
+	}	
 }
 
+
+
+
+function like(heart, id_selfie)
+{
+	//viene controllato se il like è già presente
+	var h = "";
+	if(heart.className == "glyphicon glyphicon-heart-empty hOff")
+		h = "empty"; 
+	else if(heart.className == "glyphicon glyphicon-heart hOn")
+		h = "full"; 
+	
+	//viene modificato il campo nel DB con ajax
+	$.ajax(
+	{
+		method: "POST",
+		url : '/mySelfie/protected/likePosts',
+		data : 
+		{ 
+			reqType: "like",
+			heart: h,
+			selfie: id_selfie
+		},
+		success : function() 
+		{		
+			//se il cuore era vuoto va riempito e incrementato il numero di likes
+			if(h=="empty")
+			{
+				heart.className = "glyphicon glyphicon-heart hOn";
+				var lblikes = heart.parentNode.childNodes[1].innerHTML;
+				var nl = parseInt(lblikes.substring(0, lblikes.indexOf(' '))) + 1;
+				heart.parentNode.childNodes[1].innerHTML = nl + " Likes";			
+			}
+			//se il cuore era pieno va svuotato e decrementato il numero di likes
+			else if(h=="full")
+			{
+				heart.className = "glyphicon glyphicon-heart-empty hOff";
+				var lblikes = heart.parentNode.childNodes[1].innerHTML;
+				var nl = parseInt(lblikes.substring(0, lblikes.indexOf(' '))) - 1;
+				heart.parentNode.childNodes[1].innerHTML = nl + " Likes";
+			}
+			
+			
+		}
+	});
+	
+}
 	

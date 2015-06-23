@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mySelfie.entity.User;
 import com.mySelfie.function.PostsManagement;
 
 /**
@@ -39,16 +40,47 @@ public class PostServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		response.setContentType("text/plain");
 		
-		ServletContext servletContext = getServletContext();
-		String contextPath = servletContext.getContextPath();
-		
-		HttpSession session = request.getSession();
-		
-		String HTMLres = PostsManagement.getPosts("homepage", contextPath, session);
+		String reqType = request.getParameter("reqType");
+        
+    	switch(reqType)
+        {
+           	// intercetta la richiesta ajax per ricevere tutti i post
+        	case "getPosts":
+        	{
+        		response.setContentType("text/plain");
 
-		response.getWriter().write(HTMLres);
+        		String queryType = request.getParameter("queryType");
+        		
+        		ServletContext servletContext = getServletContext();
+        		String contextPath = servletContext.getContextPath();
+        		
+        		HttpSession session = request.getSession();
+        		
+        		String HTMLres = PostsManagement.getPosts(queryType, contextPath, session);
+
+        		response.getWriter().write(HTMLres);
+           	}
+        	break;
+        	
+           	// intercetta la richiesta ajax per ricevere tutti i post
+        	case "like":
+        	{
+        		String heart = request.getParameter("heart");
+        		int idSelfie = Integer.parseInt(request.getParameter("selfie"));
+        				
+        		HttpSession session = request.getSession();
+    	        User me = new User();
+    	  		me = (User) session.getAttribute("user");
+    	  		int me_id = me.getId_user();
+    	  	
+    	  		
+        		PostsManagement.likeSelfie(heart, me_id, idSelfie);
+
+        	}
+        	break;
+        	
+        }
 		
 	}
 

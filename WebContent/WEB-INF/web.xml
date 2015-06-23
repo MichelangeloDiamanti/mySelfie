@@ -9,7 +9,7 @@
   </resource-ref>
   <servlet>
     <servlet-name>TomcatJDBC</servlet-name>
-    <servlet-class>com.mySelfie.servlet.myServlet</servlet-class>
+    <servlet-class>com.mySelfie.servlet.indexServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>TomcatJDBC</servlet-name>
@@ -28,6 +28,16 @@
     <servlet-name>getPostsServlet</servlet-name>
     <url-pattern>/protected/getPosts</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>likePostsServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>likePostsServlet</servlet-name>
+    <url-pattern>/protected/likePosts</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>
