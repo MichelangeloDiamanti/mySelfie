@@ -1,6 +1,5 @@
 package com.mySelfie.function;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,11 +9,6 @@ import java.sql.Statement;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
@@ -87,7 +81,8 @@ public class PostUtils {
             			+ "<span class=\"profile_pic\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + profilepic + "')\" ></span>"
             			+ "<label class=\"profile_name\">" + nickname + "</label>"
             			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
-            			+ "<img class=\"selfie\" src=\"" + contextPath + "/resources/images/loadingIMG.gif\" data-src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
+            			//+ "<img class=\"selfie\" src=\"" + contextPath + "/resources/images/loadingIMG.gif\" data-src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
+            			+ "<img class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
             			+ "<div class=\"selfie_tools\">";
             	
             	
@@ -161,7 +156,7 @@ public class PostUtils {
      	        while (tagsRes.next()) 
      	        {
      	        	tag = tagsRes.getString("nickname");
-     	        	comment_sections += "<a href=\"\" class=\"tag_link\">" + tag + "</a>";
+     	        	comment_sections += "<a href=\"\" class=\"tag_link\">" + tag + " </a>";
      	        }
             	
      	        if(tagsRes.previous())

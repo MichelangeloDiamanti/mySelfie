@@ -59,7 +59,7 @@ public class PostServlet extends HttpServlet {
         		
         		HttpSession session = request.getSession();
         		
-        		String HTMLres = PostsManagement.getPosts(queryType, contextPath, session);
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, session);
 
         		response.getWriter().write(HTMLres);
            	}
@@ -77,7 +77,7 @@ public class PostServlet extends HttpServlet {
     	  		int me_id = me.getId_user();
     	  	
     	  		
-        		PostsManagement.likeSelfie(heart, me_id, idSelfie);
+        		PostUtils.likeSelfie(heart, me_id, idSelfie);
 
         	}
         	break;

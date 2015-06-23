@@ -23,11 +23,13 @@ $( document ).ready(function()
 			//una volta che le immagini si sono caricate, è possibile applicare il plugin unveil
 			$('.selfie').on('load change', function()
 			{
-				//dopo che unveil è stato caricato, vengono resaizati i commenti
-				$("img").unveil(10, function()
-				{
-					resizeComments();
-				});
+				resizeComments();
+				
+//				//dopo che unveil è stato caricato, vengono resaizati i commenti
+//				$("img").unveil(10, function()
+//				{
+//					resizeComments();
+//				});
 			});
 
 		}
