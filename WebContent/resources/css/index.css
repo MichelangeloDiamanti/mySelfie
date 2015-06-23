@@ -1,6 +1,6 @@
 body
 {
-	overflow:hidden;
+	overflow: hidden;
 }
 
 #blur_img_container
@@ -78,12 +78,15 @@ body
 	height: 100%;
 }
 
+
 #title
 {
-	position: absolute;
-	top: 10%;
-	margin-left: 30%;
-	width: 40%
+	position: relative;
+	top: 15px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+   	width: 580px;	
 }
 
 #logo
@@ -91,7 +94,7 @@ body
 	position: absolute;
 	top: 5px;
 	left: 5px;
-	width: 3%;
+	width: 40px;
 	transition:all 0.2s ease-in-out;
     -webkit-transition:all 0.2s ease-in-out;
     -moz-transition:all 0.2s ease-in-out;
@@ -116,18 +119,19 @@ body
 	background-size: 100% 100%;
 
 	position: relative;
-	top: 30%;
+	top: 10px;
 	left: 0px;
 	margin: auto;
-	width: 50%;
-	height: 60%;
+	width: 575px;
+	height: 350px;
 	overflow: hidden;
  }
 
 .textbox
 {
 	position: relative;
-	left:20%;
+	left: 0px;
+	margin: auto;
 	height: 9%;
 	width: 60%;
 }
@@ -136,12 +140,12 @@ body
 
 #username
 {
-	top: 20%;
+	top: 75px;
 }
 
 #password
 {
-	top: 30%;
+	top: 105px;
 
 }
 
@@ -201,10 +205,10 @@ body
 #signup_form
 {
 	position: absolute;
-	top: 10%;
-	left: 100%;
-	width: 35%;
-	height: 90%;
+	top: 75px;
+	right: -500px;
+	width: 500px;
+	height: 550px;
 	background-image: url('/mySelfie/resources/images/boxform.png');
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
@@ -234,62 +238,15 @@ body
 }
 
 
-#lbl_login_antinj
+#globalContainer
 {
 	position: absolute;
-	top: 11%;
-	left: 16%;
-	text-shadow: 0px 0px 9px rgba(255, 255, 255, 1);
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 }
-
-#login_antinj
-{
-	display: none;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#slogan
-{
-	position: absolute;
-	top: 0%;
-	font-family: impact,sans-serif;
-	color: #00344F;
-	font-size: 20px;
-	font-weight: bold;
-	text-shadow: 0px 0px 10px rgba(255, 255, 255, 1);
-
-}
-
-
-
-
-
-
-
-
-
 
 
 
