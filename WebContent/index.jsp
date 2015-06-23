@@ -1,46 +1,71 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <t:template>
-    
-    <jsp:attribute name="header">
-		<link href="${pageContext.request.contextPath}/resources/css/formSignUp.css" media="all" rel="stylesheet" type="text/css" />
-		<link href="${pageContext.request.contextPath}/resources/css/index.css" media="all" rel="stylesheet" type="text/css" />            
+
+	<jsp:attribute name="header">
+		<link
+			href="${pageContext.request.contextPath}/resources/css/formSignUp.css"
+			media="all" rel="stylesheet" type="text/css" />
+		<link
+			href="${pageContext.request.contextPath}/resources/css/index.css"
+			media="all" rel="stylesheet" type="text/css" />            
         
         <!-- se si proviene dalla registrazione viene incluso il css dei toast message -->
 
-        <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+        <link
+			href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"
+			rel="stylesheet" />
 
     
     </jsp:attribute>
-    
-    <jsp:attribute name="javascripts">
+
+	<jsp:attribute name="javascripts">
 		
-		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+		<script
+			src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		<!-- se si proviene dalla registrazione viene visualizzato un toast message -->
 		<c:if test="${param.status == 'success' }">
-			<script>toastr.success('welcome aboard!', 'Registration successful');</script>
+			<script>
+				toastr.success('welcome aboard!', 'Registration successful');
+			</script>
 		</c:if>
 
 		<c:if test="${param.status == 'fail' }">
-		    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+		    <script
+				src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		    <c:if test="${param.reason == 'nickNameInUseException' }">
-				<script>toastr.error('nickname already in use', 'Registration failed');</script>
+				<script>
+					toastr.error('nickname already in use',
+							'Registration failed');
+				</script>
 		    </c:if>
 		    <c:if test="${param.reason == 'badInput' }">
-				<script>toastr.error('invalid data', 'Registration failed');</script>
+				<script>
+					toastr.error('invalid data', 'Registration failed');
+				</script>
 		    </c:if>
 		</c:if>
 		
 		<!-- plugin input file -->
+<<<<<<< HEAD
 		<script src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
 
+=======
+		<script
+			src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
+		
+		<script
+			src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
+		
+		
+>>>>>>> b5a2d8760e7112ff0a43de99fa892062fc8004ea
 
 	</jsp:attribute>
-    
-    <jsp:body>
+
+	<jsp:body>
 		
 		<!-- contiene le immagini di sfondo -->
 		<div id="blur_img_container">
@@ -58,10 +83,19 @@
 		<div id="globalContainer">
 		
 			<!-- titolo -->
+<<<<<<< HEAD
 			<img id="title" src="${pageContext.request.contextPath}/resources/images/bigtitle.png">
 	
 			<!-- logo -->
 			<img id="logo" src="${pageContext.request.contextPath}/resources/images/my.png"></img>
+=======
+			<img id="title"
+				src="${pageContext.request.contextPath}/resources/images/bigtitle.png">
+	
+			<!-- logo -->
+			<img id="logo"
+				src="${pageContext.request.contextPath}/resources/images/my.png"></img>
+>>>>>>> b5a2d8760e7112ff0a43de99fa892062fc8004ea
 			
 			<!-- form di login -->
 			<div id="login_form">
@@ -79,7 +113,7 @@
     
 	
     </jsp:body>
-        
+
 </t:template>
 
 
