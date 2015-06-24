@@ -2,6 +2,9 @@ package com.mySelfie.servlet;
 
 import java.io.IOException;
 
+
+
+
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +35,7 @@ public class UserValidator extends HttpServlet {
 	    	// vengono presi i parametri necessari per il login dalla form
 	        String usr = request.getParameter("username");
 	        String pwd = request.getParameter("password");
+	        String checkStat = request.getParameter("remMe");
 	        
 	        // viene istanziato un nuovo utente null
 	        User user = null;
@@ -51,6 +55,23 @@ public class UserValidator extends HttpServlet {
 	      		// viene istanziata una nuova sessione
 	      		HttpSession session = request.getSession();
 	      		session.setAttribute("user", user);
+	      		
+	      		 // Keep Me Logged In //
+	      		// Controlo checkbox
+	      		boolean rememberMe = false;
+	      		if(checkStat!=null && checkStat.equalsIgnoreCase("on")) {
+	      			rememberMe=true;
+	      		}
+	      		// Se l'utente desidera rimanere loggato viene generato
+	      		// un cookie
+ 	      		if(rememberMe) {
+	      			int usId = user.getId_user();
+ 	      			try {
+						response=SecurityUtils.generateCookie(response, usId);
+					} catch (NamingException e) {
+						e.printStackTrace();
+					}
+	      		}
 	      		// viene trasmesso al browser l'url a cui deve andare
 	      		response.getWriter().write(requestURL);
 			}

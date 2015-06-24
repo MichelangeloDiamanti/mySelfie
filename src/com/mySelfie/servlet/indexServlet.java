@@ -65,7 +65,7 @@ public class indexServlet extends HttpServlet {
         	if(check)
         	{
         		
-	        	// SAVLATAGGIO IMMAGINE NEL FILESYSTEM DEL SERVER
+	        	// SALVATAGGIO IMMAGINE NEL FILESYSTEM DEL SERVER
 	        	
 	        	// Ottiene l'immagine dalla form
 	    	    Part filePart = request.getPart("profilePic");	// Prende l'immagine da <input type="file" name="immagineDiProfilo">
