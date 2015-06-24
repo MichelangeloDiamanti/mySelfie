@@ -21,6 +21,8 @@ import javax.sql.DataSource;
 
 
 
+
+
 import com.mySelfie.entity.User;
 import com.mysql.jdbc.Statement;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -105,6 +107,7 @@ public final class SecurityUtils {
     
     public static HttpServletResponse generateCookie (HttpServletResponse response, int userID) throws UnsupportedEncodingException, NamingException {
 			
+    		System.out.println("Byyyye");
     		// Variabili
     		String stringKey=null;
 			int affectedRows=0;
@@ -121,6 +124,7 @@ public final class SecurityUtils {
 	            connect = datasource.getConnection();
 	            do{
 	            	stringKey = generateKey();
+	            	System.out.println("Questa è la chiave: "+stringKey.length());
 	            	String addCookieQuery = "INSERT INTO Cookie(id_user,cookie_key) values (?,?)";
 	            	PreparedStatement addCookieSQL = connect.prepareStatement(addCookieQuery,Statement.RETURN_GENERATED_KEYS);
 	            	addCookieSQL.setInt(1, userID);
