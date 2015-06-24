@@ -43,7 +43,7 @@ public final class SecurityUtils {
             connect = datasource.getConnection();
             
             // verifica che username e password inseriti facciano riferimento ad uno user valido
-            String userQuery = "SELECT * FROM User WHERE nickname = ? AND password = ?";
+            String userQuery = "SELECT * FROM User WHERE username = ? AND password = ?";
             PreparedStatement userSQL = connect.prepareStatement(userQuery);
             userSQL.setString(1, username);
             userSQL.setString(2, password);
@@ -56,7 +56,7 @@ public final class SecurityUtils {
             {
             	// vengono valorizzati i vari attributi dell'istanza dell'utente
             	user.setId_user(queryRes.getInt("id_user"));
-            	user.setNickname(queryRes.getString("nickname"));
+            	user.setusername(queryRes.getString("username"));
             	user.setPassword(queryRes.getString("password"));
             	user.setEmail(queryRes.getString("email"));
             	user.setPhone(queryRes.getString("phone"));

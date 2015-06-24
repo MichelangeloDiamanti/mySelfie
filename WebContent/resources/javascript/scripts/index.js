@@ -1,140 +1,148 @@
-/* Layout file navigation popup */
+/* Popup stile bootstrap navigatore file    */
 $("#input-id").fileinput({
-	allowedFileTypes : [ "image" ],
-	'showUpload' : false,
-	'previewFileType' : 'any'
+	allowedFileTypes: ["image"],
+	'showUpload':false,
+	'previewFileType':'any'
 });
 
-/* Background images dynamic switch */
+		
+/* Effetto immagini in background */
 $(window).load(function blurbgchange() {
-	var photo = 2, prevPhoto = 1;
-	setInterval(function() {
-		$("#blur_img_" + photo).fadeTo(2000, 1);
-		$("#blur_img_" + prevPhoto).fadeTo(2000, 0);
+	var photo=2, prevPhoto=1;
+	setInterval(function() { 
+		$("#blur_img_" + photo).fadeTo( 2000 , 1);
+		$("#blur_img_" + prevPhoto).fadeTo( 2000 , 0);
 		photo++;
 		prevPhoto++;
-		if (photo >= 9)
-			photo = 1;
-		if (prevPhoto >= 9)
-			prevPhoto = 1;
-	}, 10000);
-});
+		if(photo>=9) photo=1;
+		if(prevPhoto>=9) prevPhoto=1;
+		}, 10000);
+	});
 
-/* Open sign up form */
-var InOut = true;
+
+/* Apre il form di registrazione (SignUp) */
+var InOut=true;
 function showsignupform() {
-	if (InOut) {
-		document.getElementById("signup_form").style.display = "block";
-		$("#signup_form").animate({
-			right : "-150px",
-		}, 350);
+	if(InOut) {
+		document.getElementById("signup_form").style.display= "block"; 
+		$("#signup_form").animate({right: "-150px",}, 350 );			
 	}
+	if(!InOut) $("#signup_form").animate({right: "-500px",}, 250 , function(){ 
+		document.getElementById("signup_form").style.display= "none"; 
+		});					 
+		
+	InOut=!InOut;
+}	
 
-	if (!InOut)
-		$("#signup_form").animate({
-			right : "-500px",
-		}, 250, function() {
-			document.getElementById("signup_form").style.display = "none";
-		});
 
-	InOut = !InOut;
-}
-
-$("#nickname") .on( {
-	'change' : function() {
+/* Controllo username già in uso */		
+$("#suusername").on({
+	'change':function () { 
 		var my_txt = $(this).val();
 		var len = my_txt.length;
-		if (len > 0) {
+		if(len > 0) {
 			$.ajax({
-				url : '/mySelfie/homepage/checkNickname',
+				url : '/mySelfie/homepage/checkUsername',
 				data : {
-					nickName : $('#nickname').val(),
-					reqType : "checkNick"
+					username : $('#suusername').val(),
+					reqType : "checkUsr"
 				},
 				success : function(responseText) {
-					$('#nickname').css({
-						borderBottomLeftRadius : 0,
-						borderBottomRightRadius : 0
-						});
-					if (responseText === "true")
-						$('#nicknameAlert')
-						.html(
-							"<div class=\"alert alert-success\" role=\"alert\">"
-						  + "  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>"
-						  + "  <span class=\"sr-only\">Error:</span>"
-	    				  + "  username available"
-						  + "</div>");
-					else
-						$('#nicknameAlert')
-						.html(
-								"<div class=\"alert alert-danger\" role=\"alert\">"
-							  + "  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>"
-							  + "  <span class=\"sr-only\">Error:</span>"
-							  + "  username not available"
-							  + "</div>");
+					$('#suusername').css({ borderBottomLeftRadius: 0, borderBottomRightRadius: 0});
+					if(responseText==="true")
+						$('#usernameAlert').html(
+								"<div class=\"alert alert-success\" role=\"alert\">" +
+								"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
+								"  <span class=\"sr-only\">Error:</span>" +
+								"  username available" +
+								"</div>"			
+						);
+					else 
+						$('#usernameAlert').html(
+								"<div class=\"alert alert-danger\" role=\"alert\">" +
+								"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
+								"  <span class=\"sr-only\">Error:</span>" +
+								"  username not available" +
+								"</div>"		
+						);
 				}
 			});
 		}
 		else {
-			$('#nicknameAlert').html("");
+			$('#usernameAlert').html("");
 		}
 	}
 });
+	
 
-/* Password check in login form  */ 
-function checkPwd() {
+/* Controlli input */
+function checkInput() {
+	
+	document.getElementById('suusername').parentNode.className = "col-md-8";
+	document.getElementById('supassword').parentNode.className = "col-md-8";
+	document.getElementById('suchkpassword').parentNode.className = "col-md-8";
+	
+	var chkS = false;
+	var chkP = false;
+	
+	//controlla se ci sono spazi nello username
+	var u = document.getElementById('suusername').value;
+	if(u.indexOf(' ') != -1)
+	{
+		document.getElementById('suusername').parentNode.className += " has-error";
+		document.getElementById('suusername').value = u;
+		toastr.error('Blank spaces are not permitted', 'Registration failed');
+		
+		chkS = false;
+	}
+	else
+		chkS = true;
+	
+	//controlla se le password sono uguali
 	var p = document.getElementById('supassword').value;
 	var cp = document.getElementById('suchkpassword').value;
-	if (p === cp) {
-		return true;
-	} else {
+	if(p === cp)
+	{
+		chkP = true;
+	}
+	else 
+	{
 		toastr.error('Passwords don\'t match', 'Registration failed');
 		var d = document.getElementById('supassword').parentNode;
 		var cd = document.getElementById('suchkpassword').parentNode;
-
-		var errtxt = d.innerHTML;
-		errtxt = errtxt
-				+ "<span class=\"glyphicon glyphicon-remove form-control-feedback\" style=\"padding-right:50px;\"></span>";
-		d.innerHTML = errtxt;
-
-		errtxt = cd.innerHTML;
-		errtxt = errtxt
-				+ "<span class=\"glyphicon glyphicon-remove form-control-feedback\" style=\"padding-right:50px;\"></span>";
-		cd.innerHTML = errtxt;
-
 		d.className += " has-error";
-		cd.className += " has-error";
-
+		cd.className += " has-error";		
 		document.getElementById('supassword').value = p;
 		document.getElementById('suchkpassword').value = cp;
-		/* alert("ciao"); */
-		return false;
+	  	chkP = false;
 	}
-
+	
+	if(chkS && chkP)
+		return true;
+	else 
+		return false;
 }
 
 
-/* Login validate process */
-$(document).ready(function() { 
+/* Funzione login dinamico      */
+$(document).ready(function() {
 	$('#formlogin').submit(function() {
-		
-		$.ajax({
-			method : "POST",
+		$.ajax( {
+			method: "POST",
 			url : '/mySelfie/userValidator',
-			data : {
-				action : "login",
-				username : $('#username').val(),
-				password : $('#password').val(), // le password non dovrebbero viaggiare in chiaro
-				redURL : $('#redURL').val(),
-				remMe : $("#rm:checked").val(),
-
+			data : { 
+				action: "login",
+				username: $('#username').val(), 
+				password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
+				redURL: $('#redURL').val()
 			},
 			success : function(responseText) {
-				if (responseText === "loginFAIL") {
-				 toastr.error('credentials are not valid','Error on LogIn');
-				 document.getElementById("usernameContainer").className += " has-error";
-				 document.getElementById("passwordContainer").className += " has-error";
-				} 
+				
+				if(responseText === "loginFAIL") {
+					toastr.error('credentials are not valid', 'Error on LogIn');
+					document.getElementById("usernameContainer").className += " has-error";
+					document.getElementById("passwordContainer").className += " has-error";
+				}
 				else {
 					window.location = responseText;
 				}

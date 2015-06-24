@@ -3,22 +3,14 @@ credenzialiDB.png
 context.xml
 /build/
 /WebContent/protected/resources/images/
-
-*.pydevproject
-.metadata
-.gradle
 bin/
 tmp/
 *.tmp
 *.bak
 *.swp
 *~.nib
-local.properties
 .settings/
 .loadpath
-
-# Eclipse Core
-.project
 
 # External tool builders
 .externalToolBuilders/
@@ -29,18 +21,5 @@ local.properties
 # CDT-specific
 .cproject
 
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
 
-# Java annotation processor (APT)
-.factorypath
-
-# PDT-specific
-.buildpath
-
-# sbteclipse plugin
-.target
-
-# TeXlipse plugin
-.texlipse
 
