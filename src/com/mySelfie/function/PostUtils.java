@@ -41,7 +41,7 @@ public class PostUtils {
 	  	
 	  		
 	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
-	        String postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.nickname, US.profilepic FROM ((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) WHERE UFU.id_follower= ? AND SE.uploader=UFU.id_followed ORDER BY SE.date DESC";
+	        String postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM ((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) WHERE UFU.id_follower= ? AND SE.uploader=UFU.id_followed ORDER BY SE.date DESC";
 	        PreparedStatement postsSQL = connect.prepareStatement(postsQuery);
 	        postsSQL.setInt(1, me_id);
 	        ResultSet postsRes = postsSQL.executeQuery();
@@ -51,7 +51,7 @@ public class PostUtils {
 	        int likes = 0;
 	        String picture = "";
 	        String description = "";
-	        String nickname = "";
+	        String username = "";
 	        String profilepic = "";
 	        String hashtag = "";
 	        String tag = "";
@@ -72,14 +72,14 @@ public class PostUtils {
             	id_selfie = postsRes.getInt("id_selfie");
             	picture = postsRes.getString("picture");
             	description = postsRes.getString("description");   
-               	nickname = postsRes.getString("nickname");
+               	username = postsRes.getString("username");
             	profilepic = postsRes.getString("profilepic");
             
             	/* si inizia a generare la stringa di risposta con l' HTML per visualizzare i post */
             	HTMLres += "<table class=\"post_container\"><tr><th class=\"user_pic\"> "
-            			+ "<a href=\"" + contextPath + "/profile/" + nickname + ".jsp\">"
+            			+ "<a href=\"" + contextPath + "/profile/" + username + ".jsp\">"
             			+ "<span class=\"profile_pic\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + profilepic + "')\" ></span>"
-            			+ "<label class=\"profile_name\">" + nickname + "</label>"
+            			+ "<label class=\"profile_name\">" + username + "</label>"
             			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
             			//+ "<img class=\"selfie\" src=\"" + contextPath + "/resources/images/loadingIMG.gif\" data-src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
             			+ "<img class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
@@ -144,7 +144,7 @@ public class PostUtils {
      	        
             	
             	/* si ricavano i tag del selfie corrente */
-    			String tagsQuery = "SELECT US.nickname FROM ((Selfie AS SE INNER JOIN user_tag_selfie AS UTS ON SE.id_selfie = UTS.id_selfie) INNER JOIN User AS US ON UTS.id_user = US.id_user) WHERE SE.id_selfie= ? ";
+    			String tagsQuery = "SELECT US.username FROM ((Selfie AS SE INNER JOIN user_tag_selfie AS UTS ON SE.id_selfie = UTS.id_selfie) INNER JOIN User AS US ON UTS.id_user = US.id_user) WHERE SE.id_selfie= ? ";
      	        PreparedStatement tagsSQL = connect.prepareStatement(tagsQuery);
      	        tagsSQL.setInt(1, id_selfie);
      	        ResultSet tagsRes = tagsSQL.executeQuery();
@@ -155,7 +155,7 @@ public class PostUtils {
      	        
      	        while (tagsRes.next()) 
      	        {
-     	        	tag = tagsRes.getString("nickname");
+     	        	tag = tagsRes.getString("username");
      	        	comment_sections += "<a href=\"\" class=\"tag_link\">" + tag + " </a>";
      	        }
             	
@@ -169,14 +169,14 @@ public class PostUtils {
      	        HTMLres += "</div><div class=\"comments\"><ul class=\"comment_list\"><li class=\"comment_user_container\">";
      	       
      	       /* vengono presi tutti i commenti (e utente che ha commentato) del selfie corrente */
-    			String commentQuery = "SELECT CO.text, US.profilepic, US.nickname FROM ((Comment AS CO INNER JOIN Selfie AS SE ON CO.id_selfie = SE.id_selfie) INNER JOIN User AS US ON CO.id_user = US.id_user) WHERE SE.id_selfie = ? ORDER BY CO.date ASC";
+    			String commentQuery = "SELECT CO.text, US.profilepic, US.username FROM ((Comment AS CO INNER JOIN Selfie AS SE ON CO.id_selfie = SE.id_selfie) INNER JOIN User AS US ON CO.id_user = US.id_user) WHERE SE.id_selfie = ? ORDER BY CO.date ASC";
      	        PreparedStatement commentSQL = connect.prepareStatement(commentQuery);
      	        commentSQL.setInt(1, id_selfie);
      	        ResultSet commentRes = commentSQL.executeQuery();
      	        while (commentRes.next()) 
      	        {
      	        	commentText = commentRes.getString("text");
-     	        	commentUser = commentRes.getString("nickname");
+     	        	commentUser = commentRes.getString("username");
      	        	commentUserPic = commentRes.getString("profilepic");
   
      	        	HTMLres += "<a href=\"" + contextPath + "/profile/" + commentUser + ".jsp\">"

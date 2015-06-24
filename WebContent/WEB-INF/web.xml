@@ -20,7 +20,7 @@
     <url-pattern>/homepage/homepage.jsp</url-pattern>
     <url-pattern>/homepage/profile.jsp</url-pattern>
     <url-pattern>/homepage/signup</url-pattern>
-    <url-pattern>/homepage/checkNickname</url-pattern>
+    <url-pattern>/homepage/checkUsername</url-pattern>
     <url-pattern>/homepage/ajax</url-pattern>
   </servlet-mapping>
   <servlet>

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 //import java.text.DateFormat;
 //import java.text.ParseException;
 //import java.text.SimpleDateFormat;
@@ -15,30 +16,30 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.mySelfie.exception.NickNameInUseException;
+import com.mySelfie.exception.usernameInUseException;
 
 public final class UserUtils {
 
 	/**
 	 * controlla se lo user esiste (con connessione)
 	 * 
-	 * @param nickname
+	 * @param username
 	 * @param conn
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean exist(String nickname, Connection conn)
+	public static boolean exist(String username, Connection conn)
 			throws NamingException {
 
 		// true se l'utente esiste
 		boolean exist = false;
 
 		// verifica che lo username non sia gia in uso
-		String userExistStr = "SELECT id_user FROM User WHERE nickname = ? ";
+		String userExistStr = "SELECT id_user FROM User WHERE username = ? ";
 		PreparedStatement userExistSQL;
 		try {
 			userExistSQL = conn.prepareStatement(userExistStr);
-			userExistSQL.setString(1, nickname);
+			userExistSQL.setString(1, username);
 			ResultSet userExistRes = userExistSQL.executeQuery();
 
 			// se lo user esiste imposta il flag a true
@@ -56,11 +57,11 @@ public final class UserUtils {
 	/**
 	 * controlla se lo user esiste (senza connessione)
 	 * 
-	 * @param nickname
+	 * @param username
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean exist(String nickname) throws NamingException {
+	public static boolean exist(String username) throws NamingException {
 
 		return false;
 	}
@@ -71,10 +72,10 @@ public final class UserUtils {
 	 * @param out
 	 * @param m
 	 * @throws NamingException
-	 * @throws NickNameInUseException
+	 * @throws usernameInUseException
 	 */
 	public static void signup(PrintWriter out, Map<String, String> m)
-			throws NamingException, NickNameInUseException {
+			throws NamingException, usernameInUseException {
 		Context context = null; // contesto
 		DataSource datasource = null; // dove pescare i dati
 		Connection connect = null; // connessione al DB
@@ -89,10 +90,10 @@ public final class UserUtils {
 			connect = datasource.getConnection();
 
 			// verifica che lo username non sia gia in uso
-			String uniqueNickStr = "SELECT id_user FROM User WHERE nickname = ? ";
+			String uniqueNickStr = "SELECT id_user FROM User WHERE username = ? ";
 			PreparedStatement uniqueNickSQL = connect
 					.prepareStatement(uniqueNickStr);
-			uniqueNickSQL.setString(1, m.get("nickname"));
+			uniqueNickSQL.setString(1, m.get("username"));
 			ResultSet uniqueNickRes = uniqueNickSQL.executeQuery();
 
 			boolean resEmpty = uniqueNickRes.next();
@@ -112,23 +113,34 @@ public final class UserUtils {
 				// java.sql.Date dataDiNascitaSql = new java.sql.Date(
 				// dataDiNascitaJava.getTime() );
 				//
-				// costruisce la query
-				String sql = "INSERT INTO User (nickname, password, email, profilepic ) "
-						+ "VALUES (?, ?, ?, ?)";
-				PreparedStatement statement = connect.prepareStatement(sql);
+				// costruisce ed esegue la query per inserire un nuovo record user
+				String newUserQuery = "INSERT INTO User (username, password, email, profilepic ) VALUES (?, ?, ?, ?)";
+				PreparedStatement newUserStatement = connect.prepareStatement(newUserQuery, Statement.RETURN_GENERATED_KEYS);
+				newUserStatement.setString(1, m.get("username"));
+				newUserStatement.setString(2, m.get("password"));
+				newUserStatement.setString(3, m.get("email"));
+				newUserStatement.setString(4, m.get("profilePic"));
+				int affectedRows = newUserStatement.executeUpdate();
+				
+				int idNewUser= -1;
+				ResultSet generatedKeys = newUserStatement.getGeneratedKeys();
+	            if (generatedKeys.next()) 
+		           	idNewUser = generatedKeys.getInt(1);
+	            else
+					throw new usernameInUseException();
+				
+		            	
+				// costruisce ed esegue la query che inserisce l' utente setesso tra gli utenti che segue
+				String ufuQuery = "INSERT INTO user_follow_user (id_follower, id_followed) VALUES (?, ?)";
+				PreparedStatement ufuStatement = connect.prepareStatement(ufuQuery);
+				ufuStatement.setInt(1, idNewUser);
+				ufuStatement.setInt(2, idNewUser);
+				ufuStatement.executeUpdate();
 
-				statement.setString(1, m.get("nickname"));
-				statement.setString(2, m.get("password"));
-				statement.setString(3, m.get("email"));
-				statement.setString(4, m.get("profilePic"));
-
-				// statement.setDate(7, dataDiNascitaSql);
-
-				// esegue la query
-				statement.executeUpdate();
+				
 			} else {
 				// se lo username è in uso viene generata un'eccezione
-				throw new NickNameInUseException();
+				throw new usernameInUseException();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace(out);
@@ -146,11 +158,11 @@ public final class UserUtils {
 	 * la funzione controlla se lo username passato è in uso, in caso
 	 * affermativo torna falso, altrimenti vero
 	 * 
-	 * @param nickname
+	 * @param username
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean usernameAvailable(String nickname)
+	public static boolean usernameAvailable(String username)
 			throws NamingException {
 		Context context = null; // contesto
 		DataSource datasource = null; // dove pescare i dati
@@ -169,13 +181,13 @@ public final class UserUtils {
 			connect = datasource.getConnection();
 
 			// verifica che lo username non sia gia in uso
-			String uniqueNickStr = "SELECT id_user FROM User WHERE nickname = ? ";
+			String uniqueNickStr = "SELECT id_user FROM User WHERE username = ? ";
 			PreparedStatement uniqueNickSQL = connect
 					.prepareStatement(uniqueNickStr);
-			uniqueNickSQL.setString(1, nickname);
+			uniqueNickSQL.setString(1, username);
 			ResultSet uniqueNickRes = uniqueNickSQL.executeQuery();
 
-			resEmpty = !(uniqueNickRes.next()); // se c'è un risultato (nickname
+			resEmpty = !(uniqueNickRes.next()); // se c'è un risultato (username
 												// in uso) la
 												// funzione uniqueNickRes.next()
 												// torna vero
@@ -199,26 +211,26 @@ public final class UserUtils {
 	 * la funzione controlla se lo username passato è in uso, in caso
 	 * affermativo torna falso, altrimenti vero (con connessione)
 	 * 
-	 * @param nickname
+	 * @param username
 	 * @param conn
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean usernameAvailable(String nickname, Connection conn)
+	public static boolean usernameAvailable(String username, Connection conn)
 			throws NamingException {
 
 		// true se lo username NON è in uso, falso altrimenti
 		boolean resEmpty = false;
 
 		// verifica che lo username non sia gia in uso
-		String uniqueNickStr = "SELECT id_user FROM User WHERE nickname = ? ";
+		String uniqueNickStr = "SELECT id_user FROM User WHERE username = ? ";
 		PreparedStatement uniqueNickSQL;
 		try {
 			uniqueNickSQL = conn.prepareStatement(uniqueNickStr);
-			uniqueNickSQL.setString(1, nickname);
+			uniqueNickSQL.setString(1, username);
 			ResultSet uniqueNickRes = uniqueNickSQL.executeQuery();
 
-			// se c'è un risultato (nickname in uso) la funzione
+			// se c'è un risultato (username in uso) la funzione
 			// uniqueNickRes.next() torna vero quindi negato torna falso
 			resEmpty = !(uniqueNickRes.next());
 		} catch (SQLException e) {
@@ -230,25 +242,25 @@ public final class UserUtils {
 	}
 
 	/**
-	 * @param nickname
+	 * @param username
 	 * @param conn
 	 * @return
 	 * @throws NamingException
 	 * 
-	 *             ritorna l'id dell'utente a partire dal nickname (con
+	 *             ritorna l'id dell'utente a partire dal username (con
 	 *             connessione)
 	 */
-	public static int getId(String nickname, Connection conn)
+	public static int getId(String username, Connection conn)
 			throws NamingException {
 		// true se lo username NON è in uso, falso altrimenti
 		int id_user = 0;
 
 		// verifica che lo username non sia gia in uso
-		String userIdString = "SELECT id_user FROM User WHERE nickname = ? ";
+		String userIdString = "SELECT id_user FROM User WHERE username = ? ";
 		PreparedStatement userIdSQL;
 		try {
 			userIdSQL = conn.prepareStatement(userIdString);
-			userIdSQL.setString(1, nickname);
+			userIdSQL.setString(1, username);
 			ResultSet userIdRes = userIdSQL.executeQuery();
 
 			// se c'è un risultato
@@ -267,21 +279,21 @@ public final class UserUtils {
 	}
 
 	/**
-	 * @param nickname
+	 * @param username
 	 * @param conn
 	 * @return
 	 * @throws NamingException
 	 * 
-	 *             ritorna l'id dell'utente a partire dal nickname (senza
+	 *             ritorna l'id dell'utente a partire dal username (senza
 	 *             connessione)
 	 */
-	public static int getId(String nickname) throws NamingException {
+	public static int getId(String username) throws NamingException {
 		return 0;
 	}
 
 	/**
 	 * 
-	 * @param nickname
+	 * @param username
 	 * @param conn
 	 * @return
 	 * @throws NamingException
@@ -323,7 +335,7 @@ public final class UserUtils {
 
 	/**
 	 * 
-	 * @param nickname
+	 * @param username
 	 * @param conn
 	 * @return
 	 * @throws NamingException
@@ -331,7 +343,7 @@ public final class UserUtils {
 	 *             Tagga uno user in una selfie (senza connessione)
 	 * 
 	 */
-	public static boolean userTagSelfie(String nickname) throws NamingException {
+	public static boolean userTagSelfie(String username) throws NamingException {
 		return false;
 
 	}
