@@ -1,12 +1,11 @@
 package com.mySelfie.servlet;
 
 import java.io.IOException;
-
-
-
+import java.sql.SQLException;
 
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -85,10 +84,29 @@ public class UserValidator extends HttpServlet {
 		
 		case "logout":
 		{
-	        HttpSession session = request.getSession();
+	        // Invalida la sessione
+			HttpSession session = request.getSession();
 	        session.invalidate();
+	        // Invalida il cookie
+	        Cookie[] cookies=request.getCookies();
+	    	if (cookies != null) {
+	    		for (Cookie cookie : cookies) {
+	    			if (cookie.getName().equals("UVC")) {
+	    				cookie.setMaxAge(0);
+	    				boolean cookieStatus=false;
+						try {
+							cookieStatus = SecurityUtils.destroyCookie(cookie);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	    				if(!cookieStatus) System.out.println("Cookie couldn't be destroyed!");
+	    			} 
+	    	    }
+	    	}
+	        // Redirect al login
 	        response.sendRedirect("/mySelfie/");
-			break;
+	        break;
 		}
 		default:
 			break;
