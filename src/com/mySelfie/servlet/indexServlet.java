@@ -18,7 +18,7 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.mySelfie.exception.NickNameInUseException;
+import com.mySelfie.exception.usernameInUseException;
 import com.mySelfie.function.UserUtils;
 
 @MultipartConfig	// Serve per supportare l'upload di files, form multipart
@@ -39,7 +39,7 @@ public class indexServlet extends HttpServlet {
         	boolean check = false;	// controllo parametri inseriti
         	
         	
-        	String nickName = request.getParameter("nickname");
+        	String username = request.getParameter("username");
         	String password = request.getParameter("password");       	
         	String checkPassword = request.getParameter("checkPassword");       	
         	String email = request.getParameter("email");       	
@@ -48,7 +48,7 @@ public class indexServlet extends HttpServlet {
         	// controlla se i parametri inseriti sono validi
         	if(
         		// se nessun parametro è vuoto 
-    			(nickName != null && !nickName.isEmpty()) &&
+    			(username != null && !username.isEmpty()) &&
     			(password != null && !password.isEmpty()) &&
     			(checkPassword != null && !checkPassword.isEmpty()) &&
     			(email != null && !email.isEmpty()) &&
@@ -59,13 +59,16 @@ public class indexServlet extends HttpServlet {
         		// il controllo ha successo
         		check = true;
         	}
+        	
+        	if(username.contains(" "))
+        		check = false;
         		
         	
         	// se il controllo è andato a buon fine
         	if(check)
         	{
         		
-	        	// SAVLATAGGIO IMMAGINE NEL FILESYSTEM DEL SERVER
+	        	// SALVATAGGIO IMMAGINE NEL FILESYSTEM DEL SERVER
 	        	
 	        	// Ottiene l'immagine dalla form
 	    	    Part filePart = request.getPart("profilePic");	// Prende l'immagine da <input type="file" name="immagineDiProfilo">
@@ -95,7 +98,7 @@ public class indexServlet extends HttpServlet {
 	    	    // Immagazzina le informazioni inserite in una mappa per passarle alla classe responsabile dell'inserimento nel DB
 	        	Map<String, String> m = new HashMap<String, String>();
 	        	
-	        	m.put("nickname", request.getParameter("nickname"));
+	        	m.put("username", request.getParameter("username"));
 	        	m.put("password", request.getParameter("password"));       	
 	        	m.put("checkPassword", request.getParameter("checkPassword"));
 	        	m.put("email", request.getParameter("email"));	 
@@ -110,12 +113,12 @@ public class indexServlet extends HttpServlet {
 	                reason = "goodInput";
 	            } catch (NamingException e) {
 	                e.printStackTrace();
-	            } catch (NickNameInUseException e) {
+	            } catch (usernameInUseException e) {
 	            	//	se lo username non è disponibile non viene effettuata la registrazione
 	            	//	va quindi eliminata l'immagine di profilo caricata
 	            	file.delete();
 	            	status = "fail";
-	            	reason = "nickNameInUseException";
+	            	reason = "usernameInUseException";
 				}
 	            
 	            // finita la registrazione viene renderizzata la homepage
@@ -127,7 +130,7 @@ public class indexServlet extends HttpServlet {
         		response.sendRedirect("/mySelfie/index.jsp?status=" + status + "&reason=" + reason);
         	}
         }
-        else System.out.println("i'm not the Servlet you're looking for");  
+        
     }
     
 	/**
@@ -141,16 +144,16 @@ public class indexServlet extends HttpServlet {
         {
         	
         	// intercetta la richiesta ajax "controlla username"
-        	case "checkNick":
+        	case "checkUsr":
         	{
-        		String nickname = request.getParameter("nickName").trim();
+        		String username = request.getParameter("username").trim();
     			
     			boolean check = false;
     			String free = "";
             	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
                 try {
                     // salva le credenziali nel database
-                    check = UserUtils.usernameAvailable(nickname);
+                    check = UserUtils.usernameAvailable(username);
                     if(check){
                     	free = "true";
                     }else{

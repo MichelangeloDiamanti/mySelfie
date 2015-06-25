@@ -33,24 +33,24 @@ function showsignupform() {
 		
 	InOut=!InOut;
 }	
-	
+
 
 /* Controllo username già in uso */		
-$("#nickname").on({
+$("#suusername").on({
 	'change':function () { 
 		var my_txt = $(this).val();
 		var len = my_txt.length;
 		if(len > 0) {
 			$.ajax({
-				url : '/mySelfie/homepage/checkNickname',
+				url : '/mySelfie/homepage/checkUsername',
 				data : {
-					nickName : $('#nickname').val(),
-					reqType : "checkNick"
+					username : $('#suusername').val(),
+					reqType : "checkUsr"
 				},
 				success : function(responseText) {
-					$('#nickname').css({ borderBottomLeftRadius: 0, borderBottomRightRadius: 0});
+					$('#suusername').css({ borderBottomLeftRadius: 0, borderBottomRightRadius: 0});
 					if(responseText==="true")
-						$('#nicknameAlert').html(
+						$('#usernameAlert').html(
 								"<div class=\"alert alert-success\" role=\"alert\">" +
 								"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
 								"  <span class=\"sr-only\">Error:</span>" +
@@ -58,7 +58,7 @@ $("#nickname").on({
 								"</div>"			
 						);
 					else 
-						$('#nicknameAlert').html(
+						$('#usernameAlert').html(
 								"<div class=\"alert alert-danger\" role=\"alert\">" +
 								"  <span class=\"glyphicon glyphicon-exclamation-sign\" aria-hidden=\"true\"></span>" +
 								"  <span class=\"sr-only\">Error:</span>" +
@@ -69,35 +69,58 @@ $("#nickname").on({
 			});
 		}
 		else {
-			$('#nicknameAlert').html("");
+			$('#usernameAlert').html("");
 		}
 	}
 });
 	
 
-/* Controlli Password */
-function checkPwd() {
+/* Controlli input */
+function checkInput() {
+	
+	document.getElementById('suusername').parentNode.className = "col-md-8";
+	document.getElementById('supassword').parentNode.className = "col-md-8";
+	document.getElementById('suchkpassword').parentNode.className = "col-md-8";
+	
+	var chkS = false;
+	var chkP = false;
+	
+	//controlla se ci sono spazi nello username
+	var u = document.getElementById('suusername').value;
+	if(u.indexOf(' ') != -1)
+	{
+		document.getElementById('suusername').parentNode.className += " has-error";
+		document.getElementById('suusername').value = u;
+		toastr.error('Blank spaces are not permitted', 'Registration failed');
+		
+		chkS = false;
+	}
+	else
+		chkS = true;
+	
+	//controlla se le password sono uguali
 	var p = document.getElementById('supassword').value;
 	var cp = document.getElementById('suchkpassword').value;
-	if(p === cp){
-		return true;
+	if(p === cp)
+	{
+		chkP = true;
 	}
-	else {
+	else 
+	{
 		toastr.error('Passwords don\'t match', 'Registration failed');
 		var d = document.getElementById('supassword').parentNode;
 		var cd = document.getElementById('suchkpassword').parentNode;
-		var errtxt = d.innerHTML;
-		errtxt = errtxt + "<span class=\"glyphicon glyphicon-remove form-control-feedback\" style=\"padding-right:50px;\"></span>";					
-		d.innerHTML = errtxt;
-		errtxt = cd.innerHTML;
-		errtxt = errtxt + "<span class=\"glyphicon glyphicon-remove form-control-feedback\" style=\"padding-right:50px;\"></span>";					
-		cd.innerHTML = errtxt;			
 		d.className += " has-error";
 		cd.className += " has-error";		
 		document.getElementById('supassword').value = p;
 		document.getElementById('suchkpassword').value = cp;
-	  	return false;
+	  	chkP = false;
 	}
+	
+	if(chkS && chkP)
+		return true;
+	else 
+		return false;
 }
 
 
@@ -111,7 +134,8 @@ $(document).ready(function() {
 				action: "login",
 				username: $('#username').val(), 
 				password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
-				redURL: $('#redURL').val()
+				redURL: $('#redURL').val(),
+				remMe : $("#rm:checked").val(),
 			},
 			success : function(responseText) {
 				

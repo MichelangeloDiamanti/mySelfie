@@ -14,9 +14,8 @@
         
         <!-- se si proviene dalla registrazione viene incluso il css dei toast message -->
 
-        <link
-			href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"
-			rel="stylesheet" />
+        <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
 
     
     </jsp:attribute>
@@ -35,10 +34,9 @@
 		<c:if test="${param.status == 'fail' }">
 		    <script
 				src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-		    <c:if test="${param.reason == 'nickNameInUseException' }">
+		    <c:if test="${param.reason == 'usernameInUseException' }">
 				<script>
-					toastr.error('nickname already in use',
-							'Registration failed');
+					toastr.error('username already in use', 'Registration failed');
 				</script>
 		    </c:if>
 		    <c:if test="${param.reason == 'badInput' }">

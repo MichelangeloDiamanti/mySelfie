@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class User {
 	private int id_user = 0;
-	private String nickname = null;
+	private String username = null;
     private String password = null;
     private String name = null;
     private String email = null;
@@ -31,12 +31,12 @@ public class User {
 		this.id_user = id_user;
 	}
 
-	public String getNickname() {
-		return nickname;
+	public String getusername() {
+		return username;
 	}
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setusername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {

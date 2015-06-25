@@ -7,8 +7,8 @@ IMPORTANT:
 
 1) implementare il sistema di login													- FATTO
 
-2) implementare il sistema dei cookies
-
+2) implementare il sistema dei cookies                                              - FATTO
+ 
 3) implementare la funzione di upload selfie										- FATTO
 
 4) implementare il sistema dei followers
