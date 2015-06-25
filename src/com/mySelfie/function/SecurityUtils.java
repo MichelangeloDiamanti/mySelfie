@@ -17,16 +17,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-
-
-
-
-
-
-
-
-
-
 import com.mySelfie.entity.User;
 import com.mysql.jdbc.Statement;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
