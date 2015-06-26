@@ -40,3 +40,60 @@
 	-o-box-shadow:      0px 1px 7px 0px rgba(0, 51, 79, 0.75);
 	box-shadow:         0px 1px 7px 0px rgba(0, 51, 79, 0.75);	
 }
+
+
+
+#postsContainer
+{
+	width: 1000px;
+}
+
+.postContainer
+{
+	width: 195px;
+	height: 195px;
+	float: left;
+	margin: 0 5px 5px 0;
+	overflow: hidden;
+	
+	transition:all 0.2s ease-in-out;
+    -webkit-transition:all 0.2s ease-in-out;
+    -moz-transition:all 0.2s ease-in-out;
+    -o-transition:all 0.2s ease-in-out;
+    -ms-transition:all 0.2s ease-in-out;
+}
+
+
+.postContainer:hover
+{
+    transform:scale(1.025);
+	-webkit-transition:scale(1.025);
+    -moz-transition:scale(1.025);
+    -o-transition:scale(1.025);
+    -ms-transition:scale(1.025);
+    
+}
+
+.thumbnailL,
+.thumbnailP
+{
+	cursor: pointer;	
+}
+
+.thumbnailL
+{
+	height: 195px;
+}
+.thumbnailP
+{
+	width: 195px;
+}
+
+
+
+.empty_label
+{
+	color: #d9d9d9;
+	font-size: 25px;
+	text-shadow: rgba(255, 255, 255, 0.2) -1px -1px 1px, rgba(0, 0, 0, 0.5) 1px 1px 1px;
+}

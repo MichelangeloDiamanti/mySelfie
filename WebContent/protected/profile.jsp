@@ -40,10 +40,18 @@
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
     
-    	<div id="modifyProfile">
+	    <div id="postsContainer">
+	  		${requestScope.profilePosts}
+	    </div>
+		
+		
+    
+    	<!-- div id="modifyProfile">
     		<jsp:include page="/WEB-INF/pages/formModifyProfile.jsp" />
-    	</div>
+    	</div-->
 
+		
+		
     </jsp:body>
         
 </t:template>

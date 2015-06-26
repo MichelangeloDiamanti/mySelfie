@@ -15,33 +15,33 @@
 	                	<div id="searchdiv">
 							<input type="text" id="search"/>
 							<button id="searchbtn">
-								<img id="magnifierGlass" src="${pageContext.request.contextPath}/resources/images/search.png"></img>
+								<span class="glyphicon glyphicon-search" style="color: #00344f"></span>
 							</button>
 							<div id="separator"></div>
 						</div>
 					</form>
                 </li>
             </ul>
-      			<div id="buttons">
-        <ul class="nav navbar-nav navbar-right">
+      		<div id="buttons">
+       			<ul class="nav navbar-nav navbar-right">
                 <li>
                 	<div id="updiv" class="iconsdiv">
 						<div class="circle"></div>
-						<a  href="${pageContext.request.contextPath}/protected/uploadselfie.jsp" >
-							<img id="upload" class="icon" src="${pageContext.request.contextPath}/resources/images/upload.png"></img>
+						<a  href="${pageContext.request.contextPath}/protected/uploadSelfie.jsp" >
+							<img id="upload" src="${pageContext.request.contextPath}/resources/images/upload.png"></img>
 						</a>
 					</div>
                 </li>
                 <li>
                 	<div id="homediv" class="iconsdiv">
 						<div class="circle"></div>
-						<a  href="${pageContext.request.contextPath}/protected/homepage.jsp" >
-							<img id="home" class="icon" src="${pageContext.request.contextPath}/resources/images/home.png"></img>
+						<a  href="${pageContext.request.contextPath}/protected/homepage.jsp" style="text-decoration: none;">
+							<span id="home" class="glyphicon glyphicon-home" style="color: #00344f"></span>
 						</a>
 					</div>
                 </li>       
                 <li>
-                	<a href="${pageContext.request.contextPath}/protected/profile.jsp">
+                	<a href="${pageContext.request.contextPath}/protected/profile/${sessionScope.user.username}">
 						<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
                 	</a>
                 </li> 

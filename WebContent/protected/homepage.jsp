@@ -25,7 +25,7 @@
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
 		
-		<!-- c:out value="${sessionScope.user.id_user}" /-->
+	
 
     </jsp:body>
         
