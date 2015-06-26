@@ -1,0 +1,96 @@
+#upHeader
+{
+	color: #00344F;
+	font-size: 18px;
+	
+}
+
+#sampleFileContainer
+{
+	padding: 0px;	
+}
+
+#selfieDescription
+{
+	resize: none;
+	width: 350px;	
+}
+
+#hashtags,
+#usertags
+{
+	width: 350px;	
+}
+
+#uploadedIMG
+{
+	width: 750px;
+}
+
+#unploadTable
+{
+	border-collapse: collapse;
+}
+
+#fileInputTH
+{
+	padding-bottom: 20px;
+}
+
+#notesTD
+{
+	position: relative;
+	top: 0px;
+	padding-left: 15px;
+}
+
+#notesContainer
+{
+	position: absolute;
+	top: 0px;
+}
+
+#notesContainer
+{
+	display: none;
+}
+
+#cropBtn
+{
+	position: relative;
+	float: right;
+	display: none;
+	padding-left: 25px;
+	padding-right: 25px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+	
+}
+
+#cropbox
+{
+	width: 100%;
+}
+
+#cheeseBtn
+{
+	margin-top: 20px;	
+	padding-left: 35px;
+	padding-right: 35px;
+	background-color: #005782;
+	border-color: #00344f;
+}
+
+#seiunamerda
+{
+	overflow-y: scroll;
+	height: 100%;
+		
+}
+
+#cropBtnTD
+{
+	height: 20px;
+}

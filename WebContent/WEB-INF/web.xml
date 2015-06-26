@@ -2,8 +2,8 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>mySelfie</display-name>
   <welcome-file-list>
-        <welcome-file>protected/homepage.jsp</welcome-file>
-    </welcome-file-list>
+    <welcome-file>protected/homepage.jsp</welcome-file>
+  </welcome-file-list>
   <resource-ref>
     <description>JDBC</description>
     <res-ref-name>jdbc/mySelfie</res-ref-name>
@@ -18,7 +18,6 @@
     <servlet-name>TomcatJDBC</servlet-name>
     <url-pattern>/homepage/index.jsp</url-pattern>
     <url-pattern>/homepage/homepage.jsp</url-pattern>
-    <url-pattern>/homepage/profile.jsp</url-pattern>
     <url-pattern>/homepage/signup</url-pattern>
     <url-pattern>/homepage/checkUsername</url-pattern>
     <url-pattern>/homepage/ajax</url-pattern>
@@ -31,7 +30,14 @@
     <servlet-name>getPostsServlet</servlet-name>
     <url-pattern>/protected/getPosts</url-pattern>
   </servlet-mapping>
-  
+  <servlet>
+    <servlet-name>profileServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>profileServlet</servlet-name>
+    <url-pattern>/protected/profile/*</url-pattern>
+  </servlet-mapping>
   <servlet>
     <servlet-name>likePostsServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
@@ -40,7 +46,6 @@
     <servlet-name>likePostsServlet</servlet-name>
     <url-pattern>/protected/likePosts</url-pattern>
   </servlet-mapping>
-  
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>

@@ -1,22 +1,23 @@
 package com.mySelfie.function;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.imageio.ImageIO;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-
-import com.mySelfie.entity.User;
 
 public class PostUtils {
 
-	public static String getPosts(String reqType, String contextPath, HttpSession session)
+	public static String getPosts(String reqType, String contextPath, int me_id)
 	{
 		
 		Context context = null;			// contesto
@@ -32,13 +33,7 @@ public class PostUtils {
 			context = new InitialContext();
 			// Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
 	        datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
-	        connect = datasource.getConnection();
-
-	        /* dalla sessione si ricava l' id dello user */
-	    	User me = new User();
-	  		me = (User) session.getAttribute("user");
-	  		int me_id = me.getId_user();
-	  	
+	        connect = datasource.getConnection();	  	
 	  		
 	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
 	        String postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM ((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) WHERE UFU.id_follower= ? AND SE.uploader=UFU.id_followed ORDER BY SE.date DESC";
@@ -77,7 +72,7 @@ public class PostUtils {
             
             	/* si inizia a generare la stringa di risposta con l' HTML per visualizzare i post */
             	HTMLres += "<table class=\"post_container\"><tr><th class=\"user_pic\"> "
-            			+ "<a href=\"" + contextPath + "/profile/" + username + ".jsp\">"
+            			+ "<a href=\"" + contextPath + "/protected/profile/" + username + "\">"
             			+ "<span class=\"profile_pic\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + profilepic + "')\" ></span>"
             			+ "<label class=\"profile_name\">" + username + "</label>"
             			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
@@ -179,7 +174,7 @@ public class PostUtils {
      	        	commentUser = commentRes.getString("username");
      	        	commentUserPic = commentRes.getString("profilepic");
   
-     	        	HTMLres += "<a href=\"" + contextPath + "/profile/" + commentUser + ".jsp\">"
+     	        	HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + commentUser + "\">"
                 			+ "<span class=\"profile_pic_comment\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + commentUserPic + "')\" ></span>"
                 			+ "<label class=\"profile_name_comment\">" + commentUser + "</label>"
                 			+ "</a></li>"
@@ -253,6 +248,80 @@ public class PostUtils {
             // chiude la connessione
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
         }  	    
+	}
+	
+	public static String getProfilePosts(String user, String contextPath)
+	{
+		Context context = null;			// contesto
+        DataSource datasource = null;	// dove pescare i dati
+        Connection connect = null;		// connessione al DB
+
+        /* html da restituire al client */
+        String HTMLres = "";
+               
+        try 
+        {
+			context = new InitialContext();
+			// Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
+	        datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
+	        connect = datasource.getConnection();	  	
+	  		
+	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
+	        String ppostsQuery = "SELECT picture FROM Selfie WHERE uploader = (SELECT id_user FROM User WHERE username = ?) ORDER BY date DESC";
+	        PreparedStatement ppostsSQL = connect.prepareStatement(ppostsQuery);
+	        ppostsSQL.setString(1, user);
+	        ResultSet ppostsRes = ppostsSQL.executeQuery();
+	     
+	        /* flag che indica se non ci sono foto da visualizzare */
+			boolean emptyFlag = false;
+			
+			/* vengono scorsi tutti i selfie */
+            while (ppostsRes.next()) 
+            {
+            	emptyFlag = true;
+     
+            	String picture = ppostsRes.getString("picture");
+				
+            	//ricava la home dell'utente (dove si suppone siano salvate le risorse protette)
+        		String homeFolder = System.getProperty("user.home");
+        		
+            	File file = new File(homeFolder + "/mySelfie/resources/selfies/" + picture);
+            	// leggo l'immagine che ho salvato
+				BufferedImage bimg;
+				int width=0;
+				int height=0;
+				
+				try {
+					bimg = ImageIO.read(file);
+					// ricavo la larghezza e l'altezza
+					width = bimg.getWidth();
+					height = bimg.getHeight();
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+				String picClass = (width >= height) ? "thumbnailL" : "thumbnailP";
+				
+            	HTMLres += "<div class=\"postContainer\"><img class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" /></div>";
+
+            }
+            
+            /* se non sono stati trovati selfie, viene stampato un messaggio all' utente */
+ 	        if(!emptyFlag)
+ 	        {
+ 	        	HTMLres = "<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>";
+ 	        }
+            
+        } catch (SQLException | NamingException e) { e.printStackTrace();
+        } finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+		
+		
+		return HTMLres;
+		
 	}
 	
 	

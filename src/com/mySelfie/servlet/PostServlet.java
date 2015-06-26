@@ -56,16 +56,20 @@ public class PostServlet extends HttpServlet {
         		
         		ServletContext servletContext = getServletContext();
         		String contextPath = servletContext.getContextPath();
-        		
+      
+          	    /* dalla sessione si ricava l' id dello user */
         		HttpSession session = request.getSession();
-        		
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, session);
+        		User me = new User();
+    	  		me = (User) session.getAttribute("user");
+    	  		int me_id = me.getId_user();
+    	  		
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, me_id);
 
         		response.getWriter().write(HTMLres);
            	}
         	break;
         	
-           	// intercetta la richiesta ajax per ricevere tutti i post
+           	// intercetta la richiesta ajax per mettere/togliere i like ai post
         	case "like":
         	{
         		String heart = request.getParameter("heart");
@@ -81,7 +85,7 @@ public class PostServlet extends HttpServlet {
 
         	}
         	break;
-        	
+
         }
 		
 	}
