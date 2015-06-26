@@ -33,15 +33,6 @@ function showsignupform() {
 		
 	InOut=!InOut;
 }	
-	
-
-
-/* Controllo spazi username */		
-$("#suusername").on('input', function()
-{
-	
-});
-
 
 
 /* Controllo username già in uso */		
@@ -143,7 +134,8 @@ $(document).ready(function() {
 				action: "login",
 				username: $('#username').val(), 
 				password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
-				redURL: $('#redURL').val()
+				redURL: $('#redURL').val(),
+				remMe : $("#rm:checked").val(),
 			},
 			success : function(responseText) {
 				

@@ -14,9 +14,8 @@
         
         <!-- se si proviene dalla registrazione viene incluso il css dei toast message -->
 
-        <link
-			href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"
-			rel="stylesheet" />
+        <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+
 
     
     </jsp:attribute>
@@ -48,12 +47,9 @@
 		</c:if>
 		
 		<!-- plugin input file -->
-		<script
-			src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
-		
-		<script
-			src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
-		
+		<script src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
+
 
 	</jsp:attribute>
 
