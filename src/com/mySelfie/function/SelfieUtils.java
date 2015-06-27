@@ -86,7 +86,6 @@ public class SelfieUtils {
 	            	// scorre tutti gli usertags che devono essere messi nella selfie
 	            	for (String usertag : usertags) {
 	            		
-	            		System.out.println(usertag);
 	            		// controlla se lo user esiste
 	            		if(UserUtils.exist(usertag, connect))
 	            		{

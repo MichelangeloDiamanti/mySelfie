@@ -15,6 +15,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class PostUtils {
 
 	public static String getPosts(String reqType, String contextPath, int me_id)
@@ -36,11 +39,22 @@ public class PostUtils {
 	        connect = datasource.getConnection();	  	
 	  		
 	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
-	        String postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM ((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) WHERE UFU.id_follower= ? AND SE.uploader=UFU.id_followed ORDER BY SE.date DESC";
+	        String postsQuery = "";
+	        
+	        
+	        if(reqType.equals("homepage"))	        	
+	        {
+	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM ((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) WHERE UFU.id_follower= ? AND SE.uploader=UFU.id_followed ORDER BY SE.date DESC";
+	        }
+	        if(reqType.equals("hashtag"))	        	
+	        {
+	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM (Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) WHERE id_selfie = ANY(SELECT id_selfie FROM hashtag_in_selfie WHERE id_hashtag= ? ) ORDER BY SE.date DESC;";
+	        }
+	     
 	        PreparedStatement postsSQL = connect.prepareStatement(postsQuery);
-	        postsSQL.setInt(1, me_id);
+ 	        postsSQL.setInt(1, me_id);		        
 	        ResultSet postsRes = postsSQL.executeQuery();
-	   
+	 	        
 	        /* tutti gli attributi da assegnare ai selfie */
 	        int id_selfie = 0;
 	        int likes = 0;
@@ -119,7 +133,7 @@ public class PostUtils {
             	}
             	     	       		
             	/* si ricavano gli hashtag del selfie corrente */
-    			String hashtagsQuery = "SELECT HT.name FROM ((Selfie AS SE INNER JOIN hashtag_in_selfie AS HIS ON SE.id_selfie = HIS.id_selfie) INNER JOIN Hashtag AS HT ON HIS.id_hashtag = HT.id_hashtag) WHERE SE.id_selfie= ?";
+    			String hashtagsQuery = "SELECT HT.name, HT.id_hashtag FROM ((Selfie AS SE INNER JOIN hashtag_in_selfie AS HIS ON SE.id_selfie = HIS.id_selfie) INNER JOIN Hashtag AS HT ON HIS.id_hashtag = HT.id_hashtag) WHERE SE.id_selfie= ?";
      	        PreparedStatement hashtagsSQL = connect.prepareStatement(hashtagsQuery);
      	        hashtagsSQL.setInt(1, id_selfie);
      	        ResultSet hashtagsRes = hashtagsSQL.executeQuery();
@@ -131,7 +145,13 @@ public class PostUtils {
      	        while (hashtagsRes.next()) 
      	        {
      	        	hashtag = hashtagsRes.getString("name");
-     	        	comment_sections += "<a href=\"\" class=\"hashtag_link\"> " + hashtag + "</a>";
+     	        	int hasht_id = hashtagsRes.getInt("id_hashtag");
+     	        	
+     	        	comment_sections += "<a href=\"" + contextPath + "/protected/hashtag/" + hashtag.substring(1) + "\" class=\"hashtag_link\" ";
+     	        	
+     	        	if(hasht_id==me_id && reqType.equals("hashtag")) comment_sections += "style=\"font-weight: bold;\" ";
+
+     	        	comment_sections += "> " + hashtag + "</a>";
      	        }
      	        
      	        if(hashtagsRes.previous())
@@ -151,7 +171,7 @@ public class PostUtils {
      	        while (tagsRes.next()) 
      	        {
      	        	tag = tagsRes.getString("username");
-     	        	comment_sections += "<a href=\"\" class=\"tag_link\">" + tag + " </a>";
+     	        	comment_sections += "<a href=\"" + contextPath + "/protected/profile/" + tag + "\" class=\"tag_link\">" + tag + " </a>";
      	        }
             	
      	        if(tagsRes.previous())
@@ -173,7 +193,18 @@ public class PostUtils {
      	        	commentText = commentRes.getString("text");
      	        	commentUser = commentRes.getString("username");
      	        	commentUserPic = commentRes.getString("profilepic");
-  
+     
+     	        	
+     	        	//se viene trovato un hashtag in un commento, viene aggiunto un link
+     	        	Pattern pattern = Pattern.compile("#[A-Za-z]+");
+     	        	Matcher matcher = pattern.matcher(commentText);
+     	        	
+     	        	while (matcher.find()) 
+     	        	{
+     	                String commentHashtag = "<a href=\"" + contextPath + "/protected/hashtag/" + matcher.group().substring(1) + "\" class=\"hashtag_link\"> " + matcher.group() + "</a> ";
+     	                commentText = commentText.replaceAll(matcher.group() , commentHashtag);
+     	        	}
+     	        	     	        	
      	        	HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + commentUser + "\">"
                 			+ "<span class=\"profile_pic_comment\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + commentUserPic + "')\" ></span>"
                 			+ "<label class=\"profile_name_comment\">" + commentUser + "</label>"
@@ -321,6 +352,45 @@ public class PostUtils {
 		
 		
 		return HTMLres;
+		
+	}
+	
+	public static int getHashtagId(String hashtag)
+	{
+		Context context = null;			// contesto
+        DataSource datasource = null;	// dove pescare i dati
+        Connection connect = null;		// connessione al DB
+
+        int id_ht = -1;
+
+        try 
+        {
+			context = new InitialContext();
+			// Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
+	        datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
+	        connect = datasource.getConnection();	  	
+	  		
+	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
+	        String hidQuery = "SELECT id_hashtag FROM Hashtag WHERE name = ?";
+	        PreparedStatement hidSQL = connect.prepareStatement(hidQuery);
+	        hidSQL.setString(1, hashtag);
+	        ResultSet hidRes = hidSQL.executeQuery();
+	    
+	    	/* vengono scorsi tutti i selfie */
+            while (hidRes.next()) 
+            {
+               id_ht = hidRes.getInt("id_hashtag");
+            }
+            
+            
+        } catch (SQLException | NamingException e) { e.printStackTrace();
+        } finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+		
+		
+		return id_ht;
 		
 	}
 	

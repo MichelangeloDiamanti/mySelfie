@@ -48,14 +48,13 @@ $('#sampleFile').change(function performAjaxSubmit() {
 			$("#cropbox").Jcrop({
 				trueSize : [ trueWidth, trueHeight ],
 				onSelect : setCoords,
-				onChange : setCoords,
-				onRelease: hideCrop
+				onChange : setCoords
 			});
 
 			// mostro i pulsanti per croppare e per inviare
 			
 			$('#notesContainer').show();
-
+			$('#cropBtn').show();
 		}
 
 	};
@@ -64,8 +63,75 @@ $('#sampleFile').change(function performAjaxSubmit() {
 
 
 
-$('#cropBtn').click(function performAjaxSubmit() {
 
+$('#cheeseBtn').click(function performAjaxSubmit() {
+	cheeseIMG();
+});
+
+$('#notesContainer').keypress(function(e) 
+{
+    if(e.which == 13) 
+    {
+    	cheeseIMG();
+    }
+});
+
+
+
+
+
+$('#cropBtn').click(function performAjaxSubmit() {
+	cropIMG();
+});
+
+$('#uploadedIMG').keypress(function(e) 
+{
+    if(e.which == 13) 
+    {
+    	cropIMG();
+    }
+});
+
+
+function cheeseIMG()
+{
+	$('#loadingBar').show();
+	
+	// dichiaro una nuova formData
+	var formdata = new FormData();
+
+	// ricavo il valore della descrizione dell'immagine
+	var description = $('#description').val();
+	var hashtags = $('#hashtags').val();
+	var usertags = $('#usertags').val();
+	
+	// passa tutti i parametri necessari per uplodare la selfie
+	formdata.append("action", "uploadSelfie"); // action da svolgere
+	formdata.append("hashtags", hashtags); // hashtags
+	formdata.append("usertags", usertags); // usertags	        
+	formdata.append("description", description); // descrizione
+	formdata.append("image", $('#cropbox').attr('src')); // nome dell'immagine
+
+	// mando la richiesta tramite POST
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/mySelfie/protected/upload", true);
+	xhr.send(formdata);
+
+	// quando ottengo la risposta
+	xhr.onload = function(e) {
+		// controllo il codice (200 OK)
+		if (this.status == 200) {
+
+			// reindirizzo l'utente alla homepage
+			window.location = this.responseText;
+
+		}
+
+	};	
+}
+
+function cropIMG()
+{
 	// dichiaro una nuova formData
 	var formdata = new FormData();
 
@@ -100,49 +166,6 @@ $('#cropBtn').click(function performAjaxSubmit() {
 		}
 
 	};
-
-});
-
-$('#cheeseBtn').click(function performAjaxSubmit() {
-	// dichiaro una nuova formData
-	var formdata = new FormData();
-
-	// ricavo il valore della descrizione dell'immagine
-	var description = $('#description').val();
-	var hashtags = $('#hashtags').val();
-	var usertags = $('#usertags').val();
-
-	// passa tutti i parametri necessari per uplodare la selfie
-	formdata.append("action", "uploadSelfie"); // action da svolgere
-	formdata.append("hashtags", hashtags); // hashtags
-	formdata.append("usertags", usertags); // usertags	        
-	formdata.append("description", description); // descrizione
-	formdata.append("image", $('#cropbox').attr('src')); // nome dell'immagine
-
-	// mando la richiesta tramite POST
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "/mySelfie/protected/upload", true);
-	xhr.send(formdata);
-
-	// quando ottengo la risposta
-	xhr.onload = function(e) {
-		// controllo il codice (200 OK)
-		if (this.status == 200) {
-
-			// reindirizzo l'utente alla homepage
-			window.location = this.responseText;
-
-		}
-
-	};
-
-});
-
-
-
-function hideCrop()
-{
-	$('#cropBtn').hide();
 }
 
 
@@ -154,11 +177,5 @@ function setCoords(c) {
 	jQuery('#y2').val(c.y2);
 	jQuery('#w').val(c.w);
 	jQuery('#h').val(c.h);
-	
-	if($("#cropBtn").css("display") == "none")
-	{
-		$('#cropBtn').show();
-	}
-	$('#cropBtn').focus();
-	
+	$('#uploadedIMG').focus();
 };

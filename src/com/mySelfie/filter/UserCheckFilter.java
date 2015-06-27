@@ -75,6 +75,7 @@ public class UserCheckFilter implements Filter {
       //       ---> CONTROLLO COOKIE <--- 
      // Controllo esistenza e validità cookie
     	if(checkSession==false) {
+    		
 	        Cookie[] cookies=req.getCookies();
 	    	String key=null;
 	    	if (cookies != null) {

@@ -51,10 +51,11 @@
 				</tr>
 				
 				<tr>
-					<td>
-						<div id="uploadedIMG">
+					<td id="imgTD">
+						<div id="uploadedIMG" tabindex="1">
 					
 						</div>
+						<input type="submit" name="crop" value="crop" class="btn btn-primary btn-xs" id="cropBtn">
 					</td>
 					
 					<td	id="notesTD">
@@ -63,7 +64,7 @@
 						
 							<div class="form-group">
 						  		<label for="comment">Description:</label>
-				  				<textarea class="form-control" id="selfieDescription" rows="2" id="description"></textarea>
+				  				<textarea class="form-control" rows="2" name="description" id="description"></textarea>
 							</div>
 				
 							<div class="form-group">
@@ -78,21 +79,14 @@
 				
 							<div class="col-md-12 center-block">
 				   				<input type="submit" name="cheese" value="cheese!" class="btn btn-primary center-block" id="cheeseBtn">
-						
 							</div>
-						
+
+							<img id="loadingBar" src="${pageContext.request.contextPath}/resources/images/loadingBar.gif"></img>						
 						</div>
 						
 					</td>
 				</tr>
 				
-				<tr>
-					<td id="cropBtnTD">
-						<input type="submit" name="crop" value="crop" class="btn btn-primary btn-xs" id="cropBtn">
-					</td>
-				
-				</tr>
-			
 			</table>
 			
 			

@@ -1,5 +1,6 @@
 $( document ).ready(function() 
 {
+	
 	var queryType = "homepage";
 	
 	var postsContainer = document.createElement("div");
@@ -35,7 +36,6 @@ $( document ).ready(function()
 		}
 	});
 
-	
 });
 
 

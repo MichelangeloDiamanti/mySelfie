@@ -39,6 +39,14 @@
     <url-pattern>/protected/profile/*</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>hashtagServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.HashtagServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>hashtagServlet</servlet-name>
+    <url-pattern>/protected/hashtag/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>likePostsServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
   </servlet>
