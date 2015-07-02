@@ -32,7 +32,7 @@ public class ProfileServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+				
 		String user = request.getPathInfo().substring(1);
 
 		ServletContext servletContext = getServletContext();

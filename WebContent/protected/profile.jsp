@@ -6,6 +6,7 @@
     <jsp:attribute name="header">
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="${pageContext.request.contextPath}/resources/css/profile.css" media="all" rel="stylesheet" type="text/css" />            
+		<link href="${pageContext.request.contextPath}/resources/css/postTable.css" media="all" rel="stylesheet" type="text/css" />            
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">
@@ -33,6 +34,7 @@
 		    });
 		</script>		
 		
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/openPost.js"></script>
 		
 	</jsp:attribute>
     

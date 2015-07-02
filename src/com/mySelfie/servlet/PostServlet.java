@@ -68,6 +68,24 @@ public class PostServlet extends HttpServlet {
         		response.getWriter().write(HTMLres);
            	}
         	break;
+           	
+        	// intercetta la richiesta ajax per ricevere un post
+        	case "profilePost":
+        	{
+        		response.setContentType("text/plain");
+
+        		String queryType = request.getParameter("queryType");
+        		String nameIMG =  request.getParameter("nameIMG");
+        		
+        		ServletContext servletContext = getServletContext();
+        		String contextPath = servletContext.getContextPath();
+        		
+        		int idIMG = PostUtils.getImgIdByName(nameIMG);
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG);
+
+        		response.getWriter().write(HTMLres);
+           	}
+        	break;
         	
            	// intercetta la richiesta ajax per mettere/togliere i like ai post
         	case "like":

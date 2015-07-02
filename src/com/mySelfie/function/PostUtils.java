@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 
 public class PostUtils {
 
-	public static String getPosts(String reqType, String contextPath, int me_id)
+	public static String getPosts(String reqType, String contextPath, int id)
 	{
 		
 		Context context = null;			// contesto
@@ -48,11 +48,15 @@ public class PostUtils {
 	        }
 	        if(reqType.equals("hashtag"))	        	
 	        {
-	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM (Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) WHERE id_selfie = ANY(SELECT id_selfie FROM hashtag_in_selfie WHERE id_hashtag= ? ) ORDER BY SE.date DESC;";
+	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM (Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) WHERE id_selfie = ANY(SELECT id_selfie FROM hashtag_in_selfie WHERE id_hashtag= ? ) ORDER BY SE.date DESC";
 	        }
-	     
+	        if(reqType.equals("profilePost"))	        	
+	        {
+	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM (Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) WHERE id_selfie = ? ";
+	        }
+	        
 	        PreparedStatement postsSQL = connect.prepareStatement(postsQuery);
- 	        postsSQL.setInt(1, me_id);		        
+ 	        postsSQL.setInt(1, id);		        
 	        ResultSet postsRes = postsSQL.executeQuery();
 	 	        
 	        /* tutti gli attributi da assegnare ai selfie */
@@ -98,7 +102,7 @@ public class PostUtils {
             	/* viene controllato se l'utente ha già messo "mi piace" al selfie */
             	String likeQuery = "SELECT * FROM user_like_selfie WHERE id_user = ? AND id_selfie = ?";
      	        PreparedStatement likeSQL = connect.prepareStatement(likeQuery);
-     	        likeSQL.setInt(1, me_id);
+     	        likeSQL.setInt(1, id);
      	        likeSQL.setInt(2, id_selfie);
     	        ResultSet likeRes = likeSQL.executeQuery();
      	        if(likeRes.next()) 
@@ -149,7 +153,7 @@ public class PostUtils {
      	        	
      	        	comment_sections += "<a href=\"" + contextPath + "/protected/hashtag/" + hashtag.substring(1) + "\" class=\"hashtag_link\" ";
      	        	
-     	        	if(hasht_id==me_id && reqType.equals("hashtag")) comment_sections += "style=\"font-weight: bold;\" ";
+     	        	if(hasht_id==id && reqType.equals("hashtag")) comment_sections += "style=\"font-weight: bold;\" ";
 
      	        	comment_sections += "> " + hashtag + "</a>";
      	        }
@@ -232,9 +236,6 @@ public class PostUtils {
         
         return HTMLres;
 	}
-	
-	
-	
 	
 	public static void likeSelfie(String heart, int me_id, int idSelfie)
 	{
@@ -334,7 +335,7 @@ public class PostUtils {
 				
 				String picClass = (width >= height) ? "thumbnailL" : "thumbnailP";
 				
-            	HTMLres += "<div class=\"postContainer\"><img class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" /></div>";
+            	HTMLres += "<div class=\"postContainer\"><img class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" onClick=\"openIMG(this)\" /></div>";
 
             }
             
@@ -394,5 +395,40 @@ public class PostUtils {
 		
 	}
 	
+	public static int getImgIdByName(String iname)
+	{
+
+		Context context = null;			// contesto
+        DataSource datasource = null;	// dove pescare i dati
+        Connection connect = null;		// connessione al DB
+
+        /* html da restituire al client */
+        int iid = -1;
+        
+       
+        try 
+        {
+			context = new InitialContext();
+			// Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
+	        datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
+	        connect = datasource.getConnection();	  	
+	  		
+	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
+	        String idImgQuery = "SELECT id_selfie FROM Selfie WHERE picture = ? ";
+	        PreparedStatement idImgSQL = connect.prepareStatement(idImgQuery);
+	        idImgSQL.setString(1, iname);		        
+	        ResultSet idImgRes = idImgSQL.executeQuery();
+	
+	        while (idImgRes.next()) 
+               	iid = idImgRes.getInt("id_selfie");
+        
+        } catch (SQLException | NamingException e) { e.printStackTrace();
+        } finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+        
+        return iid;
+	}
 	
 }
