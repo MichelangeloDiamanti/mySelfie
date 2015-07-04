@@ -23,7 +23,13 @@
 	background: -ms-linear-gradient(left,  rgba(232,232,232,1) 0%,rgba(125,185,232,0) 100%); /* IE10+ */
 	background: linear-gradient(to right,  rgba(232,232,232,1) 0%,rgba(125,185,232,0) 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e8e8e8', endColorstr='#007db9e8',GradientType=1 ); /* IE6-9 */
+}
 
+.user_pic_profile
+{
+	width: 700px;
+	height: 50px;
+	color: #FFF;
 }
 
 
@@ -41,15 +47,35 @@
 	margin-left: 5px;
 }
 
-.profile_name
+.profile_name_white,
+.profile_name_blue
 {
 	position: relative;
 	float: left;
-	color: #00344F;
 	margin-top: 10px;
 	margin-left: 10px;
 	cursor: pointer;
 	max-width: 240px;
+}
+
+.profile_name_white
+{
+	color: #eee;
+}
+.profile_name_blue
+{
+	color: #00344f;
+}
+	
+.profile_name_blue:hover
+{	
+	color: #005782;	
+	text-decoration: none; 
+}
+.profile_name_white:hover
+{
+	color: #0089CC;	
+	text-decoration: none; 
 }
 
 
@@ -163,7 +189,8 @@
 
 }
 .hashtag_link:hover,
-.tag_link:hover
+.tag_link:hover,
+.profile_link:hover
 {
 	text-decoration: none; 
 }
