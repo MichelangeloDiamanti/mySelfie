@@ -1,6 +1,8 @@
 package com.mySelfie.function;
 
 import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +19,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.mySelfie.exception.usernameInUseException;
+import com.mySelfie.security.PasswordHash;
 
 public final class UserUtils {
 
@@ -113,11 +116,15 @@ public final class UserUtils {
 				// java.sql.Date dataDiNascitaSql = new java.sql.Date(
 				// dataDiNascitaJava.getTime() );
 				//
+				
+				// ricava l'hash dalla password
+				String hashedPassword = PasswordHash.createHash(m.get("password"));
+				
 				// costruisce ed esegue la query per inserire un nuovo record user
 				String newUserQuery = "INSERT INTO User (username, password, email, profilepic ) VALUES (?, ?, ?, ?)";
 				PreparedStatement newUserStatement = connect.prepareStatement(newUserQuery, Statement.RETURN_GENERATED_KEYS);
 				newUserStatement.setString(1, m.get("username"));
-				newUserStatement.setString(2, m.get("password"));
+				newUserStatement.setString(2, hashedPassword);
 				newUserStatement.setString(3, m.get("email"));
 				newUserStatement.setString(4, m.get("profilePic"));
 				int affectedRows = newUserStatement.executeUpdate();
@@ -144,6 +151,12 @@ public final class UserUtils {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace(out);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			// chiude la connessione
 			try {

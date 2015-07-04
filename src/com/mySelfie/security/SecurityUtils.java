@@ -1,8 +1,9 @@
-package com.mySelfie.function;
+package com.mySelfie.security;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,32 +40,43 @@ public final class SecurityUtils {
             connect = datasource.getConnection();
             
             // verifica che username e password inseriti facciano riferimento ad uno user valido
-            String userQuery = "SELECT * FROM User WHERE username = ? AND password = ?";
+            
+            // ottiene la password dell'utente che sta effettuando il login (protetta da hash)
+            String userQuery = "SELECT * FROM User WHERE username = ?";
             PreparedStatement userSQL = connect.prepareStatement(userQuery);
             userSQL.setString(1, username);
-            userSQL.setString(2, password);
             ResultSet queryRes = userSQL.executeQuery();
             
             boolean usrExists = queryRes.next();
             
-            // se c'è un risultato per la query
+            // se lo username inserito esiste all'interno del DB
             if (usrExists)
             {
-            	// vengono valorizzati i vari attributi dell'istanza dell'utente
-            	user.setId_user(queryRes.getInt("id_user"));
-            	user.setusername(queryRes.getString("username"));
-            	user.setPassword(queryRes.getString("password"));
-            	user.setEmail(queryRes.getString("email"));
-            	user.setPhone(queryRes.getString("phone"));
-            	user.setName(queryRes.getString("name"));
-            	user.setSurname(queryRes.getString("surname"));
-            	user.setGender(queryRes.getString("gender"));
-            	user.setNotes(queryRes.getString("notes"));
-            	user.setCity(queryRes.getString("city"));
-            	user.setProfilepic(queryRes.getString("profilepic"));
-            	user.setBirthdate(queryRes.getDate("birthdate"));
-            	// viene impostato l'untente a valido
-            	user.setValid(true);
+            	
+            	// viene controllata che la password inserita sia corretta
+                String hashedPassword = queryRes.getString("password");
+                // controlla se la password inserita, hashata con il salt salvato all'interno del DB
+                // corrisponde con quella usata per registrarsi
+                boolean passwordIsValid = PasswordHash.validatePassword(password, hashedPassword);
+            	
+                //se la password è valida
+                if(passwordIsValid)
+                {
+	            	// vengono valorizzati i vari attributi dell'istanza dell'utente
+	            	user.setId_user(queryRes.getInt("id_user"));
+	            	user.setusername(queryRes.getString("username"));
+	            	user.setEmail(queryRes.getString("email"));
+	            	user.setPhone(queryRes.getString("phone"));
+	            	user.setName(queryRes.getString("name"));
+	            	user.setSurname(queryRes.getString("surname"));
+	            	user.setGender(queryRes.getString("gender"));
+	            	user.setNotes(queryRes.getString("notes"));
+	            	user.setCity(queryRes.getString("city"));
+	            	user.setProfilepic(queryRes.getString("profilepic"));
+	            	user.setBirthdate(queryRes.getDate("birthdate"));
+	            	// viene impostato l'untente a valido
+	            	user.setValid(true);
+            	}
             }
             else 
             {
@@ -74,7 +86,14 @@ public final class SecurityUtils {
            
            
         } catch (SQLException e) { e.printStackTrace();
-        } finally {
+        // catch password hash
+        } catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
             // chiude la connessione
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
         }

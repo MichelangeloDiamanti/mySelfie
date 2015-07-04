@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mySelfie.entity.User;
-import com.mySelfie.function.SecurityUtils;
+import com.mySelfie.security.SecurityUtils;
  
 public class UserValidator extends HttpServlet {
 	private static final long serialVersionUID = 1L;

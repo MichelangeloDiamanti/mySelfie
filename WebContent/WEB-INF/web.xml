@@ -78,6 +78,18 @@
     <servlet-name>protectedResourcesServlet</servlet-name>
     <url-pattern>/protected/resources/*</url-pattern>
   </servlet-mapping>
+  <security-constraint>
+    <web-resource-collection>
+        <web-resource-name>mySelfie</web-resource-name>
+        <url-pattern>/*</url-pattern>
+        <http-method>GET</http-method>
+        <http-method>POST</http-method>
+    </web-resource-collection>
+
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+</security-constraint>
   <filter>
     <filter-name>UserCheckFilter</filter-name>
     <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>

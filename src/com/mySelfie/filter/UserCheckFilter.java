@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
 import com.mySelfie.entity.User;
-import com.mySelfie.function.SecurityUtils;
+import com.mySelfie.security.SecurityUtils;
  
 /*
 	* Il file web.xml è configurato per reindirizzare verso questo sevlet tutte le richieste dirette a /protected/*
