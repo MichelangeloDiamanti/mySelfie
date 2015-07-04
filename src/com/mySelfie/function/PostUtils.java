@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 
 import java.util.regex.Matcher;
@@ -20,13 +21,13 @@ import java.util.regex.Pattern;
 
 public class PostUtils {
 
-	public static String getPosts(String reqType, String contextPath, int id)
+	public static String getPosts(String reqType, String contextPath,  int id_req_obj, int id_usr)
 	{
 		
 		Context context = null;			// contesto
         DataSource datasource = null;	// dove pescare i dati
         Connection connect = null;		// connessione al DB
-
+		
         /* html da restituire al client */
         String HTMLres = "";
         
@@ -56,7 +57,7 @@ public class PostUtils {
 	        }
 	        
 	        PreparedStatement postsSQL = connect.prepareStatement(postsQuery);
- 	        postsSQL.setInt(1, id);		        
+ 	        postsSQL.setInt(1, id_req_obj);		        
 	        ResultSet postsRes = postsSQL.executeQuery();
 	 	        
 	        /* tutti gli attributi da assegnare ai selfie */
@@ -89,10 +90,23 @@ public class PostUtils {
             	profilepic = postsRes.getString("profilepic");
             
             	/* si inizia a generare la stringa di risposta con l' HTML per visualizzare i post */
-            	HTMLres += "<table class=\"post_container\"><tr><th class=\"user_pic\"> "
-            			+ "<a href=\"" + contextPath + "/protected/profile/" + username + "\">"
+            	HTMLres += "<table class=\"post_container\"><tr><th class=\"user_pic";
+            	
+            	if(reqType.equals("profilePost"))
+            			HTMLres += "_profile";
+
+            	HTMLres += "\"> "
+            			+ "<a class=\"profile_link\" href=\"" + contextPath + "/protected/profile/" + username + "\">"
             			+ "<span class=\"profile_pic\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + profilepic + "')\" ></span>"
-            			+ "<label class=\"profile_name\">" + username + "</label>"
+            			+ "<label class=\"profile_name";
+            	
+            	if(reqType.equals("profilePost"))
+        			HTMLres += "_white";
+            	
+            	if(reqType.equals("homepage"))
+        			HTMLres += "_blue";
+            	
+            	HTMLres += "\">" + username + "</label>"
             			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
             			//+ "<img class=\"selfie\" src=\"" + contextPath + "/resources/images/loadingIMG.gif\" data-src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
             			+ "<img class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
@@ -102,7 +116,7 @@ public class PostUtils {
             	/* viene controllato se l'utente ha già messo "mi piace" al selfie */
             	String likeQuery = "SELECT * FROM user_like_selfie WHERE id_user = ? AND id_selfie = ?";
      	        PreparedStatement likeSQL = connect.prepareStatement(likeQuery);
-     	        likeSQL.setInt(1, id);
+     	        likeSQL.setInt(1, id_usr);
      	        likeSQL.setInt(2, id_selfie);
     	        ResultSet likeRes = likeSQL.executeQuery();
      	        if(likeRes.next()) 
@@ -153,7 +167,7 @@ public class PostUtils {
      	        	
      	        	comment_sections += "<a href=\"" + contextPath + "/protected/hashtag/" + hashtag.substring(1) + "\" class=\"hashtag_link\" ";
      	        	
-     	        	if(hasht_id==id && reqType.equals("hashtag")) comment_sections += "style=\"font-weight: bold;\" ";
+     	        	if(hasht_id==id_req_obj && reqType.equals("hashtag")) comment_sections += "style=\"font-weight: bold;\" ";
 
      	        	comment_sections += "> " + hashtag + "</a>";
      	        }

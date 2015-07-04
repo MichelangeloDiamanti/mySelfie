@@ -45,6 +45,15 @@ public class PostServlet extends HttpServlet {
 		
 		String reqType = request.getParameter("reqType");
         
+		/* dalla sessione si ricava l' id dello user */
+		HttpSession session = request.getSession();
+		User me = new User();
+  		me = (User) session.getAttribute("user");
+  		int me_id = me.getId_user();
+  		
+  		ServletContext servletContext = getServletContext();
+		String contextPath = servletContext.getContextPath();
+  		
     	switch(reqType)
         {
            	// intercetta la richiesta ajax per ricevere tutti i post
@@ -52,18 +61,9 @@ public class PostServlet extends HttpServlet {
         	{
         		response.setContentType("text/plain");
 
-        		String queryType = request.getParameter("queryType");
-        		
-        		ServletContext servletContext = getServletContext();
-        		String contextPath = servletContext.getContextPath();
-      
-          	    /* dalla sessione si ricava l' id dello user */
-        		HttpSession session = request.getSession();
-        		User me = new User();
-    	  		me = (User) session.getAttribute("user");
-    	  		int me_id = me.getId_user();
+        		String queryType = request.getParameter("queryType");          	   
     	  		
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, me_id);
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, me_id, me_id);
 
         		response.getWriter().write(HTMLres);
            	}
@@ -76,12 +76,9 @@ public class PostServlet extends HttpServlet {
 
         		String queryType = request.getParameter("queryType");
         		String nameIMG =  request.getParameter("nameIMG");
-        		
-        		ServletContext servletContext = getServletContext();
-        		String contextPath = servletContext.getContextPath();
-        		
+        	
         		int idIMG = PostUtils.getImgIdByName(nameIMG);
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG);
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG, me_id);
 
         		response.getWriter().write(HTMLres);
            	}
@@ -92,13 +89,7 @@ public class PostServlet extends HttpServlet {
         	{
         		String heart = request.getParameter("heart");
         		int idSelfie = Integer.parseInt(request.getParameter("selfie"));
-        				
-        		HttpSession session = request.getSession();
-    	        User me = new User();
-    	  		me = (User) session.getAttribute("user");
-    	  		int me_id = me.getId_user();
-    	  	
-    	  		
+        				    	  		
         		PostUtils.likeSelfie(heart, me_id, idSelfie);
 
         	}

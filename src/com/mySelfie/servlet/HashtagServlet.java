@@ -9,7 +9,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.mySelfie.entity.User;
 import com.mySelfie.function.PostUtils;
 
 /**
@@ -34,16 +36,24 @@ public class HashtagServlet extends HttpServlet {
 		
 		String hashtag = request.getPathInfo().substring(1);
 		hashtag = "#" + hashtag;
-			
-		ServletContext servletContext = getServletContext();
-		String contextPath = servletContext.getContextPath();
-				
+							
 		int id_ht = PostUtils.getHashtagId(hashtag);
 		
 		String posts = "";
 		
 		if(id_ht!=-1)
-			posts = PostUtils.getPosts("hashtag", contextPath, id_ht);
+		{
+			/* dalla sessione si ricava l' id dello user */
+			HttpSession session = request.getSession();
+			User me = new User();
+	  		me = (User) session.getAttribute("user");
+	  		int me_id = me.getId_user();
+	  		
+	        ServletContext servletContext = getServletContext();
+			String contextPath = servletContext.getContextPath();
+			
+			posts = PostUtils.getPosts("hashtag", contextPath, id_ht, me_id);
+		}
 		else
 		{
 			posts = "<div class=\"empty\"><label class=\"empty_label\">There are no posts with that hashtag...</label></div>";
