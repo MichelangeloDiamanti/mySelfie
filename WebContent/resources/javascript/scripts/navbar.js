@@ -12,3 +12,10 @@ $('#logOutBtn').click(function() {
 		}
 	});
 });
+
+
+$('#hiddenMenuBtn').click(function() 
+{
+	$( "#hiddenMenuContainer" ).slideToggle( "fast" );	
+});
+
