@@ -109,7 +109,7 @@ public class PostUtils {
             	HTMLres += "\">" + username + "</label>"
             			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
             			//+ "<img class=\"selfie\" src=\"" + contextPath + "/resources/images/loadingIMG.gif\" data-src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
-            			+ "<img class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
+            			+ "<img id=\"selfie-" + id_selfie + "\" class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
             			+ "<div class=\"selfie_tools\">";
             	
             	
@@ -313,7 +313,7 @@ public class PostUtils {
 	        connect = datasource.getConnection();	  	
 	  		
 	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
-	        String ppostsQuery = "SELECT picture FROM Selfie WHERE uploader = (SELECT id_user FROM User WHERE username = ?) ORDER BY date DESC";
+	        String ppostsQuery = "SELECT id_selfie, picture FROM Selfie WHERE uploader = (SELECT id_user FROM User WHERE username = ?) ORDER BY date DESC";
 	        PreparedStatement ppostsSQL = connect.prepareStatement(ppostsQuery);
 	        ppostsSQL.setString(1, user);
 	        ResultSet ppostsRes = ppostsSQL.executeQuery();
@@ -327,7 +327,8 @@ public class PostUtils {
             	emptyFlag = true;
      
             	String picture = ppostsRes.getString("picture");
-				
+            	int id_selfie = ppostsRes.getInt("id_selfie");
+            	
             	//ricava la home dell'utente (dove si suppone siano salvate le risorse protette)
         		String homeFolder = System.getProperty("user.home");
         		
@@ -349,7 +350,7 @@ public class PostUtils {
 				
 				String picClass = (width >= height) ? "thumbnailL" : "thumbnailP";
 				
-            	HTMLres += "<div class=\"postContainer\"><img class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" onClick=\"openIMG(this)\" /></div>";
+            	HTMLres += "<div class=\"postContainer\"><img id=\"selfie-" + id_selfie + "\" class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" onClick=\"openIMG(this)\" /></div>";
 
             }
             
@@ -409,40 +410,5 @@ public class PostUtils {
 		
 	}
 	
-	public static int getImgIdByName(String iname)
-	{
-
-		Context context = null;			// contesto
-        DataSource datasource = null;	// dove pescare i dati
-        Connection connect = null;		// connessione al DB
-
-        /* html da restituire al client */
-        int iid = -1;
-        
-       
-        try 
-        {
-			context = new InitialContext();
-			// Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
-	        datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
-	        connect = datasource.getConnection();	  	
-	  		
-	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
-	        String idImgQuery = "SELECT id_selfie FROM Selfie WHERE picture = ? ";
-	        PreparedStatement idImgSQL = connect.prepareStatement(idImgQuery);
-	        idImgSQL.setString(1, iname);		        
-	        ResultSet idImgRes = idImgSQL.executeQuery();
-	
-	        while (idImgRes.next()) 
-               	iid = idImgRes.getInt("id_selfie");
-        
-        } catch (SQLException | NamingException e) { e.printStackTrace();
-        } finally {
-            // chiude la connessione
-            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
-        
-        return iid;
-	}
 	
 }

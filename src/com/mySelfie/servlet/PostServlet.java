@@ -75,9 +75,10 @@ public class PostServlet extends HttpServlet {
         		response.setContentType("text/plain");
 
         		String queryType = request.getParameter("queryType");
-        		String nameIMG =  request.getParameter("nameIMG");
+        		String idIMGstr = request.getParameter("idIMG");
+        		idIMGstr = idIMGstr.substring(idIMGstr.lastIndexOf('-')+1);
+        		int idIMG = Integer.parseInt(idIMGstr);
         	
-        		int idIMG = PostUtils.getImgIdByName(nameIMG);
         		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG, me_id);
 
         		response.getWriter().write(HTMLres);

@@ -1,72 +1,3 @@
-function openIMG(i)
-{
-
-	//creo il div che oscura la pagina e lo inietto nell' html del container globale
-	var oIMG = "<div class=\"shadow\" ></div>";
-	
-	document.getElementById('bcontainer').innerHTML += oIMG;
-
-	//perndo l' attributo id dell' immagine 
-	var idIMG = i.id;
-	
-	var queryType = "profilePost";
-	
-	//chiamata post con ajax per visualizzare il post 
-	$.ajax(
-	{
-		method: "POST",
-		url : '/mySelfie/protected/openPost',
-		data : 
-		{ 
-			reqType: "profilePost",
-			queryType: queryType,
-			idIMG: idIMG
-		},
-		success : function(responseText) 
-		{
-			//viene restituito l' HTML dei post, da poter iniettare nel div
-
-			//rimuovo il precedente div shadow vuoto e ne creo un altro contenente l'html da iniettare
-			$('.shadow').remove();
-			oIMG = "<div class=\"shadow\" >";
-			oIMG += responseText;
-			oIMG += "</div>";
-			document.getElementById('bcontainer').innerHTML += oIMG;
-			
-			resizeComments();
-			
-			bindClicks();
-		}
-	});
-	
-	
-
-}
-
-function bindClicks()
-{
-	$('.shadow').click(function(event)
-	{
-		$('.shadow').remove();
-	});
-
-	$('.post_container').click(function(event)
-	{
-		event.stopPropagation();
-		
-	});
-	
-	$(document).keyup(function(event) 
-	{
-		  if (event.keyCode == 27)
-	      {
-			  $('.shadow').remove();
-	      }
-	});
-	
-			
-}
-
 function resizeComments()
 {	
 	/* prende tutti i contenitori dei commenti */
@@ -136,4 +67,3 @@ function like(heart, id_selfie)
 	
 }
 	
-

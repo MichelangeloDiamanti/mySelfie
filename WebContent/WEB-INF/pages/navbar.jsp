@@ -24,32 +24,48 @@
             </ul>
       		<div id="buttons">
        			<ul class="nav navbar-nav navbar-right">
-                <li>
-                	<div id="updiv" class="iconsdiv">
-						<div class="circle"></div>
-						<a  href="${pageContext.request.contextPath}/protected/uploadSelfie.jsp" >
-							<img id="upload" src="${pageContext.request.contextPath}/resources/images/upload.png"></img>
-						</a>
-					</div>
-                </li>
-                <li>
-                	<div id="homediv" class="iconsdiv">
-						<div class="circle"></div>
-						<a  href="${pageContext.request.contextPath}/protected/homepage.jsp" style="text-decoration: none;">
-							<span id="home" class="glyphicon glyphicon-home" style="color: #00344f"></span>
-						</a>
-					</div>
-                </li>       
-                <li>
-                	<a href="${pageContext.request.contextPath}/protected/profile/${sessionScope.user.username}">
-						<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
-                	</a>
-                </li> 
-                <li>
-                	<button id="logOutBtn">LogOut</button>                
-                </li>                          
-            </ul>
+	                <li>
+	                	<div id="updiv" class="iconsdiv">
+							<div class="circle"></div>
+							<a  href="${pageContext.request.contextPath}/protected/uploadSelfie.jsp" >
+								<img id="upload" src="${pageContext.request.contextPath}/resources/images/upload.png"></img>
+							</a>
+						</div>
+	                </li>
+	                <li>
+	                	<div id="homediv" class="iconsdiv">
+							<div class="circle"></div>
+							<a  href="${pageContext.request.contextPath}/protected/homepage.jsp" style="text-decoration: none;">
+								<span id="home" class="glyphicon glyphicon-home" style="color: #00344f"></span>
+							</a>
+						</div>
+	                </li>       
+	                <li>
+	                	<a href="${pageContext.request.contextPath}/protected/profile/${sessionScope.user.username}">
+							<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
+	                	</a>
+	                </li> 
+	                <li>
+	        			<span id="hiddenMenuBtn" class="glyphicon glyphicon-menu-down"></span>
+	                </li>                          
+            	</ul>
+            
+	            <div id="hiddenMenuContainer">
+	            	<span class="glyphicon glyphicon-triangle-top speechBubble"></span>
+				    <ul id="hiddenMenu">
+					    <hr class="hiddenMenuDivisor">
+	    				<li class="hiddenMenuItem"> <a class="hiddenMenuLink" href="http://www.reactiongifs.us/wp-content/uploads/2013/06/now_what_finding_nemo.gif"> Settings </a> </li>
+	    				<hr class="hiddenMenuDivisor">
+	        			<li class="hiddenMenuItem" id="logOutBtn"> LogOut </li>
+	        			<hr class="hiddenMenuDivisor">
+	    			</ul> 	
+				</div>
+            
             </div>
+            
         </div>
+
     </div>
+
 </div>
+
