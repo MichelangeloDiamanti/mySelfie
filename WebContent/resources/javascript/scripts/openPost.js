@@ -6,23 +6,21 @@ function openIMG(i)
 	
 	document.getElementById('bcontainer').innerHTML += oIMG;
 
-	//perndo l' attributo src dell' immagine (path + nome)
-	var nameIMG = i.src;	
-	//ottengo il nome dell' immagine a partire dall' ultimo /
-	nameIMG = nameIMG.substring(nameIMG.lastIndexOf('/')+1);
-
+	//perndo l' attributo id dell' immagine 
+	var idIMG = i.id;
+	
 	var queryType = "profilePost";
 	
 	//chiamata post con ajax per visualizzare il post 
 	$.ajax(
 	{
 		method: "POST",
-		url : '/mySelfie/protected/getPosts',
+		url : '/mySelfie/protected/openPost',
 		data : 
 		{ 
 			reqType: "profilePost",
 			queryType: queryType,
-			nameIMG: nameIMG
+			idIMG: idIMG
 		},
 		success : function(responseText) 
 		{

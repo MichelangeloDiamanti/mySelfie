@@ -29,6 +29,7 @@
   <servlet-mapping>
     <servlet-name>getPostsServlet</servlet-name>
     <url-pattern>/protected/getPosts</url-pattern>
+    <url-pattern>/protected/openPost</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>profileServlet</servlet-name>
