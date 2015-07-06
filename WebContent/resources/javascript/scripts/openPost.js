@@ -1,6 +1,11 @@
 function openIMG(i)
 {
 
+	 //serve a sistemare il bug del menù nascosto
+	 if ($("#hiddenMenuContainer").is(":visible"))
+		$( "#hiddenMenuContainer" ).hide();		
+
+	 
 	//creo il div che oscura la pagina e lo inietto nell' html del container globale
 	var oIMG = "<div class=\"shadow\" ></div>";
 	
@@ -70,7 +75,12 @@ function bindClicks()
 	      }
 	});
 	
-			
+	//se cambia l' html del documento, va ribindato il seguente evento
+	$('#hiddenMenuBtn').click(function() 
+	{
+		$("#hiddenMenuContainer").slideToggle( "fast" );	
+	});
+
 }
 
 function resizeComments()
