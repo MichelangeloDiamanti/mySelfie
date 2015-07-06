@@ -41,7 +41,7 @@
 						</div>
 	                </li>       
 	                <li>
-	                	<a href="${pageContext.request.contextPath}/protected/profile/${sessionScope.user.username}">
+	                	<a id="profilepica" href="${pageContext.request.contextPath}/protected/profile/${sessionScope.user.username}">
 							<span id="profilepicdiv" style="background-image: url('${pageContext.request.contextPath}/protected/resources/profilepics/<c:out value="${sessionScope.user.profilepic}" />')" ></span>
 	                	</a>
 	                </li> 
@@ -53,11 +53,8 @@
 	            <div id="hiddenMenuContainer">
 	            	<span class="glyphicon glyphicon-triangle-top speechBubble"></span>
 				    <ul id="hiddenMenu">
-					    <hr class="hiddenMenuDivisor">
 	    				<li class="hiddenMenuItem"> <a class="hiddenMenuLink" href="http://www.reactiongifs.us/wp-content/uploads/2013/06/now_what_finding_nemo.gif"> Settings </a> </li>
-	    				<hr class="hiddenMenuDivisor">
 	        			<li class="hiddenMenuItem" id="logOutBtn"> LogOut </li>
-	        			<hr class="hiddenMenuDivisor">
 	    			</ul> 	
 				</div>
             

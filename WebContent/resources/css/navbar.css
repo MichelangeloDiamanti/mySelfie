@@ -116,6 +116,11 @@
 	margin-top: -15px;		/* a causa del link la posizione si sballa */
 }
 
+#profilepica:focus
+{
+	outline: 0;
+}
+
 .iconsdiv
 {
 	position: relative;
@@ -224,11 +229,6 @@
 
 }
 
-.hiddenMenuDivisor
-{
-	margin: 0px;
-	border-color: #ddd;
-}
 
 .speechBubble
 {
