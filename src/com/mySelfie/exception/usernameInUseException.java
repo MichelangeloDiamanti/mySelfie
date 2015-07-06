@@ -1,7 +1,12 @@
 package com.mySelfie.exception;
 
 public class usernameInUseException extends Exception {
-    //Parameterless Constructor
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	//Parameterless Constructor
     public usernameInUseException() {}
 
     //Constructor that accepts a message

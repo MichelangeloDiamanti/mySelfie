@@ -83,7 +83,9 @@ public class PostUtils {
             	profilepic = postsRes.getString("profilepic");
             
             	/* si inizia a generare la stringa di risposta con l' HTML per visualizzare i post */
-            	HTMLres += "<table class=\"post_container\"><tr><th class=\"user_pic";
+            	HTMLres += "<table class=\"post_container\">"
+            			+ 	"<tr>"
+            			+ 		"<th class=\"user_pic";
             	
             	if(reqType.equals("profilePost"))
             			HTMLres += "_profile";

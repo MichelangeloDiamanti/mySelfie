@@ -18,6 +18,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.exception.usernameInUseException;
 import com.mySelfie.security.PasswordHash;
 
@@ -129,21 +130,28 @@ public final class UserUtils {
 				newUserStatement.setString(4, m.get("profilePic"));
 				int affectedRows = newUserStatement.executeUpdate();
 				
-				int idNewUser= -1;
-				ResultSet generatedKeys = newUserStatement.getGeneratedKeys();
-	            if (generatedKeys.next()) 
-		           	idNewUser = generatedKeys.getInt(1);
-	            else
-					throw new usernameInUseException();
-				
-		            	
-				// costruisce ed esegue la query che inserisce l' utente setesso tra gli utenti che segue
-				String ufuQuery = "INSERT INTO user_follow_user (id_follower, id_followed) VALUES (?, ?)";
-				PreparedStatement ufuStatement = connect.prepareStatement(ufuQuery);
-				ufuStatement.setInt(1, idNewUser);
-				ufuStatement.setInt(2, idNewUser);
-				ufuStatement.executeUpdate();
-
+				// se non è stato possibile inserire il nuovo utente
+				if (affectedRows == 0) {
+					throw new SQLException("signup failed, no rows affected.");
+				}
+				// se il signup è andato a buon fine
+				else{
+					
+					int idNewUser= -1;
+					ResultSet generatedKeys = newUserStatement.getGeneratedKeys();
+		            if (generatedKeys.next()) 
+			           	idNewUser = generatedKeys.getInt(1);
+		            else
+						throw new usernameInUseException();
+					
+			            	
+					// costruisce ed esegue la query che inserisce l' utente setesso tra gli utenti che segue
+					String ufuQuery = "INSERT INTO user_follow_user (id_follower, id_followed) VALUES (?, ?)";
+					PreparedStatement ufuStatement = connect.prepareStatement(ufuQuery);
+					ufuStatement.setInt(1, idNewUser);
+					ufuStatement.setInt(2, idNewUser);
+					ufuStatement.executeUpdate();	
+				}
 				
 			} else {
 				// se lo username è in uso viene generata un'eccezione
@@ -301,7 +309,40 @@ public final class UserUtils {
 	 *             connessione)
 	 */
 	public static int getId(String username) throws NamingException {
-		return 0;
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// true se lo username NON è in uso, falso altrimenti
+		int id_user = 0;
+
+		// verifica che lo username non sia gia in uso
+		String userIdString = "SELECT id_user FROM User WHERE username = ? ";
+		PreparedStatement userIdSQL;
+		try {
+			userIdSQL = conn.prepareStatement(userIdString);
+			userIdSQL.setString(1, username);
+			ResultSet userIdRes = userIdSQL.executeQuery();
+
+			// se c'è un risultato
+			if (userIdRes.next()) {
+				// imposta l'id dell'utente
+				id_user = userIdRes.getInt("id_user");
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		// ritorna l'id dell'utente
+		return id_user;
 	}
 
 	/**
@@ -360,5 +401,5 @@ public final class UserUtils {
 		return false;
 
 	}
-
+	
 }

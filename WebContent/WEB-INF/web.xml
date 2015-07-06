@@ -33,6 +33,15 @@
     <url-pattern>/protected/postComment</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>followServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.FollowServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>followServlet</servlet-name>
+    <url-pattern>/protected/followUser</url-pattern>
+    <url-pattern>/protected/unfollowUser</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>profileServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ProfileServlet</servlet-class>
   </servlet>
@@ -82,16 +91,15 @@
   </servlet-mapping>
   <security-constraint>
     <web-resource-collection>
-        <web-resource-name>mySelfie</web-resource-name>
-        <url-pattern>/*</url-pattern>
-        <http-method>GET</http-method>
-        <http-method>POST</http-method>
+      <web-resource-name>mySelfie</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
     </web-resource-collection>
-
     <user-data-constraint>
-        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
-</security-constraint>
+  </security-constraint>
   <filter>
     <filter-name>UserCheckFilter</filter-name>
     <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>
