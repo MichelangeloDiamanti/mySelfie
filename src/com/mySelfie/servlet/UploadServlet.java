@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -79,8 +80,10 @@ public class UploadServlet extends HttpServlet {
 		String homeFolder = System.getProperty("user.home");
 		// Immagini temporanee (da troncare etc...)
 		String tmpUploadPath = homeFolder + "/mySelfie/resources/tmp";
-		// Immagini persistenti
-		String uploadPath = homeFolder + "/mySelfie/resources/selfies";
+		// Immagini persistenti compresse
+		String uploadCPath = homeFolder + "/mySelfie/resources/selfies/compressedSize";
+		// Immagini persistenti originali
+		String uploadOPath = homeFolder + "/mySelfie/resources/selfies/originalSize";
 
 
 		try {
@@ -127,7 +130,8 @@ public class UploadServlet extends HttpServlet {
 				// Crea il nuovo file, assicurandosi che il nome sia univoco
 				// nella directory (prefisso, suffisso, directory)
 				File file = File.createTempFile("567", fileExtension, uploads);
-
+				file.deleteOnExit();
+				
 				try {
 					// istazio un nuovo stream di output dal file creato
 					OutputStream os = new FileOutputStream(file);
@@ -189,7 +193,8 @@ public class UploadServlet extends HttpServlet {
 				// Istanzia un nuovo file nel path specificato
 				File cropLoads = new File(tmpUploadPath);
 				File croppedImage = File.createTempFile("567", "." + imageExt, cropLoads);
-
+				croppedImage.deleteOnExit();
+				
 				// scrivo l'immagine nel nuovo file, in modo tale che, quando rispondo al client
 				// l'URL della src sarà cambiato, quindi il browser sarà costretto a refreshare l'immagine
 				// serve a non far usare la versione cashata (vecchia)
@@ -265,6 +270,17 @@ public class UploadServlet extends HttpServlet {
 				File deleteTmpFile = new File(tmpUploadPath + "/" + upImageName);
 				deleteTmpFile.delete();		      
 
+	            
+				// creo un nuovo file nella cartella selfie/originalSize
+				File persUploadsO = new File(uploadOPath);
+				File upImageO = File.createTempFile("567", "." + upImageExt, persUploadsO);
+				// scrivo l'immagine nel nuovo file persistente
+				ImageIO.write(upBuffImage, upImageExt, upImageO);
+				
+				
+				// creo un nuovo file nella cartella selfie/compressedSize
+				File upImage = new File (uploadCPath + "/" + upImageO.getName());
+				
 				
 				//ridimensiona l'immagine
 			    int ubiW = upBuffImage.getWidth();
@@ -280,11 +296,7 @@ public class UploadServlet extends HttpServlet {
 	            g.drawImage(upBuffImage, 0, 0, riW, riH, null);
 	        	g.dispose();
 	            
-	            
-				// creo un nuovo file nella cartella selfie
-				File persUploads = new File(uploadPath);
-				File upImage = File.createTempFile("567", "." + upImageExt, persUploads);
-				
+			
 				//comprimo l' immagine
 				BufferedImage Cimage = Rimage;
 			    OutputStream os =new FileOutputStream(upImage);
@@ -310,8 +322,7 @@ public class UploadServlet extends HttpServlet {
 			    
 			    
 			      
-				// scrivo l'immagine nel nuovo file persistente
-				//ImageIO.write(upBuffImage, upImageExt, upImage);
+
 				
 				// istanzio una nuova selfie e la valorizzo con le informazioni ricavate
 				Selfie selfie = new Selfie();

@@ -102,7 +102,7 @@ public class PostUtils {
             	HTMLres += "\">" + username + "</label>"
             			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
             			//+ "<img class=\"selfie\" src=\"" + contextPath + "/resources/images/loadingIMG.gif\" data-src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
-            			+ "<img id=\"selfie-" + id_selfie + "\" class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" />"
+            			+ "<img id=\"selfie-" + id_selfie + "\" class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/compressedSize/" + picture + "\" />"
             			+ "<div class=\"selfie_tools\">";
             	
             	
@@ -314,7 +314,7 @@ public class PostUtils {
             	//ricava la home dell'utente (dove si suppone siano salvate le risorse protette)
         		String homeFolder = System.getProperty("user.home");
         		
-            	File file = new File(homeFolder + "/mySelfie/resources/selfies/" + picture);
+            	File file = new File(homeFolder + "/mySelfie/resources/selfies/compressedSize/" + picture);
             	// leggo l'immagine che ho salvato
 				BufferedImage bimg;
 				int width=0;
@@ -332,7 +332,7 @@ public class PostUtils {
 				
 				String picClass = (width >= height) ? "thumbnailL" : "thumbnailP";
 				
-            	HTMLres += "<div class=\"postContainer\"><img id=\"selfie-" + id_selfie + "\" class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/" + picture + "\" onClick=\"openIMG(this)\" /></div>";
+            	HTMLres += "<div class=\"postContainer\"><img id=\"selfie-" + id_selfie + "\" class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/compressedSize/" + picture + "\" onClick=\"openIMG(this)\" /></div>";
 
             }
             

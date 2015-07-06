@@ -75,11 +75,25 @@ function bindClicks()
 	      }
 	});
 	
-	//se cambia l' html del documento, va ribindato il seguente evento
+	//se cambia l' html del documento, vanno ribindati i seguenti eventi
 	$('#hiddenMenuBtn').click(function() 
 	{
 		$("#hiddenMenuContainer").slideToggle( "fast" );	
 	});
+	
+	$('#logOutBtn').click(function() {
+		$.ajax({
+			method : "POST",
+			url : '/mySelfie/userValidator',
+			data : {
+				action : "logout"
+			},
+			success : function(responseText) {
+				window.location = "/mySelfie/";
+			}
+		});
+	});
+	
 
 }
 

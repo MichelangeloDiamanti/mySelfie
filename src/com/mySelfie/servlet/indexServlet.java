@@ -1,13 +1,23 @@
 package com.mySelfie.servlet;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -85,14 +95,53 @@ public class indexServlet extends HttpServlet {
 	    	    // Crea il nuovo file, assicurandosi che il nome sia univoco nella directory (prefisso, suffisso, directory)
 	    	    String fileExtension = "." + FilenameUtils.getExtension(fileName);
 	    	    File file = File.createTempFile("567", fileExtension, uploads); 
-	    	    String uploadedFileName = file.getName();
-	    	    
+	    	    	    	    
 	    	    //Salva l'immagine caricata 
 	    	    try (InputStream input = filePart.getInputStream()) {  
 	    	        Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	    	    }
 	    	    
+	    	    BufferedImage picToCompress = ImageIO.read(file);
 	    	    
+	    	    //ridimensiona l'immagine
+			    int ptcW = picToCompress.getWidth();
+			    int ptcH = picToCompress.getHeight();
+			    
+			    int riW = (ptcW >= ptcH) ? 100 : (100*ptcW/ptcH);
+			    int riH = (ptcW >= ptcH) ? (100*ptcH/ptcW) : 100;
+			    		    			    
+			    int rtype = (picToCompress.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : picToCompress.getType();
+			    
+			    BufferedImage Rimage = new BufferedImage(riW, riH, rtype);
+	            Graphics2D g = Rimage.createGraphics();
+	            g.drawImage(picToCompress, 0, 0, riW, riH, null);
+	        	g.dispose();
+	    	    
+	        	file.delete();		      
+	        	File cmprsdFile = File.createTempFile("567", fileExtension, uploads); 
+	        	String uploadedFileName = cmprsdFile .getName();
+	        	
+	        	//comprimo l' immagine
+				BufferedImage Cimage = Rimage;
+			    OutputStream os =new FileOutputStream(cmprsdFile);
+
+			    Iterator<ImageWriter>writers =  ImageIO.getImageWritersByFormatName("jpg");
+			    ImageWriter writer = (ImageWriter) writers.next();
+
+			    ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+			    writer.setOutput(ios);
+
+			    ImageWriteParam param = writer.getDefaultWriteParam();
+			     
+			    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			    param.setCompressionQuality(0.3f);
+			    writer.write(null, new IIOImage(Cimage, null, null), param);
+			      
+			    os.close();
+			    ios.close();
+			    writer.dispose();
+			    
+			    
 	    	    // SALVATAGGIO INFORMAZIONI INSERITE DALL'UTENTE NEL DB
 	    	    
 	    	    // Immagazzina le informazioni inserite in una mappa per passarle alla classe responsabile dell'inserimento nel DB
