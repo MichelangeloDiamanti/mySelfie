@@ -1,5 +1,7 @@
 package com.mySelfie.servlet;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,10 +11,15 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -252,18 +259,59 @@ public class UploadServlet extends HttpServlet {
 	      		java.sql.Timestamp dateTime = new java.sql.Timestamp(utilDate.getTime());
 	      		
 				// leggo l'immagine da salvare
-				BufferedImage upBuffImage = ImageIO.read(new File(tmpUploadPath + "/" + upImageName));
-				
+				BufferedImage upBuffImage = ImageIO.read(new File(tmpUploadPath + "/" + upImageName));		 
+				 
 				// cancello l'immagine temporanea
 				File deleteTmpFile = new File(tmpUploadPath + "/" + upImageName);
-				deleteTmpFile.delete();
+				deleteTmpFile.delete();		      
+
 				
+				//ridimensiona l'immagine
+			    int ubiW = upBuffImage.getWidth();
+			    int ubiH = upBuffImage.getHeight();
+					   
+			    int riW = (ubiW > 1000) ? 1000 : ubiW;
+			    int riH = (ubiH*riW)/ubiW;
+			    			    
+			    int rtype = (upBuffImage.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : upBuffImage.getType();
+			    
+			    BufferedImage Rimage = new BufferedImage(riW, riH, rtype);
+	            Graphics2D g = Rimage.createGraphics();
+	            g.drawImage(upBuffImage, 0, 0, riW, riH, null);
+	        	g.dispose();
+	            
+	            
 				// creo un nuovo file nella cartella selfie
 				File persUploads = new File(uploadPath);
 				File upImage = File.createTempFile("567", "." + upImageExt, persUploads);
 				
+				//comprimo l' immagine
+				BufferedImage Cimage = Rimage;
+			    OutputStream os =new FileOutputStream(upImage);
+
+			    Iterator<ImageWriter>writers =  ImageIO.getImageWritersByFormatName("jpg");
+			    ImageWriter writer = (ImageWriter) writers.next();
+
+			    ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+			    writer.setOutput(ios);
+
+			    ImageWriteParam param = writer.getDefaultWriteParam();
+			     
+			    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			    param.setCompressionQuality(0.3f);
+			    writer.write(null, new IIOImage(Cimage, null, null), param);
+			      
+			    os.close();
+			    ios.close();
+			    writer.dispose();
+			     
+			     
+			    
+			    
+			    
+			      
 				// scrivo l'immagine nel nuovo file persistente
-				ImageIO.write(upBuffImage, upImageExt, upImage);
+				//ImageIO.write(upBuffImage, upImageExt, upImage);
 				
 				// istanzio una nuova selfie e la valorizzo con le informazioni ricavate
 				Selfie selfie = new Selfie();
