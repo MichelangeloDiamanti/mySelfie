@@ -17,6 +17,7 @@
 		
 		<script type="text/javascript">
 			<jsp:include page="/resources/javascript/scripts/getPosts.js" />
+			<jsp:include page="/resources/javascript/scripts/comments.js" />
 		</script>
 		
 	</jsp:attribute>

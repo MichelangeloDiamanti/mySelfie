@@ -36,6 +36,12 @@ function openIMG(i)
 			resizeComments();
 			
 			bindClicks();
+			
+			// viene bindato la funzione post_comment al click del bottone passando come parametro
+			// l'elemento cliccato
+			$('.form-comment').on('submit', function(){
+				post_comment(this);
+			});
 		}
 	});
 	

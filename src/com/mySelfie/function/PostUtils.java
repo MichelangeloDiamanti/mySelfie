@@ -13,11 +13,7 @@ import javax.imageio.ImageIO;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PostUtils {
 
@@ -69,9 +65,6 @@ public class PostUtils {
 	        String profilepic = "";
 	        String hashtag = "";
 	        String tag = "";
-	        String commentText = "";
-	        String commentUser = "";
-	        String commentUserPic = "";
 	        
 	        /* flag che indica se non ci sono foto da visualizzare */
 			boolean emptyFlag = false;
@@ -199,40 +192,28 @@ public class PostUtils {
      	       
      	        HTMLres += comment_sections;
      	        	
-     	        HTMLres += "</div><div class=\"comments\"><ul class=\"comment_list\"><li class=\"comment_user_container\">";
-     	       
-     	       /* vengono presi tutti i commenti (e utente che ha commentato) del selfie corrente */
-    			String commentQuery = "SELECT CO.text, US.profilepic, US.username FROM ((Comment AS CO INNER JOIN Selfie AS SE ON CO.id_selfie = SE.id_selfie) INNER JOIN User AS US ON CO.id_user = US.id_user) WHERE SE.id_selfie = ? ORDER BY CO.date ASC";
-     	        PreparedStatement commentSQL = connect.prepareStatement(commentQuery);
-     	        commentSQL.setInt(1, id_selfie);
-     	        ResultSet commentRes = commentSQL.executeQuery();
-     	        while (commentRes.next()) 
-     	        {
-     	        	commentText = commentRes.getString("text");
-     	        	commentUser = commentRes.getString("username");
-     	        	commentUserPic = commentRes.getString("profilepic");
-     
-     	        	
-     	        	//se viene trovato un hashtag in un commento, viene aggiunto un link
-     	        	Pattern pattern = Pattern.compile("#[A-Za-z]+");
-     	        	Matcher matcher = pattern.matcher(commentText);
-     	        	
-     	        	while (matcher.find()) 
-     	        	{
-     	                String commentHashtag = "<a href=\"" + contextPath + "/protected/hashtag/" + matcher.group().substring(1) + "\" class=\"hashtag_link\"> " + matcher.group() + "</a> ";
-     	                commentText = commentText.replaceAll(matcher.group() , commentHashtag);
-     	        	}
-     	        	     	        	
-     	        	HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + commentUser + "\">"
-                			+ "<span class=\"profile_pic_comment\" style=\"background-image: url('" + contextPath + "/protected/resources/profilepics/" + commentUserPic + "')\" ></span>"
-                			+ "<label class=\"profile_name_comment\">" + commentUser + "</label>"
-                			+ "</a></li>"
-                			+ "<li class=\"comment_container\">"
-                			+ commentText
-                			+ "</li>";
-     	        }
-     	    
-     	        HTMLres += "</ul></div><div class=\"comment_input\"><input type=\"text\" class=\"comment_textbox\" placeholder=\"Write your comment here...\"/><button type=\"button\" class=\"comment_btn\"><span class=\"glyphicon glyphicon-comment\"></span></button></div></div></td></tr></table>";
+     	        HTMLres += "</div><div id=\"list_container-" + id_selfie + "\"  class=\"comments\">"
+     	        		+ 	"<ul id=\"comments_list-" + id_selfie + "\" class=\"comment_list\">";
+     	        
+     	        // carica tutti i commenti relativi al selfie in questione grazie ad una funzione contenuta nella classe CommentUtils
+     	        HTMLres += CommentUtils.getComments(id_selfie, connect, contextPath);
+
+     	        /* aggiunge la sezione dei commenti, passando l'id del selfie su cui commentare
+     	         * la form ha return false al submit perchè viene gestito tramite ajax in comments.js
+     	         */
+		        HTMLres += "</ul>"
+		        		+ 	"</div>"
+		        		+ 		"<form method=\"POST\" onsubmit=\"return false\"class=\"form-comment form-inline\">"
+		        		+ 			"<div class=\"comment_input\">"
+		        		+ 				"<input type=\"text\" name=\"comment_txt\" class=\"comment_textbox\" placeholder=\"Write your comment here...\"/>"
+		        		+ 				"<button type=\"submit\" name=\"comment_btn\" id=\"comment-" + id_selfie + "\" class=\"comment_btn\">"
+		        		+ 					"<span class=\"glyphicon glyphicon-comment\"></span>"
+		        		+ 				"</button>"
+		        		+ 			"</div>"
+		        		+		"</form>"
+		        		+ 	"</div>"
+		        		+ "</td></tr></table>";
+
             }
 
             /* se non sono stati trovati selfie, viene stampato un messaggio all' utente */
@@ -250,7 +231,8 @@ public class PostUtils {
         
         return HTMLres;
 	}
-	
+
+
 	public static void likeSelfie(String heart, int me_id, int idSelfie)
 	{
 		Context context = null;			// contesto

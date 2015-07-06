@@ -21,6 +21,12 @@ $( document ).ready(function()
 			//viene restituito l' HTML dei post, da poter iniettare nel div
 			postsContainer.innerHTML = responseText;
 			
+			// viene bindato la funzione post_comment al click del bottone passando come parametro
+			// l'elemento cliccato
+			$('.form-comment').on('submit', function(){
+				post_comment(this);
+			});
+			
 			//una volta che le immagini si sono caricate, è possibile applicare il plugin unveil
 			$('.selfie').on('load change', function()
 			{

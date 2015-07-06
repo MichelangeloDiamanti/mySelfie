@@ -1,5 +1,4 @@
-function resizeComments()
-{	
+$( document ).ready(function() {
 	/* prende tutti i contenitori dei commenti */
 	var comment = document.getElementsByClassName("comments");
 	/* prende tutti i contenitori delle immagini */
@@ -17,8 +16,14 @@ function resizeComments()
 			var ch = 50;						//altezza input
 			comment[i].style.height = (sh - nh - ch) + "px";
 	}	
-}
 
+
+	// viene bindato la funzione post_comment al click del bottone passando come parametro
+	// l'elemento cliccato
+	$('.form-comment').on('submit', function(){
+		post_comment(this);
+	});
+});
 
 
 

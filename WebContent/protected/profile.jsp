@@ -35,6 +35,7 @@
 		</script>		
 		
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/openPost.js"></script>
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/comments.js"></script>
 		
 	</jsp:attribute>
     
