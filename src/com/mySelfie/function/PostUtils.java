@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 public class PostUtils {
 
-	public static String getPosts(String reqType, String contextPath,  int id_req_obj, int id_usr)
+	public static String getPosts(String reqType, String contextPath,  int id_req_obj, int id_usr, int last_index, String max_date)
 	{
 		
 		Context context = null;			// contesto
@@ -41,19 +41,54 @@ public class PostUtils {
 	        
 	        if(reqType.equals("homepage"))	        	
 	        {
-	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM ((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) WHERE UFU.id_follower= ? AND SE.uploader=UFU.id_followed ORDER BY SE.date DESC";
+	        	postsQuery = 
+	        				"SELECT "
+	        			+ 		"SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic "
+	        			+ 	"FROM"
+	        			+ 		"((Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) "
+	        			+ 		"INNER JOIN user_follow_user AS UFU ON US.id_user = UFU.id_followed) "
+	        			+ 	"WHERE "
+	        			+ 		"UFU.id_follower= ? AND "
+	        			+ 		"SE.uploader=UFU.id_followed AND "
+	        			+		"SE.date < ? "
+	        			+ 	"ORDER BY "
+	        			+ 		"SE.date DESC "
+	        			+ 	"LIMIT "
+	        			+ 		"?,10";
 	        }
 	        if(reqType.equals("hashtag"))	        	
 	        {
-	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM (Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) WHERE id_selfie = ANY(SELECT id_selfie FROM hashtag_in_selfie WHERE id_hashtag= ? ) ORDER BY SE.date DESC";
+	        	postsQuery = 
+	        				"SELECT "
+	        			+ 		"SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic "
+	        			+ 	"FROM "
+	        			+ 		"(Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) "
+	        			+ 	"WHERE "
+	        			+ 		"id_selfie = ANY(SELECT id_selfie FROM hashtag_in_selfie WHERE id_hashtag= ? ) AND "
+	        			+		"SE.date < ? "
+	        			+ 	"ORDER BY "
+	        			+ 		"SE.date DESC "
+	        			+ 	"LIMIT "
+	        			+ 		"?,10";
 	        }
 	        if(reqType.equals("profilePost"))	        	
 	        {
-	        	postsQuery = "SELECT SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic FROM (Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) WHERE id_selfie = ? ";
+	        	postsQuery = 
+	        				"SELECT "
+	        			+ 		"SE.id_selfie, SE.picture, SE.description, US.username, US.profilepic "
+	        			+ 	"FROM "
+	        			+ 		"(Selfie AS SE INNER JOIN User as US ON SE.uploader=US.id_user) "
+	        			+ 	"WHERE "
+	        			+ 		"id_selfie = ? AND "
+	        			+		"SE.date < ? "
+	        			+ 	"LIMIT "
+	        			+ 		"?,10";
 	        }
 	        
 	        PreparedStatement postsSQL = connect.prepareStatement(postsQuery);
  	        postsSQL.setInt(1, id_req_obj);		        
+ 	        postsSQL.setString(2, max_date);
+ 	        postsSQL.setInt(3, last_index); 	        
 	        ResultSet postsRes = postsSQL.executeQuery();
 	 	        
 	        /* tutti gli attributi da assegnare ai selfie */
@@ -223,6 +258,11 @@ public class PostUtils {
  	        {
  	        	HTMLres = "<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>";
  	        }
+ 	        
+// 	       HTMLres += "<div id=\"bottomDiv\" style=\"height:100px; border:1px solid black\"></div>";
+// 	       HTMLres += "<button>MORE!</button>";
+// 	       HTMLres += "<input type=\"hidden\"/>";
+ 	       
  	        
         } catch (SQLException | NamingException e) { e.printStackTrace();
         } finally {

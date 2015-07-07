@@ -2,6 +2,7 @@ package com.mySelfie.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -11,9 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.mySelfie.entity.User;
 import com.mySelfie.function.CommentUtils;
 import com.mySelfie.function.PostUtils;
-import com.mySelfie.entity.User;
 
 
 /**
@@ -62,8 +63,10 @@ public class PostServlet extends HttpServlet {
         		response.setContentType("text/plain");
 
         		String queryType = request.getParameter("queryType");          	   
-    	  		
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, me_id, me_id);
+        		int last_index = Integer.parseInt(request.getParameter("lastIndex"));          	   
+        		String max_date = request.getParameter("date");
+        		
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, me_id, me_id, last_index, max_date);
 
         		response.getWriter().write(HTMLres);
            	}
@@ -76,10 +79,17 @@ public class PostServlet extends HttpServlet {
 
         		String queryType = request.getParameter("queryType");
         		String idIMGstr = request.getParameter("idIMG");
+        		//int last_index = Integer.parseInt(request.getParameter("lastIndex")); 
         		idIMGstr = idIMGstr.substring(idIMGstr.lastIndexOf('-')+1);
         		int idIMG = Integer.parseInt(idIMGstr);
-        	
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG, me_id);
+    			// istanzio una nuova data per passarla a getposts
+    			Date now = new Date();
+    			// converto la nuova data in formato sqlDatetime (da me brevettato top kek) 
+    			java.sql.Date sqlDate = new java.sql.Date(now.getTime());
+    			java.sql.Time sqlTime = new java.sql.Time(now.getTime());
+    			String sqlDateTime = sqlDate.toString() + " " + sqlTime.toString();
+        		
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG, me_id, 0, sqlDateTime);
 
         		response.getWriter().write(HTMLres);
            	}

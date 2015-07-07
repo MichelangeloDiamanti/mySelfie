@@ -1,6 +1,7 @@
 package com.mySelfie.servlet;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -36,7 +37,14 @@ public class HashtagServlet extends HttpServlet {
 		
 		String hashtag = request.getPathInfo().substring(1);
 		hashtag = "#" + hashtag;
-							
+		
+		int last_index;
+		if(request.getParameter("lastIndex")!=null)		
+			last_index = Integer.parseInt(request.getParameter("lastIndex"));
+		else
+			last_index = 0;
+		
+		
 		int id_ht = PostUtils.getHashtagId(hashtag);
 		
 		String posts = "";
@@ -52,7 +60,14 @@ public class HashtagServlet extends HttpServlet {
 	        ServletContext servletContext = getServletContext();
 			String contextPath = servletContext.getContextPath();
 			
-			posts = PostUtils.getPosts("hashtag", contextPath, id_ht, me_id);
+			// istanzio una nuova data per passarla a getposts
+			Date now = new Date();
+			// converto la nuova data in formato sqlDatetime (da me brevettato top kek) 
+			java.sql.Date sqlDate = new java.sql.Date(now.getTime());
+			java.sql.Time sqlTime = new java.sql.Time(now.getTime());
+			String sqlDateTime = sqlDate.toString() + " " + sqlTime.toString();
+			// prendo tutti i post con l'hashtag, a partire dall'indice 0 e postati prima di ora
+			posts = PostUtils.getPosts("hashtag", contextPath, id_ht, me_id, last_index, sqlDateTime);
 		}
 		else
 		{
@@ -69,7 +84,49 @@ public class HashtagServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String hashtag = request.getPathInfo().substring(1);
+		hashtag = "#" + hashtag;
+		
+		int last_index;
+		if(request.getParameter("lastIndex")!=null)		
+			last_index = Integer.parseInt(request.getParameter("lastIndex"));
+		else
+			last_index = 0;
+		
+		
+		int id_ht = PostUtils.getHashtagId(hashtag);
+		
+		String posts = "";
+		
+		if(id_ht!=-1)
+		{
+			/* dalla sessione si ricava l' id dello user */
+			HttpSession session = request.getSession();
+			User me = new User();
+	  		me = (User) session.getAttribute("user");
+	  		int me_id = me.getId_user();
+	  		
+	        ServletContext servletContext = getServletContext();
+			String contextPath = servletContext.getContextPath();
+			
+			// istanzio una nuova data per passarla a getposts
+			Date now = new Date();
+			// converto la nuova data in formato sqlDatetime (da me brevettato top kek) 
+			java.sql.Date sqlDate = new java.sql.Date(now.getTime());
+			java.sql.Time sqlTime = new java.sql.Time(now.getTime());
+			String sqlDateTime = sqlDate.toString() + " " + sqlTime.toString();
+			// prendo tutti i post con l'hashtag, a partire dall'indice 0 e postati prima di ora
+			posts = PostUtils.getPosts("hashtag", contextPath, id_ht, me_id, last_index, sqlDateTime);
+			if(posts.equals("<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>")){
+				posts = "end";
+			}
+		}
+		else
+		{
+			posts = "<div class=\"empty\"><label class=\"empty_label\">There are no posts with that hashtag...</label></div>";
+		}
+		response.getWriter().write(posts);
+		
 	}
 
 }
