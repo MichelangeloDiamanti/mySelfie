@@ -44,6 +44,7 @@ public class PostServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
+		// stringa che indica l'azione da svolgere
 		String reqType = request.getParameter("reqType");
         
 		/* dalla sessione si ricava l' id dello user */

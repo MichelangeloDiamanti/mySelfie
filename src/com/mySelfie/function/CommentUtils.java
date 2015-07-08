@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,6 +13,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import com.mySelfie.connection.ConnectionManager;
+import com.mySelfie.entity.Comment;
 
 public class CommentUtils {
 
@@ -283,6 +288,66 @@ public class CommentUtils {
         }
 
 		return HTMLres;
+	}
+	
+
+	
+	public static List<Comment> getSelfieComments(int selfieId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+
+		// dichiaro una lista di hashtags dove caricare i risultati
+		List<Comment> selfieCommentsList = new ArrayList<Comment>();
+		// hashtag di appoggio per caricare la lista
+		Comment comment = new Comment();
+		
+		
+		/*
+		 * query che restituisce tutti gli hashtags di un selfie
+		 */
+		String selfieCommentsString = 
+					"SELECT "
+				+ 		"CO.* "
+				+ 	"FROM "
+				+ 		"Comment AS CO INNER JOIN "
+				+ 		"Selfie AS SE ON CO.id_selfie = SE.id_selfie "
+				+ 	"WHERE "
+				+ 		"SE.id_selfie = ? "
+				+ 	"ORDER BY "
+				+ 		"CO.date ASC";
+
+		// query formato SQL
+		PreparedStatement selfieCommentsSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			selfieCommentsSQL = connect.prepareStatement(selfieCommentsString);
+			selfieCommentsSQL.setInt(1, selfieId);
+			ResultSet selfieCommentsRes = selfieCommentsSQL.executeQuery();
+			
+			/* vengono scorsi tutti gli hashtags */
+			while (selfieCommentsRes.next()) 
+			{		
+				/* vengono presi tutti gli attributi del hashtag e messi nel hashtag di appoggio */				
+				comment.setId_comment(selfieCommentsRes.getInt("id_comment"));
+				comment.setId_user(selfieCommentsRes.getInt("id_user"));
+				comment.setId_selfie(selfieCommentsRes.getInt("id_selfie"));
+				comment.setText(selfieCommentsRes.getString("text"));
+				comment.setDate(selfieCommentsRes.getDate("date"));
+				// l'hashtag di appoggio viene aggiunto alla lista
+				selfieCommentsList.add(comment);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+		
+		//ritorna la lista di commenti
+		return selfieCommentsList;
+
 	}
 
 }

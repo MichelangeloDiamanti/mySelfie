@@ -402,4 +402,104 @@ public final class UserUtils {
 
 	}
 	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce lo username
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getUsernameById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String username = null;
+		
+		/*
+		 * query che restituisce lo username di un utente grazie all'id
+		 */
+		String usernameString = 
+				"SELECT "
+			+ 		"US.username "
+			+ 	"FROM "
+			+ 		"User AS US "
+			+ 	"WHERE "
+			+ 		"US.id_user = ?";
+		
+		// query formato SQL
+		PreparedStatement usernameSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			usernameSQL = connect.prepareStatement(usernameString);
+			usernameSQL.setInt(1, userId);		         	        
+			ResultSet usernameRes = usernameSQL.executeQuery();
+			
+			/* se c'è un risultato */
+			if (usernameRes.next()) 
+			{		
+				// viene impostato lo username
+				username = usernameRes.getString("username");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+		
+		//ritorna la lista dei selfie
+		return username;
+	}
+	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce l'immagine di profilo
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getUserProfilepicById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String profilepic = null;
+		
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al suo id
+		 */
+		String profilepicString = 
+				"SELECT "
+			+ 		"US.profilepic "
+			+ 	"FROM "
+			+ 		"User AS US "
+			+ 	"WHERE "
+			+ 		"US.id_user = ?";
+		
+		// query formato SQL
+		PreparedStatement profilepicSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			profilepicSQL = connect.prepareStatement(profilepicString);
+			profilepicSQL.setInt(1, userId);		         	        
+			ResultSet profilepicRes = profilepicSQL.executeQuery();
+			
+			/* se c'è un risultato */
+			if (profilepicRes.next()) 
+			{		
+				// viene impostato lo username
+				profilepic = profilepicRes.getString("profilepic");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		//ritorna la lista dei selfie
+		return profilepic;
+	}
+	
 }
