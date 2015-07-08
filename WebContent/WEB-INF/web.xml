@@ -65,6 +65,16 @@
     <servlet-name>likePostsServlet</servlet-name>
     <url-pattern>/protected/likePosts</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>modifyProfileServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ModifyProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>modifyProfileServlet</servlet-name>
+    <url-pattern>/protected/modifyProfile</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>

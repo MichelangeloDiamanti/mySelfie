@@ -107,8 +107,8 @@ public class indexServlet extends HttpServlet {
 			    int ptcW = picToCompress.getWidth();
 			    int ptcH = picToCompress.getHeight();
 			    
-			    int riW = (ptcW >= ptcH) ? 100 : (100*ptcW/ptcH);
-			    int riH = (ptcW >= ptcH) ? (100*ptcH/ptcW) : 100;
+			    int riW = (ptcW >= ptcH) ? 200 : (200*ptcW/ptcH);
+			    int riH = (ptcW >= ptcH) ? (200*ptcH/ptcW) : 200;
 			    		    			    
 			    int rtype = (picToCompress.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : picToCompress.getType();
 			    

@@ -66,8 +66,15 @@ public final class UserUtils {
 	 * @throws NamingException
 	 */
 	public static boolean exist(String username) throws NamingException {
-
-		return false;
+		
+		boolean exst = false;
+		
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// controllo se lo user esiste usando il metodo con connessione
+		exst = UserUtils.exist(username, connect);
+		// torna l'esito del controllo
+		return exst;
 	}
 
 	/**
@@ -500,6 +507,41 @@ public final class UserUtils {
 		
 		//ritorna la lista dei selfie
 		return profilepic;
+	}
+	
+	/**
+	 * ricava la password criptata di uno user passato tramite id
+	 * 
+	 * @param me_id
+	 * @return
+	 */
+	public static String getHashedPassword(int me_id)
+	{
+		// password da ritornare
+		String Hpass = null;
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();	  
+	        
+        // ricava la password criptata
+		String passQuery = "SELECT password FROM User WHERE id_user = ? ";
+		PreparedStatement passSQL;
+		try {
+			passSQL = connect.prepareStatement(passQuery);
+			passSQL.setInt(1, me_id);
+			ResultSet passRes = passSQL.executeQuery();		        
+			
+			while (passRes.next()) 
+				Hpass = passRes.getString("password");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+
+		return Hpass;
+		
 	}
 	
 }
