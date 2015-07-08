@@ -1,4 +1,4 @@
-<form action="/mySelfie/homepage/signup" method="post" enctype="multipart/form-data" class="form-horizontal" onSubmit="return checkInput()">
+<form action="/mySelfie/index/signup" method="post" enctype="multipart/form-data" class="form-horizontal" onSubmit="return checkInput()">
     
     <div class="form-group">
       <div class="col-md-8">

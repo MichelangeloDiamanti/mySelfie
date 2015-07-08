@@ -42,7 +42,7 @@ $("#suusername").on({
 		var len = my_txt.length;
 		if(len > 0) {
 			$.ajax({
-				url : '/mySelfie/homepage/checkUsername',
+				url : '/mySelfie/index/checkUsername',
 				data : {
 					username : $('#suusername').val(),
 					reqType : "checkUsr"
