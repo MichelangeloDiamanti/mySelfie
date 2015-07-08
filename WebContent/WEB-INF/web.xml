@@ -56,6 +56,16 @@
     <servlet-name>likePostsServlet</servlet-name>
     <url-pattern>/protected/likePosts</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>modifyProfileServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ModifyProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>modifyProfileServlet</servlet-name>
+    <url-pattern>/protected/modifyProfile</url-pattern>
+  </servlet-mapping>
+  
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>
@@ -82,16 +92,15 @@
   </servlet-mapping>
   <security-constraint>
     <web-resource-collection>
-        <web-resource-name>mySelfie</web-resource-name>
-        <url-pattern>/*</url-pattern>
-        <http-method>GET</http-method>
-        <http-method>POST</http-method>
+      <web-resource-name>mySelfie</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
     </web-resource-collection>
-
     <user-data-constraint>
-        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
-</security-constraint>
+  </security-constraint>
   <filter>
     <filter-name>UserCheckFilter</filter-name>
     <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>

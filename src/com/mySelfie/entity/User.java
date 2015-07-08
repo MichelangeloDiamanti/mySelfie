@@ -1,6 +1,9 @@
 package com.mySelfie.entity;
 
-import java.sql.Date;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 public class User {
 	private int id_user = 0;
@@ -117,6 +120,16 @@ public class User {
 
 	public void setBirthdate(Date birthdate) {
 		this.birthdate = birthdate;
+	}
+
+	public void setBirthdate(String birthdate) throws ParseException  {
+		//converto la stringa in Data
+		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd"); 
+		Date bd = df.parse(birthdate);    					  
+		java.sql.Date dateSQL = new java.sql.Date(bd.getTime());
+		//setto l' attributo birthdate con la data convertita
+		this.birthdate = dateSQL;
+	
 	}
 
 	public boolean isValid() {

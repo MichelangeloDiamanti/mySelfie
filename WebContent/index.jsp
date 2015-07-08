@@ -32,8 +32,7 @@
 		</c:if>
 
 		<c:if test="${param.status == 'fail' }">
-		    <script
-				src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+		    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		    <c:if test="${param.reason == 'usernameInUseException' }">
 				<script>
 					toastr.error('username already in use', 'Registration failed');

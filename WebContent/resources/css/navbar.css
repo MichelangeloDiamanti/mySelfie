@@ -196,10 +196,10 @@
 	right: -50px;
 	top: 50px;	
 	
-	-webkit-box-shadow: 0px 0px 3px 0px rgba(255, 255, 255, 0.75);
-	-moz-box-shadow:    0px 0px 3px 0px rgba(255, 255, 255, 0.75);
-	-o-box-shadow: 		0px 0px 3px 0px rgba(255, 255, 255, 0.75);
-	box-shadow:         0px 0px 3px 0px rgba(255, 255, 255, 0.75);
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(25, 25, 25, 0.75);
+	-moz-box-shadow:    0px 0px 3px 0px rgba(25, 25, 25, 0.75);
+	-o-box-shadow: 		0px 0px 3px 0px rgba(25, 25, 25, 0.75);
+	box-shadow:         0px 0px 3px 0px rgba(25, 25, 25, 0.75);
 
 	background-color: #F0F0F0;
 	border-radius: 3px;
@@ -237,7 +237,7 @@
 	left: 48px;
 	color: #F0F0F0;
 	font-size: 20px;
-	text-shadow: 0px 0px 3px rgba(227, 227, 227, 1);
+	text-shadow: 0px 0px 3px rgba(227, 227, 227, 0.75);
 	cursor: default;
 }
 

@@ -53,7 +53,7 @@
 	            <div id="hiddenMenuContainer">
 	            	<span class="glyphicon glyphicon-triangle-top speechBubble"></span>
 				    <ul id="hiddenMenu">
-	    				<li class="hiddenMenuItem"> <a class="hiddenMenuLink" href="http://www.reactiongifs.us/wp-content/uploads/2013/06/now_what_finding_nemo.gif"> Settings </a> </li>
+	    				<li class="hiddenMenuItem"> <a class="hiddenMenuLink" href="${pageContext.request.contextPath}/protected/modifyProfile.jsp"> Settings </a> </li>
 	        			<li class="hiddenMenuItem" id="logOutBtn"> LogOut </li>
 	    			</ul> 	
 				</div>

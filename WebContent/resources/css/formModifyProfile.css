@@ -1,0 +1,125 @@
+@import url("/mySelfie/resources/css/datePicker/bootstrap-datepicker.css");
+@import url("/mySelfie/resources/css/fileInput/fileinput.css");
+
+#modifyProfile
+{
+	position: relative;
+	top: 10px;
+	left: 10px;
+	width: 450px;
+	height: auto;
+	border: 1px #aaa solid;
+	border-radius: 4px 4px 4px 4px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 25px 25px 25px 25px;
+	margin-bottom: 20px;
+		
+	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(50, 50, 50, 0.5);
+	-moz-box-shadow:    inset 0px 0px 10px 0px rgba(50, 50, 50, 0.5);
+	-o-box-shadow:      inset 0px 0px 10px 0px rgba(50, 50, 50, 0.5);	
+	box-shadow:         inset 0px 0px 10px 0px rgba(50, 50, 50, 0.5);
+}
+
+#my-datepicker
+{
+	margin-top: 8px;
+	font-size:12px;
+}
+
+#modifyBtn
+{
+	border:0px solid;
+	background-color: #00344F;
+	color: #D8D8D8;
+	border-radius: 4px 4px 4px 4px;
+}
+#modifyBtn:hover
+{
+	-webkit-box-shadow: 0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	-moz-box-shadow:    0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	-o-box-shadow:      0px 1px 7px 0px rgba(0, 51, 79, 0.75);
+	box-shadow:         0px 1px 7px 0px rgba(0, 51, 79, 0.75);	
+}
+
+.subtitle
+{
+	color: #005782;
+	margin-bottom: 20px;
+}
+ 
+#mpTitle
+{	
+	color: #00344f;
+	position: relative;
+	font-size: 17px;
+	left: 20px;
+	top: 10px;
+}
+
+#wrench
+{
+	font-size: 20px;
+}
+
+.mpdivisor
+{
+	display: block; 
+	height: 1px;
+    border: 0; 
+    border-top: 1px solid #005782;
+    margin: 1em 0; 
+    padding: 0;
+}
+
+.alert {
+	position: relative;
+	left: -14px;
+	top: -1;
+	width: 396px;
+	padding: 2px 35px 2px 14px;
+  	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  	border: 1px solid #fbeed5;
+  	-webkit-border-radius: 0px 0px 4px 4px;
+  	-moz-border-radius: 0px 0px 4px 4px;
+  	border-radius: 0px 0px 4px 4px;
+}
+
+.alert-success {
+ 	background-color: #dff0d8;
+  	border-color: #d6e9c6;
+  	color: #468847;
+}
+.alert-danger,
+.alert-error {
+  	background-color: #f2dede;
+  	border-color: #eed3d7;
+  	color: #b94a48;
+}
+.alert-info {
+  	background-color: #d9edf7;
+  	border-color: #bce8f1;
+  	color: #3a87ad;
+}
+
+#mprofilepicdiv
+{
+	position: relative;
+	float: right;
+	top: 25px;
+	left: 5px;
+	width: 34px;
+	height: 34px;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	border-radius: 10%;
+	background-size: 34px 34px;	
+}
+
+#okpass
+{
+	color: #00A36A;
+	font-size: 20x;
+	margin-left: 10px;
+	margin-right: 10px;
+}

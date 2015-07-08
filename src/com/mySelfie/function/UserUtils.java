@@ -65,8 +65,31 @@ public final class UserUtils {
 	 * @throws NamingException
 	 */
 	public static boolean exist(String username) throws NamingException {
+		
+		boolean exst = false;
+		
+		//apro una connessione al DB
+		Context context = null;			// contesto
+        DataSource datasource = null;	// dove pescare i dati
+        Connection connect = null;		// connessione al DB
+		try
+		{	
+            context = new InitialContext();
+			datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
+	        connect = datasource.getConnection();	  
+		
+	    
+	        exst = UserUtils.exist(username, connect);
+	        
+		}
+		catch (SQLException | NamingException e) { e.printStackTrace(); } 
+    	finally 
+    	{
+    		// chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
 
-		return false;
+		return exst;
 	}
 
 	/**
