@@ -23,7 +23,7 @@ function openIMG(i)
 		url : '/mySelfie/protected/openPost',
 		data : 
 		{ 
-			reqType: "profilePost",
+			reqType: "getPosts",
 			queryType: queryType,
 			idIMG: idIMG
 		},
@@ -38,7 +38,11 @@ function openIMG(i)
 			oIMG += "</div>";
 			document.getElementById('bcontainer').innerHTML += oIMG;
 			
-			resizeComments();
+			//una volta che le immagini si sono caricate, è possibile resizarle
+			$('.selfie').on('load change', function()
+			{
+				resizeComments();
+			});
 			
 			bindClicks();
 			

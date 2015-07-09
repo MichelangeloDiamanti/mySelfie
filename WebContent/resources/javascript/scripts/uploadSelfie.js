@@ -55,6 +55,8 @@ $('#sampleFile').change(function performAjaxSubmit() {
 			
 			$('#notesContainer').show();
 			$('#cropBtn').show();
+			$('#description').focus();
+			
 		}
 
 	};
@@ -88,7 +90,7 @@ $('#uploadedIMG').keypress(function(e)
 {
     if(e.which == 13) 
     {
-    	cropIMG();
+     	cropIMG();
     }
 });
 
@@ -166,6 +168,7 @@ function cropIMG()
 		}
 
 	};
+	$('#description').focus();
 }
 
 

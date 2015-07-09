@@ -25,10 +25,8 @@ public class UsertagsUtils {
 
 		// dichiaro una lista di utenti dove caricare i risultati
 		List<User> selfieUserTagsList = new ArrayList<User>();
-		// utente di appoggio per caricare la lista
-		User user = new User();
 		
-		
+	
 		/*
 		 * query che restituisce tutti gli hashtags di un selfie
 		 */
@@ -53,6 +51,9 @@ public class UsertagsUtils {
 			/* vengono scorsi tutti gli hashtags */
 			while (selfieUserTagsRes.next()) 
 			{		
+				// utente di appoggio per caricare la lista
+				User user = new User();
+				
 				/* vengono presi tutti gli attributi dello user e messi nel'utente di appoggio */
             	user.setId_user(selfieUserTagsRes.getInt("id_user"));
             	user.setusername(selfieUserTagsRes.getString("username"));

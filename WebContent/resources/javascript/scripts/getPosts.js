@@ -4,14 +4,18 @@ var lastIndex = 0;
 // serve ad evitare che i selfie uplodati dopo il caricamento della pagina
 // vengano mostrati più volte a causa dello spostamento dell'indice
 var date = new Date();
+date.setSeconds( date.getSeconds() + 10);
 date = date.getFullYear() + '-' +
         ('00' + (date.getMonth() + 1)).slice(-2) + '-' +
         ('00' + date.getDate()).slice(-2) + ' ' +
         ('00' + date.getHours()).slice(-2) + ':' +
         ('00' + date.getMinutes()).slice(-2) + ':' +
         ('00' + date.getSeconds()).slice(-2);
+
 // booleano che indica se i selfie con quell'hashtag sono terminati
 var end = false;
+
+
 
 $( document ).ready(function() 
 {	
@@ -65,11 +69,6 @@ function getMorePosts(index){
 					{
 						resizeComments();
 						
-		//				//dopo che unveil è stato caricato, vengono resaizati i commenti
-		//				$("img").unveil(10, function()
-		//				{
-		//					resizeComments();
-		//				});
 					});
 				}
 				// se la risposta del server è "end" viene mostrata una scritta

@@ -4,6 +4,7 @@ var lastIndex = 0;
 // serve ad evitare che i selfie uplodati dopo il caricamento della pagina
 // vengano mostrati più volte a causa dello spostamento dell'indice
 var date = new Date();
+date.setSeconds( date.getSeconds() + 10);
 date = date.getFullYear() + '-' +
         ('00' + (date.getMonth() + 1)).slice(-2) + '-' +
         ('00' + date.getDate()).slice(-2) + ' ' +

@@ -2,7 +2,6 @@ package com.mySelfie.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import com.mySelfie.entity.User;
 import com.mySelfie.function.CommentUtils;
+import com.mySelfie.function.LikeUtils;
 import com.mySelfie.function.PostUtils;
 
 
@@ -46,69 +46,75 @@ public class PostServlet extends HttpServlet {
 		
 		// stringa che indica l'azione da svolgere
 		String reqType = request.getParameter("reqType");
-        
+		String queryType = "";    
+		
 		/* dalla sessione si ricava l' id dello user */
 		HttpSession session = request.getSession();
 		User me = new User();
   		me = (User) session.getAttribute("user");
   		int me_id = me.getId_user();
-  		
+  				
+		//prendo il context
   		ServletContext servletContext = getServletContext();
 		String contextPath = servletContext.getContextPath();
+		
+		int last_index = 0; 
+		String max_date = "";
+		
+		//id da utilizzare in base alle differenti richieste 
+		int id_req_obj = -1;
+		
+  		if(reqType.equals("getPosts"))
+  			queryType = request.getParameter("queryType");
   		
+  		if(queryType.equals("homepage"))
+  		{
+  			id_req_obj = me_id;
+  			last_index = Integer.parseInt(request.getParameter("lastIndex"));          	   
+  			max_date = request.getParameter("date");  		
+  		}
+  		
+  			
+		
+		if(queryType.equals("profilePost"))
+		{
+			String idIMGstr = request.getParameter("idIMG");
+    		idIMGstr = idIMGstr.substring(idIMGstr.lastIndexOf('-')+1);
+    		int idIMG = Integer.parseInt(idIMGstr);
+			id_req_obj = idIMG;
+		}
+		
+	 		
     	switch(reqType)
         {
            	// intercetta la richiesta ajax per ricevere tutti i post
         	case "getPosts":
         	{
-        		response.setContentType("text/plain");
-
-        		String queryType = request.getParameter("queryType");          	   
-        		int last_index = Integer.parseInt(request.getParameter("lastIndex"));          	   
-        		String max_date = request.getParameter("date");
         		
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, me_id, me_id, last_index, max_date);
+        		response.setContentType("text/plain");
+        		
+        		String HTMLres = PostUtils.getPosts(queryType, contextPath, id_req_obj, me_id, last_index, max_date);
 
         		response.getWriter().write(HTMLres);
            	}
         	break;
            	
-        	// intercetta la richiesta ajax per ricevere un post
-        	case "profilePost":
-        	{
-        		response.setContentType("text/plain");
-
-        		String queryType = request.getParameter("queryType");
-        		String idIMGstr = request.getParameter("idIMG");
-        		//int last_index = Integer.parseInt(request.getParameter("lastIndex")); 
-        		idIMGstr = idIMGstr.substring(idIMGstr.lastIndexOf('-')+1);
-        		int idIMG = Integer.parseInt(idIMGstr);
-    			// istanzio una nuova data per passarla a getposts
-    			Date now = new Date();
-    			// converto la nuova data in formato sqlDatetime (da me brevettato top kek) 
-    			java.sql.Date sqlDate = new java.sql.Date(now.getTime());
-    			java.sql.Time sqlTime = new java.sql.Time(now.getTime());
-    			String sqlDateTime = sqlDate.toString() + " " + sqlTime.toString();
-        		
-        		String HTMLres = PostUtils.getPosts(queryType, contextPath, idIMG, me_id, 0, sqlDateTime);
-
-        		response.getWriter().write(HTMLres);
-           	}
-        	break;
-        	
            	// intercetta la richiesta ajax per mettere/togliere i like ai post
         	case "like":
         	{
         		String heart = request.getParameter("heart");
         		int idSelfie = Integer.parseInt(request.getParameter("selfie"));
         				    	  		
-        		PostUtils.likeSelfie(heart, me_id, idSelfie);
+        		LikeUtils.likeSelfie(heart, me_id, idSelfie);
 
         	}
         	break;
+        	
         	// intercetta la richiesta ajax per postare un nuovo commento
         	case "postComment":
         	{
+        		response.setContentType("text/plain");
+        		
         		// vengono ricavati l'id del selfie da commentare e il testo del commento
         		String idSelfieStr = request.getParameter("idSelfie");
         		int idSelfie = Integer.parseInt(idSelfieStr);
@@ -122,7 +128,7 @@ public class PostServlet extends HttpServlet {
     					// se la funzione ha avuto esito positivo
     	        		if (result) {
     		        		// viene ricavata la nuova lista dei commenti e mandata al client
-    		        		String HTMLres = CommentUtils.getComments(idSelfie, contextPath);
+    		        		String HTMLres = PostUtils.getComments(contextPath, idSelfie);
     		        		response.getWriter().write(HTMLres);
     					}
     	        		// se l'aggiunta del commento è fallita

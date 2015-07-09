@@ -62,6 +62,7 @@ public class ProfileServlet extends HttpServlet {
 		
 		// rivata tutti i post dello user e li mette nella risposta
 		String posts = PostUtils.getProfilePosts(user, contextPath);
+		
 		request.setAttribute("profilePosts", posts);
 		// mette lo username a cui appartiene il profilo nella risposta
 		request.setAttribute("profileOwner", user);
