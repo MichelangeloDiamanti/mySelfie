@@ -25,15 +25,12 @@ public class PostUtils {
 	public static String getPosts(String queryType, String contextPath,  int id_req_obj, int me_id, int last_index, String max_date)
 	{
 		
-		//html di risposta al client (inizialmente non ci sono post)
-		String HTMLres = "<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>";;
-		
+	
 		// dichiaro una lista di selfie dove caricare i risultati
-		List<Selfie> followedUsersPostsList = new ArrayList<Selfie>(); 
-		
+		List<Selfie> followedUsersPostsList = new ArrayList<Selfie>(); 	
 
 		//html risultante
-		HTMLres = "";
+		String HTMLres = "";
 		
 		if(queryType.equals("homepage"))
 			followedUsersPostsList = SelfieUtils.getFollowedUsersPosts(me_id, last_index, max_date);
@@ -223,7 +220,10 @@ public class PostUtils {
 	        		+ "</td></tr></table>";
 
         }
-        
+		
+		//se l' html non viene riempito (non ci sono post da visualizzare) allora va restituito "failed"
+		if(HTMLres.equals(""))
+			HTMLres = "failed";
 		
         return HTMLres;
 	}

@@ -42,7 +42,7 @@ function getMorePosts(index){
 			{
 				// se i post sono finiti il server ritorna la stringa "end"
 				// quindi se la risposta è diversa vengono caricati i nuovi selfie
-				if(responseText != "end")
+				if(responseText != "failed")
 				{
 					//viene restituito l' HTML dei post, da poter iniettare nel div
 					postsContainer.innerHTML = responseText;
@@ -61,11 +61,6 @@ function getMorePosts(index){
 					{
 						resizeComments();
 						
-		//					//dopo che unveil è stato caricato, vengono resaizati i commenti
-		//					$("img").unveil(10, function()
-		//					{
-		//						resizeComments();
-		//					});
 					});		
 				}
 				// se la risposta del server è "end" viene mostrata una scritta

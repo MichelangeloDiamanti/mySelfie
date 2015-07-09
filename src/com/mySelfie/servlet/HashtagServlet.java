@@ -121,9 +121,7 @@ public class HashtagServlet extends HttpServlet {
 			
 			// prendo tutti i post con l'hashtag, a partire dall'indice 0 e postati prima di ora
 			HTMLres = PostUtils.getPosts("hashtag", contextPath, id_ht, me_id, last_index, sqlDateTime);
-			if(HTMLres.equals("<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>")){
-				HTMLres = "end";
-			}
+			
 		}
 		else
 		{

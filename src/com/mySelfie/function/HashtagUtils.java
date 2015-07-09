@@ -172,8 +172,7 @@ public class HashtagUtils {
 
 		// dichiaro una lista di hashtags dove caricare i risultati
 		List<Hashtag> hashtagList = new ArrayList<Hashtag>();
-		// hashtag di appoggio per caricare la lista
-		Hashtag hashtag = new Hashtag();
+
 		
 		
 		/*
@@ -201,6 +200,9 @@ public class HashtagUtils {
 			/* vengono scorsi tutti gli hashtags */
 			while (selfieHashtagsRes.next()) 
 			{		
+				// hashtag di appoggio per caricare la lista
+				Hashtag hashtag = new Hashtag();
+				
 				/* vengono presi tutti gli attributi del hashtag e messi nel hashtag di appoggio */
 				hashtag.setId_hashtag(selfieHashtagsRes.getInt("id_hashtag"));
 				hashtag.setName(selfieHashtagsRes.getString("name"));

@@ -53,7 +53,7 @@ function getMorePosts(index){
 			{
 				// se i post sono finiti il server ritorna la stringa formattata There are no posts here...
 				// quindi se la risposta è diversa vengono caricati i nuovi selfie
-				if(responseText != "<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>")
+				if(responseText != "failed")
 				{
 					
 					//viene restituito l' HTML dei post, da poter iniettare nel div
@@ -78,7 +78,7 @@ function getMorePosts(index){
 					end = true;
 					postsContainer.innerHTML = 
 						"<div class=\"empty\">" +
-							"<label class=\"empty_label\">you reached the end!</label>" +
+							"<label class=\"empty_label\">You reached the end</label>" +
 						"</div>";
 				}
 	
