@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.mySelfie.connection.ConnectionManager;
 
@@ -59,7 +60,7 @@ public class LikeUtils {
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
         }
 		
-		//ritorna la lista dei selfie
+		//ritorna il flag
 		return checkLike;
 	}
 	
@@ -113,5 +114,47 @@ public class LikeUtils {
 		//ritorna la lista dei selfie
 		return likesCount;
 	}
+	
+	
+
+	public static void likeSelfie(String heart, int me_id, int idSelfie)
+	{
+	
+		Connection connect = ConnectionManager.getConnection();
+       
+        try 
+        {       
+
+	        // se il cuore è vuoto, va riempito mettendo un nuovo record nel DB
+	        if(heart.equals("empty"))
+	        {	        	
+		        String likeQuery = "INSERT INTO user_like_selfie (id_user, id_selfie) VALUES ( ? , ? ) ";
+		        PreparedStatement likeSQL = connect.prepareStatement(likeQuery, Statement.RETURN_GENERATED_KEYS);
+			    likeSQL.setInt(1, me_id);
+			    likeSQL.setInt(2, idSelfie);
+			    int affectedRows = likeSQL.executeUpdate();
+			    if (affectedRows == 0)
+			    	throw new SQLException("Like failed, no rows affected");		        
+	        }
+	        
+	        // se il cuore è pieno, va svuotato rimuovendo il record dal DB
+	        else if(heart.equals("full"))
+	        {
+	        	String dislikeQuery = "DELETE FROM user_like_selfie WHERE id_user = ? AND id_selfie =  ? ";
+	        	PreparedStatement dislikeSQL = connect.prepareStatement(dislikeQuery);
+	        	dislikeSQL.setInt(1, me_id);
+	        	dislikeSQL.setInt(2, idSelfie);
+	        	dislikeSQL.execute();
+	        }
+		   
+
+        } catch (SQLException e) { e.printStackTrace();
+        } finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }  	    
+	}
+	
+	
 	
 }

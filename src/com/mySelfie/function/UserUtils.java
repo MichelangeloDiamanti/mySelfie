@@ -280,8 +280,8 @@ public final class UserUtils {
 	 */
 	public static int getId(String username, Connection conn)
 			throws NamingException {
-		// true se lo username NON è in uso, falso altrimenti
-		int id_user = 0;
+
+		int id_user = -1;
 
 		// verifica che lo username non sia gia in uso
 		String userIdString = "SELECT id_user FROM User WHERE username = ? ";
@@ -319,7 +319,7 @@ public final class UserUtils {
 		// ottiene la connessione al database
 		Connection conn = ConnectionManager.getConnection();
 		// true se lo username NON è in uso, falso altrimenti
-		int id_user = 0;
+		int id_user = -1;
 
 		// verifica che lo username non sia gia in uso
 		String userIdString = "SELECT id_user FROM User WHERE username = ? ";

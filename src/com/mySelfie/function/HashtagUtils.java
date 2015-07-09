@@ -8,6 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.entity.Hashtag;
 
@@ -214,5 +219,47 @@ public class HashtagUtils {
 		return hashtagList;
 
 	}
+	
+	
+
+	public static int getHashtagId(String hashtag)
+	{
+		Context context = null;			// contesto
+        DataSource datasource = null;	// dove pescare i dati
+        Connection connect = null;		// connessione al DB
+
+        int id_ht = -1;
+
+        try 
+        {
+			context = new InitialContext();
+			// Prende le informazioni del database dal file sito in 'WebContent/META-INF/context.xml'
+	        datasource = (DataSource) context.lookup("java:/comp/env/jdbc/mySelfie");
+	        connect = datasource.getConnection();	  	
+	  		
+	  		/* query che restituisce tutti i selfie da far visualizzare allo user */
+	        String hidQuery = "SELECT id_hashtag FROM Hashtag WHERE name = ?";
+	        PreparedStatement hidSQL = connect.prepareStatement(hidQuery);
+	        hidSQL.setString(1, hashtag);
+	        ResultSet hidRes = hidSQL.executeQuery();
+	    
+	    	/* vengono scorsi tutti i selfie */
+            while (hidRes.next()) 
+            {
+               id_ht = hidRes.getInt("id_hashtag");
+            }
+            
+            
+        } catch (SQLException | NamingException e) { e.printStackTrace();
+        } finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+		
+		
+		return id_ht;
+		
+	}
+	
 
 }
