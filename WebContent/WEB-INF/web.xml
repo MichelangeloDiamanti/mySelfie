@@ -1,56 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
- 
-<!-- ========================================================== -->
-<!-- INFORMAZIONI GENERALI                                      -->
-<!-- ========================================================== --> 
-
-  <!-- nome dell'applicazione --> 
   <display-name>mySelfie</display-name>
-  
-  <!-- pagina da visualizzare quando qualcuno si connete a mySelfie -->
   <welcome-file-list>
     <welcome-file>protected/homepage.jsp</welcome-file>
   </welcome-file-list>
-  
-<!-- ========================================================== -->
-<!-- DATABASE                                                   -->
-<!-- ========================================================== --> 
-
-  <!-- contenitore delle informazioni del database usato in fase di connessione -->
   <resource-ref>
     <description>JDBC</description>
     <res-ref-name>jdbc/mySelfie</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
-  
-<!-- ========================================================== -->
-<!-- SERVLET                                                    -->
-<!-- ========================================================== --> 
-  
-  <!-- servlet che gestisce l'index -->
   <servlet>
     <servlet-name>indexServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.IndexServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>indexServlet</servlet-name>
-	
-	<!-- 
-		questa rotta viene usata dalla form di signup per registrare un 
-		nuovo utente
-	 -->
     <url-pattern>/index/signup</url-pattern>
-    
-	<!-- 
-		questa rotta viene usata dalla form di signup per controllare
-		che lo username inserito non è gia in uso
-	 -->
     <url-pattern>/index/checkUsername</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che gestisce i POST -->
   <servlet>
     <servlet-name>getPostsServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
@@ -61,8 +29,6 @@
     <url-pattern>/protected/openPost</url-pattern>
     <url-pattern>/protected/postComment</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che gestisce i followers -->
   <servlet>
     <servlet-name>followServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.FollowServlet</servlet-class>
@@ -72,30 +38,22 @@
     <url-pattern>/protected/followUser</url-pattern>
     <url-pattern>/protected/unfollowUser</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che gestisce il profilo dell'utente -->
   <servlet>
     <servlet-name>profileServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ProfileServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>profileServlet</servlet-name>
-  	<!-- questa rotta matcha tutti i possibili username e ne renderizza il profilo -->
     <url-pattern>/protected/profile/*</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che gestisce gli hashtags -->
   <servlet>
     <servlet-name>hashtagServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.HashtagServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>hashtagServlet</servlet-name>
-    <!-- questa rotta matcha tutti i possibili hashtag e ne mostra i relativi posts -->
     <url-pattern>/protected/hashtag/*</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che gestisce i likes -->
   <servlet>
     <servlet-name>likePostsServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
@@ -104,8 +62,6 @@
     <servlet-name>likePostsServlet</servlet-name>
     <url-pattern>/protected/likePosts</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che permette di modificare le informazioni dell'utente -->
   <servlet>
     <servlet-name>modifyProfileServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ModifyProfileServlet</servlet-class>
@@ -114,8 +70,6 @@
     <servlet-name>modifyProfileServlet</servlet-name>
     <url-pattern>/protected/modifyProfile</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet che gestisce l'upload di un selfie -->
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.UploadServlet</servlet-class>
@@ -123,15 +77,7 @@
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
     <url-pattern>/protected/upload</url-pattern>
-  </servlet-mapping>
-
-  <!--
-  	Questo servlet serve a rendere disponibili le risorse salvate nel filesystem del server:
-  	quando riceve la richiesta di accedere ad una risorsa la individua nel filesystem e la rende
-  	disponibile al richiedente.
-  	Dato che le rotte gestite da questo servlet ricadono sotto protected le risorse servite sono
-  	disponibili solo agli utenti autenticati.
-  -->
+  </servlet-mapping>  
   <servlet>
     <servlet-name>protectedResourcesServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ProtectedResourcesServlet</servlet-class>
@@ -140,8 +86,6 @@
     <servlet-name>protectedResourcesServlet</servlet-name>
     <url-pattern>/protected/resources/*</url-pattern>
   </servlet-mapping>
-  
-  <!-- servlet richiamato dalla form di login che verifica le credenziali -->
   <servlet>
     <servlet-name>userValidator</servlet-name>
     <servlet-class>com.mySelfie.servlet.UserValidator</servlet-class>
@@ -149,17 +93,8 @@
   <servlet-mapping>
     <servlet-name>userValidator</servlet-name>
     <url-pattern>/userValidator</url-pattern>
+    <url-pattern>/validation/*</url-pattern>
   </servlet-mapping>
-
-<!-- ========================================================== -->
-<!-- SECURITY                                                   -->
-<!-- ========================================================== --> 
-
-  <!-- 
-  	vincolo che specifica che tutte le rotte devono essere CONFIDENTIAL
-  	e quindi usare il protocollo TLS, praticamente reindirizza tutte le 
-  	richieste per la porta 8080 alla 8443
-  --> 
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>mySelfie</web-resource-name>
@@ -171,12 +106,6 @@
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
   </security-constraint>
-
-  <!-- 
-  	vincolo che specifica che tutte le rotte che matchano il pattern
-  	/protected/* devono passare per il filtro che controlla se è stato
-  	effettuato il login
-  --> 
   <filter>
     <filter-name>UserCheckFilter</filter-name>
     <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>

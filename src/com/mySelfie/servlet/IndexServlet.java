@@ -19,6 +19,7 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -30,6 +31,9 @@ import org.apache.commons.io.FilenameUtils;
 
 import com.mySelfie.exception.usernameInUseException;
 import com.mySelfie.function.UserUtils;
+import com.mySelfie.mail.SendMail;
+import com.mySelfie.security.SecurityUtils;
+import com.toastMessage.Message;
 
 @MultipartConfig	// Serve per supportare l'upload di files, form multipart
 @SuppressWarnings("serial")
@@ -43,8 +47,8 @@ public class IndexServlet extends HttpServlet {
         // Se il servlet è stato chiamato dalla form di registrazione
         if (request.getParameter("signUp") != null) {
         	
-        	String status = "";		// stato della registrazione
-        	String reason = "";		// info addizionali sullo stato della registrazione
+        	// messaggio da visualizzare a fine regisrazione, mostra l'esito allo user
+    		Message message = new Message();
         	
         	boolean check = false;	// controllo parametri inseriti
         	
@@ -157,26 +161,45 @@ public class IndexServlet extends HttpServlet {
 	            try {
 	                // salva le credenziali nel database
 	                UserUtils.signup(out, m);
-	                // se è andata a buon fine la registrazione viene impostato il messaggio a ok
-	                status = "success";
-	                reason = "goodInput";
+	                // se è andata a buon fine la registrazione 
+	                // viene mandata la mail per validare il nuovo account
+	                String code = SendMail.sendSignupConfirmation(m.get("username"), m.get("email"));
+	                // se il codice tornato non è nullo viene salvato nel DB
+	                if(code!=null)
+	                {
+	                	// ricava l'id dello user appena registrato dal suo username
+	                	int userId = UserUtils.getId(m.get("username"));
+	                	// imposta il nuovo codice nel DB
+		                SecurityUtils.setUserValidationCode(userId, code);
+	                }
+	                // imposto un messaggio di successo
+					message.setType("success");
+					message.setTitle("Registration successful");
+					message.setBody("welcome aboard!");
+					request.setAttribute("toastMessage", message);
 	            } catch (NamingException e) {
 	                e.printStackTrace();
 	            } catch (usernameInUseException e) {
 	            	//	se lo username non è disponibile non viene effettuata la registrazione
 	            	//	va quindi eliminata l'immagine di profilo caricata
 	            	file.delete();
-	            	status = "fail";
-	            	reason = "usernameInUseException";
+					message.setType("fail");
+					message.setTitle("Registration failed");
+					message.setBody("username already in use");
+					request.setAttribute("toastMessage", message);
 				}
 	            
 	            // finita la registrazione viene renderizzata la homepage
-	            response.sendRedirect("/mySelfie/index.jsp?status=" + status + "&reason=" + reason);
+	    		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
+	    		dispatcher.forward(request,response);
 	          // Se le password non corrispondono viene visualizzato un messaggio di errore
         	} else {
-        		status = "fail";
-        		reason = "badInput";
-        		response.sendRedirect("/mySelfie/index.jsp?status=" + status + "&reason=" + reason);
+				message.setType("fail");
+				message.setTitle("Registration failed");
+				message.setBody("invalid data");
+				request.setAttribute("toastMessage", message);
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
+				dispatcher.forward(request,response);
         	}
         }
         

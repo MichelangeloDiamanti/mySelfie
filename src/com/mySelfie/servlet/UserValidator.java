@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -12,10 +13,52 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.mySelfie.entity.User;
+import com.mySelfie.function.UserUtils;
 import com.mySelfie.security.SecurityUtils;
+import com.toastMessage.Message;
  
 public class UserValidator extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * questa funzione gestisce la validazione dell'account dell'utente, ricava dalla request il token inviato
+	 * per email e, se corrisponde ad un account lo valida.
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ricava il token dall'url
+		String code = request.getPathInfo().substring(1);
+		Message message = new Message();
+		
+		// se il codice non è nullo
+		if(code!=null)
+		{
+			// ricavo l'id dell'utente a cui è associato il codice
+			int userId = SecurityUtils.checkUserValidationCode(code);
+			// se l'utente esiste
+			if(userId >= 0)
+			{
+				// valido il suo account
+				UserUtils.setValid(userId);
+				// imposto un messaggio di successo da far vedere tramite toast
+				message.setType("success");
+				message.setTitle("Validation Succeeded");
+				message.setBody("Congratulations, you can now log in.");
+				request.setAttribute("toastMessage", message);
+			}
+			else
+			{
+				// imposto un messaggio di errore da far vedere tramite toast
+				message.setType("fail");
+				message.setTitle("Validation Failed");
+				message.setBody("Sorry something went wrong, try again.");
+				request.setAttribute("toastMessage", message);
+			}
+		}
+		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
+		dispatcher.forward(request,response);
+	}
+
+
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	    	

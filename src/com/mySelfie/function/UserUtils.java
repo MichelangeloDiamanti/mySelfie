@@ -544,4 +544,46 @@ public final class UserUtils {
 		
 	}
 	
+	public static boolean setValid(int userId)
+	{
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		boolean result = false;
+		// query in formato stringa e statement
+		String setValidString = "UPDATE User SET valid = 1 where id_user = ?";
+		PreparedStatement setValidSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			setValidSQL = conn.prepareStatement(setValidString);
+			// imposta i parametri nello statement
+			setValidSQL.setInt(1, userId);
+			// esegue la query
+			int affectedRows = setValidSQL.executeUpdate();
+			// se non è stata modificata nessuna riga spara un'eccezione
+			if (affectedRows == 0) {
+				throw new SQLException(
+						"validating user account failed, no rows affected.");
+			}
+			// altrimenti
+			else {
+				result = true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
 }

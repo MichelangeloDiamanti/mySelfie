@@ -22,7 +22,7 @@
 
     <div class="form-group">
       <div class="col-md-8">
-	    <input type="text" name="email" required="required" placeholder="e-mail" class="form-control SUtxtbox" id="email"/>
+	    <input type="email" name="email" required="required" placeholder="e-mail" class="form-control SUtxtbox" id="email"/>
       </div>
     </div>
 

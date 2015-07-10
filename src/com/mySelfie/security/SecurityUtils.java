@@ -18,6 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.entity.User;
 import com.mysql.jdbc.Statement;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
@@ -59,8 +60,13 @@ public final class SecurityUtils {
                 // corrisponde con quella usata per registrarsi
                 boolean passwordIsValid = PasswordHash.validatePassword(password, hashedPassword);
             	
+                // la query per questo campo torna 1 se l'account è stato attivato tramite mail
+                int accountValid = queryRes.getInt("valid");
+                // se è attivo allora il controllo da true, false altrimenti
+                boolean accountIsActivated = (accountValid == 1) ? true : false;
+                
                 //se la password è valida
-                if(passwordIsValid)
+                if(passwordIsValid && accountIsActivated)
                 {
 	            	// vengono valorizzati i vari attributi dell'istanza dell'utente
 	            	user.setId_user(queryRes.getInt("id_user"));
@@ -74,7 +80,7 @@ public final class SecurityUtils {
 	            	user.setCity(queryRes.getString("city"));
 	            	user.setProfilepic(queryRes.getString("profilepic"));
 	            	user.setBirthdate(queryRes.getDate("birthdate"));
-	            	// viene impostato l'untente a valido
+	            	// viene impostato l'utente a valido
 	            	user.setValid(true);
             	}
             }
@@ -130,7 +136,6 @@ public final class SecurityUtils {
             	// vengono valorizzati i vari attributi dell'istanza dell'utente
             	user.setId_user(queryRes.getInt("id_user"));
             	user.setusername(queryRes.getString("username"));
-            	user.setPassword(queryRes.getString("password"));
             	user.setEmail(queryRes.getString("email"));
             	user.setPhone(queryRes.getString("phone"));
             	user.setName(queryRes.getString("name"));
@@ -245,5 +250,102 @@ public final class SecurityUtils {
     	return cookieStatus;
     	
     }
+    
+    /**
+     * Prende in input l'id di uno user ed il codice generato in fase di registrazione
+     * per validare la mail e lo inserisce nalla tabella del DB
+     * 
+     * @param userId	id utente
+     * @param code		codice
+     * @return			true se l'operazione va a buon fine
+     */
+    public static boolean setUserValidationCode(int userId, String code)
+    {
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		boolean result = false;
+		// query in formato stringa e statement
+		String userValidationString = "INSERT INTO user_validation(id_user, code) VALUES (?, ?)";
+		PreparedStatement userValidationSQL;
 
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			userValidationSQL = conn.prepareStatement(userValidationString);
+			// imposta i parametri nello statement
+			userValidationSQL.setInt(1, userId);
+			userValidationSQL.setString(2, code);
+			// esegue la query
+			int affectedRows = userValidationSQL.executeUpdate();
+			// se non è stata modificata nessuna riga spara un'eccezione
+			if (affectedRows == 0) {
+				throw new SQLException(
+						"setting validation code failed, no rows affected.");
+			}
+			// altrimenti
+			else {
+				result = true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+    }
+    
+    /**
+     * Prende in input un codice di validazione account generato dalla registrazione
+     * e vede se corrisponde ad un account esistente. in caso affermativo ritorna l'id
+     * del possessore dell'account altrimenti -1
+     * 
+     * @param code	codice di validazione
+     * @return		id utente se esiste altrimenti -1
+     */
+	public static int checkUserValidationCode(String code)
+	{
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		int userId = -1;
+		// query in formato stringa e statement
+		String validationCodeString = "SELECT id_user FROM user_validation WHERE code = ?";
+		PreparedStatement validationCodeSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			validationCodeSQL = conn.prepareStatement(validationCodeString);
+			// imposta i parametri nello statement
+			validationCodeSQL.setString(1, code);
+			// esegue la query
+			ResultSet checkValidationRes = validationCodeSQL.executeQuery();
+			// se c'è un risultato signigica che il primo utente segue il
+			// secondo
+			if (checkValidationRes.next()) {
+				// in questo caso si imposta l'id dell'utente con quello ricavato
+				userId = checkValidationRes.getInt("id_user");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return userId;
+	}
 }

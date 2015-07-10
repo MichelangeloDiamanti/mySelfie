@@ -21,28 +21,22 @@
     </jsp:attribute>
 
 	<jsp:attribute name="javascripts">
-		
-		<script
-			src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-		<!-- se si proviene dalla registrazione viene visualizzato un toast message -->
-		<c:if test="${param.status == 'success' }">
-			<script>
-				toastr.success('welcome aboard!', 'Registration successful');
-			</script>
-		</c:if>
-
-		<c:if test="${param.status == 'fail' }">
-		    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-		    <c:if test="${param.reason == 'usernameInUseException' }">
-				<script>
-					toastr.error('username already in use', 'Registration failed');
-				</script>
-		    </c:if>
-		    <c:if test="${param.reason == 'badInput' }">
-				<script>
-					toastr.error('invalid data', 'Registration failed');
-				</script>
-		    </c:if>
+				
+		<!-- se c'è un messaggio toast da visualizzare -->
+		<c:if test="${not empty requestScope.toastMessage}">
+			<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+			<c:choose> 
+			  <c:when test="${requestScope.toastMessage.type == 'success'}">
+			  	<script>
+			    	toastr.success("${requestScope.toastMessage.body}", "${requestScope.toastMessage.title}");
+			   	</script>
+			   </c:when>
+			  <c:when test="${requestScope.toastMessage.type == 'fail'}">
+			  	<script>
+			    	toastr.error("${requestScope.toastMessage.body}", "${requestScope.toastMessage.title}");
+			   	</script>
+			  </c:when>
+			</c:choose>
 		</c:if>
 		
 		<!-- plugin input file -->
