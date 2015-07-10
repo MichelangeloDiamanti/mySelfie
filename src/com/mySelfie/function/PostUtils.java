@@ -85,15 +85,8 @@ public class PostUtils {
             	
         	HTMLres += "\">" + username + "</label>"
         			+ "</a></th></tr><tr><td class=\"selfie_container\"><div class=\"selfie_wrapper\">"
-        			+ "<img id=\"selfie-" + id_selfie + "\" class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/";
-        	
-        	if(queryType.equals("profilePost")) 
-        		HTMLres += "originalSize/"; 
-        		
-        	if(queryType.equals("homepage") || queryType.equals("hashtag")) 
-   				HTMLres += "compressedSize/";
-        	
-        	HTMLres += picture + "\" />"
+        			+ "<img id=\"selfie-" + id_selfie + "\" class=\"selfie\" src=\"" + contextPath + "/protected/resources/selfies/compressedSize/"
+        			+ picture + "\" />"
         			+ "<div class=\"selfie_tools\">";
 	        
         	//controlla se lo user ha già messo mi piace alla foto, in tal caso il cuore va riempito
@@ -162,8 +155,26 @@ public class PostUtils {
  	        }
 
 			HTMLres += "</p></div>";
- 	        HTMLres += "</div>";
- 	        HTMLres += "</div><div id=\"list_container-" + id_selfie + "\"  class=\"comments\">"
+			HTMLres += "</div>";
+
+		   
+			//viene settata un' altezza approssimativa per la sezione dei commenti
+			int commentH = 0;
+		    // Imposta il percorso dove salvare l'immagine
+			String homeFolder = System.getProperty("user.home");    	    
+			// leggo l'immagine da visualizzare
+			BufferedImage buffSelfie = null;
+			try {
+				buffSelfie = ImageIO.read(new File(homeFolder + contextPath + "/resources/selfies/compressedSize/" + picture));
+				//calcola un' altezza approssimativa per i commenti
+				int bsW = buffSelfie.getWidth();
+				int bsH = buffSelfie.getHeight();
+				commentH = (700*bsH/bsW) -250;
+			} catch (IOException e) { e.printStackTrace(); }	
+			
+		    
+			
+ 	        HTMLres += "</div><div id=\"list_container-" + id_selfie + "\"  class=\"comments\" style=\"height: " + commentH + "px; \" >"
 	        		+ 	"<ul id=\"comments_list-" + id_selfie + "\" class=\"comment_list\">";
  	        
  	        
@@ -276,6 +287,7 @@ public class PostUtils {
         return HTMLres;
 	}
 	
+	
 	public static String getProfilePosts(String user, String contextPath)
 	{
 		
@@ -326,7 +338,7 @@ public class PostUtils {
 				
 				String picClass = (width >= height) ? "thumbnailL" : "thumbnailP";
 				
-            	HTMLres += "<div class=\"postContainer\"><img id=\"selfie-" + id_selfie + "\" class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/compressedSize/" + picture + "\" onClick=\"openIMG(this)\" /></div>";
+            	HTMLres += "<div class=\"postContainer\"><img id=\"selfie-" + id_selfie + "\" class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/compressedSize/" + picture + "\" data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\" /></div>";
 
             }
             

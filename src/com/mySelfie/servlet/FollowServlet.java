@@ -67,20 +67,26 @@ public class FollowServlet extends HttpServlet {
 	    		if(result){
 	    			// viene mandata la form per fare l'unfollow
 	    			response.getWriter().write(
-	    				  	"<form id=\"unfollow_form\" class=\"form-inline\" onsubmit=\"return false\">"
-	    			    	+	"<button id=\"unfollow_btn\" style=\"position:relative; float:right;\">unfollow!</button>"
-	    			    	+	"<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_follow + "\">"
-	    			    	+	"</form>"
+	    				  	  "<form id=\"unfollow_form\" class=\"form-inline\" onsubmit=\"return false\">"
+	    					+ "<button id=\"unfollow_btn\" class=\"btn btn-xs\" >"
+				    		+ "<span class=\"glyphicon glyphicon-eye-close\"></span>"
+				    		+ "    unfollow"
+				    		+ "</button>"
+				    		+ "<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_follow + "\">"
+				    		+ "</form>"
 	    					);
 	    		}
 	    		// altrimenti
 	    		else{
 	    			// viene rimandata la form per fare la follow
 	    			response.getWriter().write(
-	    				  	"<form id=\"follow_form\" class=\"form-inline\" onsubmit=\"return false\">"
-	    			    	+	"<button id=\"follow_btn\" style=\"position:relative; float:right;\">follow!</button>"
-	    			    	+	"<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_follow + "\">"
-	    			    	+	"</form>"
+	    				  	  "<form id=\"follow_form\" class=\"form-inline\" onsubmit=\"return false\">"
+	    					+ "<button id=\"follow_btn\" class=\"btn btn-xs\" >"
+				    		+ "<span class=\"glyphicon glyphicon-eye-open\"></span>"
+				    		+ "    follow"
+				    		+ "</button>"
+				    		+ "<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_follow + "\">"
+				    		+ "</form>"
 	    					);
 	    		}
 	       	}
@@ -104,20 +110,26 @@ public class FollowServlet extends HttpServlet {
 	    		if(result){
 	    			// viene mandata la form per fare la follow
 	    			response.getWriter().write(
-	    				  	"<form id=\"follow_form\" class=\"form-inline\" onsubmit=\"return false\">"
-	    			    	+	"<button id=\"follow_btn\" style=\"position:relative; float:right;\">follow!</button>"
-	    			    	+	"<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_unfollow + "\">"
-	    			    	+	"</form>"
+	    				  	  "<form id=\"follow_form\" class=\"form-inline\" onsubmit=\"return false\">"
+	    					+ "<button id=\"follow_btn\" class=\"btn btn-xs\" >"
+				    		+ "<span class=\"glyphicon glyphicon-eye-open \"></span>"
+				    		+ "    follow"
+				    		+ "</button>"
+				    		+ "<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_unfollow + "\">"
+				    		+ "</form>"
 	    					);
 	    		}
 	    		// altrimenti
 	    		else{
 	    			// viene rimandata la form per fare l'unfollow
 	    			response.getWriter().write(
-	    				  	"<form id=\"unfollow_form\" class=\"form-inline\" onsubmit=\"return false\">"
-	    			    	+	"<button id=\"unfollow_btn\" style=\"position:relative; float:right;\">unfollow!</button>"
-	    			    	+	"<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_unfollow + "\">"
-	    			    	+	"</form>"
+	    				  	  "<form id=\"unfollow_form\" class=\"form-inline\" onsubmit=\"return false\">"
+	    					+ "<button id=\"unfollow_btn\" class=\"btn btn-xs\" >"
+				    		+ "<span class=\"glyphicon glyphicon-eye-close \"></span>"
+				    		+ "    unfollow"
+				    		+ "</button>"
+				    		+ "<input type=\"hidden\" name=\"profile_id\" value=\"" + id_to_unfollow + "\">"
+				    		+ "</form>"
 	    					);
 	    		}
 	    	}

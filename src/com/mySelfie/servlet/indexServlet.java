@@ -107,8 +107,8 @@ public class indexServlet extends HttpServlet {
 			    int ptcW = picToCompress.getWidth();
 			    int ptcH = picToCompress.getHeight();
 			    
-			    int riW = (ptcW >= ptcH) ? 200 : (200*ptcW/ptcH);
-			    int riH = (ptcW >= ptcH) ? (200*ptcH/ptcW) : 200;
+			    int riW = (ptcW >= ptcH) ? 256 : (256*ptcW/ptcH);
+			    int riH = (ptcW >= ptcH) ? (256*ptcH/ptcW) : 256;
 			    		    			    
 			    int rtype = (picToCompress.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : picToCompress.getType();
 			    
@@ -134,7 +134,7 @@ public class indexServlet extends HttpServlet {
 			    ImageWriteParam param = writer.getDefaultWriteParam();
 			     
 			    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			    param.setCompressionQuality(0.3f);
+			    param.setCompressionQuality(0.5f);
 			    writer.write(null, new IIOImage(Cimage, null, null), param);
 			      
 			    os.close();
