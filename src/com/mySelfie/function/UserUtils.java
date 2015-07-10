@@ -8,9 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-//import java.text.DateFormat;
-//import java.text.ParseException;
-//import java.text.SimpleDateFormat;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -66,9 +63,9 @@ public final class UserUtils {
 	 * @throws NamingException
 	 */
 	public static boolean exist(String username) throws NamingException {
-		
+
 		boolean exst = false;
-		
+
 		// ottengo la connessione al DB
 		Connection connect = ConnectionManager.getConnection();
 		// controllo se lo user esiste usando il metodo con connessione
@@ -111,55 +108,46 @@ public final class UserUtils {
 
 			// Se il nick è univoco
 			if (!resEmpty) {
-				// // data di nascita passata come stringa, va convertita nel
-				// formato data di SQL
-				// DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-				// java.util.Date dataDiNascitaJava = null;
-				// try {
-				// dataDiNascitaJava = format.parse( m.get("dataDiNascita") );
-				// } catch (ParseException e) {
-				// // TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
-				// java.sql.Date dataDiNascitaSql = new java.sql.Date(
-				// dataDiNascitaJava.getTime() );
-				//
-				
 				// ricava l'hash dalla password
-				String hashedPassword = PasswordHash.createHash(m.get("password"));
-				
-				// costruisce ed esegue la query per inserire un nuovo record user
+				String hashedPassword = PasswordHash.createHash(m
+						.get("password"));
+
+				// costruisce ed esegue la query per inserire un nuovo record
+				// user
 				String newUserQuery = "INSERT INTO User (username, password, email, profilepic ) VALUES (?, ?, ?, ?)";
-				PreparedStatement newUserStatement = connect.prepareStatement(newUserQuery, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement newUserStatement = connect.prepareStatement(
+						newUserQuery, Statement.RETURN_GENERATED_KEYS);
 				newUserStatement.setString(1, m.get("username"));
 				newUserStatement.setString(2, hashedPassword);
 				newUserStatement.setString(3, m.get("email"));
 				newUserStatement.setString(4, m.get("profilePic"));
 				int affectedRows = newUserStatement.executeUpdate();
-				
+
 				// se non è stato possibile inserire il nuovo utente
 				if (affectedRows == 0) {
 					throw new SQLException("signup failed, no rows affected.");
 				}
 				// se il signup è andato a buon fine
-				else{
-					
-					int idNewUser= -1;
-					ResultSet generatedKeys = newUserStatement.getGeneratedKeys();
-		            if (generatedKeys.next()) 
-			           	idNewUser = generatedKeys.getInt(1);
-		            else
+				else {
+
+					int idNewUser = -1;
+					ResultSet generatedKeys = newUserStatement
+							.getGeneratedKeys();
+					if (generatedKeys.next())
+						idNewUser = generatedKeys.getInt(1);
+					else
 						throw new usernameInUseException();
-					
-			            	
-					// costruisce ed esegue la query che inserisce l' utente setesso tra gli utenti che segue
+
+					// costruisce ed esegue la query che inserisce l' utente
+					// setesso tra gli utenti che segue
 					String ufuQuery = "INSERT INTO user_follow_user (id_follower, id_followed) VALUES (?, ?)";
-					PreparedStatement ufuStatement = connect.prepareStatement(ufuQuery);
+					PreparedStatement ufuStatement = connect
+							.prepareStatement(ufuQuery);
 					ufuStatement.setInt(1, idNewUser);
 					ufuStatement.setInt(2, idNewUser);
-					ufuStatement.executeUpdate();	
+					ufuStatement.executeUpdate();
 				}
-				
+
 			} else {
 				// se lo username è in uso viene generata un'eccezione
 				throw new usernameInUseException();
@@ -338,7 +326,7 @@ public final class UserUtils {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
 				// chiude la connessione
 				conn.close();
@@ -408,7 +396,7 @@ public final class UserUtils {
 		return false;
 
 	}
-	
+
 	/**
 	 * Metodo che prende in input l'id di un utente e ne restituisce lo username
 	 * 
@@ -420,30 +408,24 @@ public final class UserUtils {
 		Connection connect = ConnectionManager.getConnection();
 		// username da ritornare
 		String username = null;
-		
+
 		/*
 		 * query che restituisce lo username di un utente grazie all'id
 		 */
-		String usernameString = 
-				"SELECT "
-			+ 		"US.username "
-			+ 	"FROM "
-			+ 		"User AS US "
-			+ 	"WHERE "
-			+ 		"US.id_user = ?";
-		
+		String usernameString = "SELECT " + "US.username " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+
 		// query formato SQL
 		PreparedStatement usernameSQL;
-		
+
 		try {
 			// imposto i parametri ed eseguo la query
 			usernameSQL = connect.prepareStatement(usernameString);
-			usernameSQL.setInt(1, userId);		         	        
+			usernameSQL.setInt(1, userId);
 			ResultSet usernameRes = usernameSQL.executeQuery();
-			
+
 			/* se c'è un risultato */
-			if (usernameRes.next()) 
-			{		
+			if (usernameRes.next()) {
 				// viene impostato lo username
 				username = usernameRes.getString("username");
 			}
@@ -451,16 +433,21 @@ public final class UserUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-            // chiude la connessione
-            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
-		
-		//ritorna la lista dei selfie
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// ritorna la lista dei selfie
 		return username;
 	}
-	
+
 	/**
-	 * Metodo che prende in input l'id di un utente e ne restituisce l'immagine di profilo
+	 * Metodo che prende in input l'id di un utente e ne restituisce l'immagine
+	 * di profilo
 	 * 
 	 * @param userId
 	 * @return
@@ -470,30 +457,25 @@ public final class UserUtils {
 		Connection connect = ConnectionManager.getConnection();
 		// username da ritornare
 		String profilepic = null;
-		
+
 		/*
-		 * query che restituisce l'immagine di profilo di un utente grazie al suo id
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
 		 */
-		String profilepicString = 
-				"SELECT "
-			+ 		"US.profilepic "
-			+ 	"FROM "
-			+ 		"User AS US "
-			+ 	"WHERE "
-			+ 		"US.id_user = ?";
-		
+		String profilepicString = "SELECT " + "US.profilepic " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+
 		// query formato SQL
 		PreparedStatement profilepicSQL;
-		
+
 		try {
 			// imposto i parametri ed eseguo la query
 			profilepicSQL = connect.prepareStatement(profilepicString);
-			profilepicSQL.setInt(1, userId);		         	        
+			profilepicSQL.setInt(1, userId);
 			ResultSet profilepicRes = profilepicSQL.executeQuery();
-			
+
 			/* se c'è un risultato */
-			if (profilepicRes.next()) 
-			{		
+			if (profilepicRes.next()) {
 				// viene impostato lo username
 				profilepic = profilepicRes.getString("profilepic");
 			}
@@ -502,50 +484,56 @@ public final class UserUtils {
 			e.printStackTrace();
 		} finally {
 			// chiude la connessione
-			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		//ritorna la lista dei selfie
+
+		// ritorna la lista dei selfie
 		return profilepic;
 	}
-	
+
 	/**
 	 * ricava la password criptata di uno user passato tramite id
 	 * 
 	 * @param me_id
 	 * @return
 	 */
-	public static String getHashedPassword(int me_id)
-	{
+	public static String getHashedPassword(int me_id) {
 		// password da ritornare
 		String Hpass = null;
 		// ottengo la connessione al DB
-		Connection connect = ConnectionManager.getConnection();	  
-	        
-        // ricava la password criptata
+		Connection connect = ConnectionManager.getConnection();
+
+		// ricava la password criptata
 		String passQuery = "SELECT password FROM User WHERE id_user = ? ";
 		PreparedStatement passSQL;
 		try {
 			passSQL = connect.prepareStatement(passQuery);
 			passSQL.setInt(1, me_id);
-			ResultSet passRes = passSQL.executeQuery();		        
-			
-			while (passRes.next()) 
+			ResultSet passRes = passSQL.executeQuery();
+
+			while (passRes.next())
 				Hpass = passRes.getString("password");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-            // chiude la connessione
-            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return Hpass;
-		
+
 	}
-	
-	public static boolean setValid(int userId)
-	{
+
+	public static boolean setValid(int userId) {
 		// ottiene la connessione al database
 		Connection conn = ConnectionManager.getConnection();
 		// risultato dell'operazione
@@ -585,115 +573,120 @@ public final class UserUtils {
 		}
 		return result;
 	}
-	
 
-	
 	/**
 	 * conta i follower di uno user tramite id
 	 * 
 	 * @param me_id
 	 * @return
 	 */
-	public static int getCountFollowers(int me_id)
-	{
+	public static int getCountFollowers(int me_id) {
 		int followers = 0;
-		
+
 		// ottengo la connessione al DB
-		Connection connect = ConnectionManager.getConnection();	  
-	        
-        // ricava la password criptata
+		Connection connect = ConnectionManager.getConnection();
+
+		// ricava la password criptata
 		String cfQuery = "SELECT COUNT(*) AS followers FROM user_follow_user WHERE id_followed = ? ";
 		PreparedStatement cfSQL;
 		try {
 			cfSQL = connect.prepareStatement(cfQuery);
 			cfSQL.setInt(1, me_id);
-			ResultSet cfRes = cfSQL.executeQuery();		        
-			
-			while (cfRes.next()) 
+			ResultSet cfRes = cfSQL.executeQuery();
+
+			while (cfRes.next())
 				followers = cfRes.getInt("followers");
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-            // chiude la connessione
-            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-		//ogni utente segue anche se stesso, quindi non va contato
+		// ogni utente segue anche se stesso, quindi non va contato
 		return followers - 1;
 	}
-		
-	
+
 	/**
 	 * conta gli utenti seguiti da uno user tramite id
 	 * 
 	 * @param me_id
 	 * @return
 	 */
-	public static int getCountFollowing(int me_id)
-	{
+	public static int getCountFollowing(int me_id) {
 		int following = 0;
-		
+
 		// ottengo la connessione al DB
-		Connection connect = ConnectionManager.getConnection();	  
-	        
-        // ricava la password criptata
+		Connection connect = ConnectionManager.getConnection();
+
+		// ricava la password criptata
 		String cfQuery = "SELECT COUNT(*) AS following FROM user_follow_user WHERE id_follower = ? ";
 		PreparedStatement cfSQL;
 		try {
 			cfSQL = connect.prepareStatement(cfQuery);
 			cfSQL.setInt(1, me_id);
-			ResultSet cfRes = cfSQL.executeQuery();		        
-			
-			while (cfRes.next()) 
+			ResultSet cfRes = cfSQL.executeQuery();
+
+			while (cfRes.next())
 				following = cfRes.getInt("following");
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-            // chiude la connessione
-            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-		return following;
+		return following - 1;
 	}
-	
-	
+
 	/**
 	 * conta i post di uno user tramite id
 	 * 
 	 * @param me_id
 	 * @return
 	 */
-	public static int getCountPosts(int me_id)
-	{
+	public static int getCountPosts(int me_id) {
 		int posts = 0;
-		
+
 		// ottengo la connessione al DB
-		Connection connect = ConnectionManager.getConnection();	  
-	        
-        // ricava la password criptata
+		Connection connect = ConnectionManager.getConnection();
+
+		// ricava la password criptata
 		String cpQuery = "SELECT COUNT(*) AS posts FROM Selfie WHERE uploader = ? ";
 		PreparedStatement cpSQL;
 		try {
 			cpSQL = connect.prepareStatement(cpQuery);
 			cpSQL.setInt(1, me_id);
-			ResultSet cpRes = cpSQL.executeQuery();		        
-			
-			while (cpRes.next()) 
+			ResultSet cpRes = cpSQL.executeQuery();
+
+			while (cpRes.next())
 				posts = cpRes.getInt("posts");
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-            // chiude la connessione
-            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
-        }
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
 		return posts;
 	}
-	
+
 }
