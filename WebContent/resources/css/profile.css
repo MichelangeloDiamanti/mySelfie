@@ -56,22 +56,93 @@
 }
 
 
-
-.shadow
+.post_container
 {
-	position: fixed;
-	left: 0px;
-	top: 0px;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0,0,0,0.75);
-	padding-top: 100px;
-	padding-left: 110px;
-	overflow: auto;
+	margin-left: -150px;
+	margin-top: 100px;
 }
 
+.modal-backdrop
+{
+    opacity:0.75 !important;
+}
+
+#infoContainer
+{
+	margin-top: 25px;
+	height: 150px; //in teoria va tolto!!
+}
+
+#profilepicbig
+{
+	position: relative;
+	float: left;
+	width: 100px;
+	height: 100px;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	border-radius: 50%;
+	background-size: 150%;
+}
+
+#profileUsername
+{
+	font-size: 24px;
+	margin-left: 30px;
+	float: left; 
+	color: #00344f;
+}
+
+#unfollow_btn,
+#follow_btn
+{
+	margin: 5px 0px 0px 15px;
+	padding: 2px 20px 2px 15px;
+	color: #fff;
+}
+
+#unfollow_btn
+{
+	background-color: #00344f;
+	border-color:  #005782;
+}
+#unfollow_btn:hover
+{
+	background-color: #005782;
+	border-color:  #00344f;
+}
 
 #follow_btn
 {
-	
+	padding-right: 36px;
+	background-color: #EDEDED;
+	border-radius: 3px;
+	color: #00344f;
+	margin-right: 10px;
+	border: 1px #00344f solid;
 }
+
+#follow_btn:hover
+{
+	color: #005782;
+	border: 1px #005782 solid;
+}
+
+
+
+#followerslbl,
+#followinglbl,
+#postslbl
+{
+	color: #00344f;
+	margin-left: 35px;
+	font-size: 12px;
+}
+
+.lblvalue
+{
+	margin-left: 5px;
+	font-weight: normal;
+	font-size: 12px;
+}
+

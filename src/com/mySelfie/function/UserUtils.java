@@ -586,4 +586,114 @@ public final class UserUtils {
 		return result;
 	}
 	
+
+	
+	/**
+	 * conta i follower di uno user tramite id
+	 * 
+	 * @param me_id
+	 * @return
+	 */
+	public static int getCountFollowers(int me_id)
+	{
+		int followers = 0;
+		
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();	  
+	        
+        // ricava la password criptata
+		String cfQuery = "SELECT COUNT(*) AS followers FROM user_follow_user WHERE id_followed = ? ";
+		PreparedStatement cfSQL;
+		try {
+			cfSQL = connect.prepareStatement(cfQuery);
+			cfSQL.setInt(1, me_id);
+			ResultSet cfRes = cfSQL.executeQuery();		        
+			
+			while (cfRes.next()) 
+				followers = cfRes.getInt("followers");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+
+		//ogni utente segue anche se stesso, quindi non va contato
+		return followers - 1;
+	}
+		
+	
+	/**
+	 * conta gli utenti seguiti da uno user tramite id
+	 * 
+	 * @param me_id
+	 * @return
+	 */
+	public static int getCountFollowing(int me_id)
+	{
+		int following = 0;
+		
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();	  
+	        
+        // ricava la password criptata
+		String cfQuery = "SELECT COUNT(*) AS following FROM user_follow_user WHERE id_follower = ? ";
+		PreparedStatement cfSQL;
+		try {
+			cfSQL = connect.prepareStatement(cfQuery);
+			cfSQL.setInt(1, me_id);
+			ResultSet cfRes = cfSQL.executeQuery();		        
+			
+			while (cfRes.next()) 
+				following = cfRes.getInt("following");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+
+		return following;
+	}
+	
+	
+	/**
+	 * conta i post di uno user tramite id
+	 * 
+	 * @param me_id
+	 * @return
+	 */
+	public static int getCountPosts(int me_id)
+	{
+		int posts = 0;
+		
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();	  
+	        
+        // ricava la password criptata
+		String cpQuery = "SELECT COUNT(*) AS posts FROM Selfie WHERE uploader = ? ";
+		PreparedStatement cpSQL;
+		try {
+			cpSQL = connect.prepareStatement(cpQuery);
+			cpSQL.setInt(1, me_id);
+			ResultSet cpRes = cpSQL.executeQuery();		        
+			
+			while (cpRes.next()) 
+				posts = cpRes.getInt("posts");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+
+		return posts;
+	}
+	
 }

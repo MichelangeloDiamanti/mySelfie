@@ -1,21 +1,10 @@
 function openIMG(i)
 {
-
-	 //serve a sistemare il bug del menù nascosto
-	 if ($("#hiddenMenuContainer").is(":visible"))
-		$( "#hiddenMenuContainer" ).hide();		
-
-	 
-	//creo il div che oscura la pagina e lo inietto nell' html del container globale
-	var oIMG = "<div class=\"shadow\" ></div>";
-	
-	document.getElementById('bcontainer').innerHTML += oIMG;
-
 	//perndo l' attributo id dell' immagine 
 	var idIMG = i.id;
 	
 	var queryType = "profilePost";
-	
+		
 	//chiamata post con ajax per visualizzare il post 
 	$.ajax(
 	{
@@ -29,23 +18,12 @@ function openIMG(i)
 		},
 		success : function(responseText) 
 		{
-			//viene restituito l' HTML dei post, da poter iniettare nel div
+			document.getElementById('modalTableContent').innerHTML = responseText;
 
-			//rimuovo il precedente div shadow vuoto e ne creo un altro contenente l'html da iniettare
-			$('.shadow').remove();
-			oIMG = "<div class=\"shadow\" >";
-			oIMG += responseText;
-			oIMG += "</div>";
-			document.getElementById('bcontainer').innerHTML += oIMG;
-			
-			//una volta che le immagini si sono caricate, è possibile resizarle
-			$('.selfie').on('load change', function()
-			{
-				resizeComments();
+			//una volta che le immagini si sono caricate, è possibile ridimensionare i commenti
+			$('#modalTable').on('shown.bs.modal', function () {
+				resizeComments();			
 			});
-			
-			bindClicks();
-			
 			// viene bindato la funzione post_comment al click del bottone passando come parametro
 			// l'elemento cliccato
 			$('.form-comment').on('submit', function(){
@@ -54,49 +32,6 @@ function openIMG(i)
 		}
 	});
 	
-	
-
-}
-
-function bindClicks()
-{
-	$('.shadow').click(function(event)
-	{
-		$('.shadow').remove();
-	});
-
-	$('.post_container').click(function(event)
-	{
-		event.stopPropagation();
-		
-	});
-	
-	$(document).keyup(function(event) 
-	{
-		  if (event.keyCode == 27)
-	      {
-			  $('.shadow').remove();
-	      }
-	});
-	
-	//se cambia l' html del documento, vanno ribindati i seguenti eventi
-	$('#hiddenMenuBtn').click(function() 
-	{
-		$("#hiddenMenuContainer").slideToggle( "fast" );	
-	});
-	
-	$('#logOutBtn').click(function() {
-		$.ajax({
-			method : "POST",
-			url : '/mySelfie/userValidator',
-			data : {
-				action : "logout"
-			},
-			success : function(responseText) {
-				window.location = "/mySelfie/";
-			}
-		});
-	});
 	
 
 }
