@@ -123,3 +123,39 @@
 	margin-left: 10px;
 	margin-right: 10px;
 }
+
+
+
+
+
+
+#floor
+{
+	position: absolute;
+	top: 415px;
+	left: 750px;
+	width: 500px;
+}
+#group
+{
+	position: absolute;
+	top: 315px;
+	left: 880px;
+	height: 150px;
+}
+#you
+{
+	position: absolute;
+	top: 315px;
+	left: 950px;
+	height: 150px;
+}
+#flash
+{
+	position: absolute;
+	top: 275px;
+	left: 950px;
+	height: 95px;
+	opacity: 0.75;
+	display: none;
+}

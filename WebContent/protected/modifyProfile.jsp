@@ -71,7 +71,8 @@
 	
 	
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/modifyProfile.js"></script>
-	
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/selfieAnimation.js"></script>
+		
 	</jsp:attribute>
 	
 	
@@ -85,6 +86,13 @@
 			</label>
 			<div id="modifyProfile">
 				<jsp:include page="/WEB-INF/pages/formModifyProfile.jsp" />
+			</div>
+			
+			<div>
+				<img src="${pageContext.request.contextPath}/resources/images/floor.png" id="floor" >
+				<img src="${pageContext.request.contextPath}/resources/images/group.png" id="group" >
+				<img src="${pageContext.request.contextPath}/resources/images/you.png"   id="you"   >
+				<img src="${pageContext.request.contextPath}/resources/images/flash.png" id="flash" >
 			</div>
 		
 		</jsp:body>

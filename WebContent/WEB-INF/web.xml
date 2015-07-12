@@ -133,4 +133,11 @@
     <filter-name>UserCheckFilter</filter-name>
     <url-pattern>/protected/*</url-pattern>
   </filter-mapping>
+  
+  <listener>
+    <listener-class>
+            com.cronJob.DeleteNonAuthenticatedUsers
+        </listener-class>
+  </listener>   
+
 </web-app>

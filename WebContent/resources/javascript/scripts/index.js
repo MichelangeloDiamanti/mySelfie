@@ -133,7 +133,7 @@ $(document).ready(function() {
 			data : { 
 				action: "login",
 				username: $('#username').val(), 
-				password: $('#password').val(), //le password non dovrebbero viaggiare in chiaro 
+				password: $('#password').val(), 
 				redURL: $('#redURL').val(),
 				remMe : $("#rm:checked").val(),
 			},
