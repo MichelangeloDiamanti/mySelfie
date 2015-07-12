@@ -24,7 +24,6 @@
     <servlet-name>indexServlet</servlet-name>
     <url-pattern>/index/signup</url-pattern>
     <url-pattern>/index/checkUsername</url-pattern>
-    <url-pattern>/mail</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>getPostsServlet</servlet-name>
@@ -84,7 +83,7 @@
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
     <url-pattern>/protected/upload</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
   <servlet>
     <servlet-name>protectedResourcesServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ProtectedResourcesServlet</servlet-class>
@@ -101,6 +100,15 @@
     <servlet-name>userValidator</servlet-name>
     <url-pattern>/userValidator</url-pattern>
     <url-pattern>/validation/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>resetCredentials</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ResetCredentials</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>resetCredentials</servlet-name>
+    <url-pattern></url-pattern>
+    <url-pattern>/resetCredentials/*</url-pattern>
   </servlet-mapping>
   <security-constraint>
     <web-resource-collection>
