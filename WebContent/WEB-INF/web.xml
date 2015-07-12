@@ -84,7 +84,7 @@
   <servlet-mapping>
     <servlet-name>UploadServlet</servlet-name>
     <url-pattern>/protected/upload</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping>
   <servlet>
     <servlet-name>protectedResourcesServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ProtectedResourcesServlet</servlet-class>
@@ -125,4 +125,11 @@
     <filter-name>UserCheckFilter</filter-name>
     <url-pattern>/protected/*</url-pattern>
   </filter-mapping>
+  
+  <listener>
+    <listener-class>
+            com.cronJob.DeleteNonAuthenticatedUsers
+        </listener-class>
+  </listener>   
+
 </web-app>

@@ -8,6 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.Context;
@@ -688,5 +690,52 @@ public final class UserUtils {
 
 		return posts;
 	}
+	
+	
+	
+	/**
+	 * ritorna una lista di user che devono ancora essere autenticati
+	 * presenti nel DB da almeno un giorno
+	 * 
+	 * @return 
+	 */
+	public static List<Integer> getExpiredUsers() {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro una lista di id dove caricare i risultati
+		List<Integer> expUsrId = new ArrayList<Integer>();
+		
+		/*
+		 * query che restituisce tutti i post pubblicati dagli utenti seguiti dallo user
+		 */
+		String expUsrIdString = "SELECT id_user FROM User WHERE valid=0 AND registration_date < NOW()-INTERVAL 1 DAY";
+		// query formato SQL
+		PreparedStatement expUsrIdSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			expUsrIdSQL = connect.prepareStatement(expUsrIdString);
+			ResultSet expUsrIdRes = expUsrIdSQL.executeQuery();
+			
+			/* vengono scorsi tutti i selfie */
+			while (expUsrIdRes.next()) 
+			{		
+				expUsrId.add(expUsrIdRes.getInt("id_user"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+					
+		//ritorna la lista degli utenti
+		return expUsrId;
+
+	}
+	
+	
 
 }
