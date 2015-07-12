@@ -3,6 +3,7 @@
   <display-name>mySelfie</display-name>
   <welcome-file-list>
     <welcome-file>protected/homepage.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
   <resource-ref>
     <description>JDBC</description>
@@ -107,7 +108,6 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>resetCredentials</servlet-name>
-    <url-pattern></url-pattern>
     <url-pattern>/resetCredentials/*</url-pattern>
   </servlet-mapping>
   <security-constraint>

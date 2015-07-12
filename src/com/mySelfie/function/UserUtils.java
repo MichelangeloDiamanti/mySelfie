@@ -117,7 +117,11 @@ public final class UserUtils {
 
 				// costruisce ed esegue la query per inserire un nuovo record
 				// user
-				String newUserQuery = "INSERT INTO User (username, password, email, profilepic ) VALUES (?, ?, ?, ?)";
+				String newUserQuery = 
+							"INSERT INTO "
+						+ 		"User (username, password, email, profilepic, registration_date ) "
+						+ 	"VALUES "
+						+ 		"(?, ?, ?, ?, now())";
 				PreparedStatement newUserStatement = connect.prepareStatement(
 						newUserQuery, Statement.RETURN_GENERATED_KEYS);
 				newUserStatement.setString(1, m.get("username"));
