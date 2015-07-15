@@ -133,46 +133,73 @@ public class ResetCredentials extends HttpServlet {
 			 */
 			case "newCredentials":
 			{
-				//esito della funzione da far visualizzare allo user
-				Message message = new Message();
-				String code = request.getParameter("secret");
-				if(code != null)
-				{
-					try {
-						// controlla che il codice sia valido e ricava l'id dell'untente che richiede il cambio password
-						int userId = SecurityUtils.checkUserCredentialsResetCode(code);
-						// ottiene la nuova password dalla request
-						String newPassword = request.getParameter("password");
-						// cambia la password con quella in input hashata
-						UserUtils.setNewPassword(userId, PasswordHash.createHash(newPassword));
-						// invalida il codice usato
-						SecurityUtils.invalidateUserCredentialsResetCode(code);
-						// imposto un messaggio di successo da far vedere tramite toast
-						message.setType("success");
-						message.setTitle("Reset Succeeded");
-						message.setBody("You can now log in with the new credentials, have fun!");
-						request.setAttribute("toastMessage", message);
-					} catch (NoSuchUserException | InvalidResetCodeException e) { // se il codice fornito non è valido
-						// imposto un messaggio di errore da far vedere tramite toast
-						message.setType("fail");
-						message.setTitle("Invalid Code");
-						message.setBody("The code you supplied doesn't appear to be valid, please try again.");
-						request.setAttribute("toastMessage", message);
-					} catch (SQLException e) { // non è stato possibile aggiornare le credenziali nel DB
-						// imposto un messaggio di errore da far vedere tramite toast
-						message.setType("fail");
-						message.setTitle("Sorry, Something Went Wrong");
-						message.setBody("We weren't able to update your credentials, try again later.");
-						request.setAttribute("toastMessage", message);
-						e.printStackTrace();
-					} catch ( NoSuchAlgorithmException | InvalidKeySpecException e) { // fail hashing password
-						e.printStackTrace();
-					} 
-				}
 				
-				// mando la risposta al client
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
-				dispatcher.forward(request,response);
+	        	String password = request.getParameter("password");       	
+	        	String confirmPassword = request.getParameter("confirmPassword");       	    	
+				String secret = request.getParameter("secret");
+				
+	        	//esito della funzione da far visualizzare allo user
+				Message message = new Message();
+	        	
+				// controlla se i parametri inseriti sono validi
+	        	if(
+	        		// se nessun parametro è vuoto 
+	    			(password != null && !password.isEmpty()) &&
+	    			(confirmPassword != null && !confirmPassword.isEmpty()) &&
+	        		(password.equals(confirmPassword))
+	        	   )
+	        	{
+					
+					String code = request.getParameter("secret");
+					if(code != null)
+					{
+						try {
+							// controlla che il codice sia valido e ricava l'id dell'untente che richiede il cambio password
+							int userId = SecurityUtils.checkUserCredentialsResetCode(code);
+							// ottiene la nuova password dalla request
+							String newPassword = request.getParameter("password");
+							// cambia la password con quella in input hashata
+							UserUtils.setNewPassword(userId, PasswordHash.createHash(newPassword));
+							// invalida il codice usato
+							SecurityUtils.invalidateUserCredentialsResetCode(code);
+							// imposto un messaggio di successo da far vedere tramite toast
+							message.setType("success");
+							message.setTitle("Reset Succeeded");
+							message.setBody("You can now log in with the new credentials, have fun!");
+							request.setAttribute("toastMessage", message);
+						} catch (NoSuchUserException | InvalidResetCodeException e) { // se il codice fornito non è valido
+							// imposto un messaggio di errore da far vedere tramite toast
+							message.setType("fail");
+							message.setTitle("Invalid Code");
+							message.setBody("The code you supplied doesn't appear to be valid, please try again.");
+							request.setAttribute("toastMessage", message);
+						} catch (SQLException e) { // non è stato possibile aggiornare le credenziali nel DB
+							// imposto un messaggio di errore da far vedere tramite toast
+							message.setType("fail");
+							message.setTitle("Sorry, Something Went Wrong");
+							message.setBody("We weren't able to update your credentials, try again later.");
+							request.setAttribute("toastMessage", message);
+							e.printStackTrace();
+						} catch ( NoSuchAlgorithmException | InvalidKeySpecException e) { // fail hashing password
+							e.printStackTrace();
+						} 
+					}
+					
+					// mando la risposta al client
+					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
+					dispatcher.forward(request,response);
+				} else {
+//					message.setType("fail");
+//					message.setTitle("Reset failed");
+//					message.setBody("The information you supplied are not valid");
+//					request.setAttribute("toastMessage", message);
+//					RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/resetCredentials/" + secret); 
+//					dispatcher.forward(request,response);
+					
+					// viene reindirizzata la stessa form
+					response.sendRedirect(response.encodeRedirectURL("/mySelfie/resetCredentials/" + secret));
+					
+	        	}
 			}
 			break;
 		}
