@@ -1,4 +1,4 @@
-package com.cronJob;
+package com.mySelfie.cronJob;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

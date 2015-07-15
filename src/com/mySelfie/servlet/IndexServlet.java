@@ -6,19 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -29,7 +25,9 @@ import javax.servlet.http.Part;
 
 import org.apache.commons.io.FilenameUtils;
 
-import com.mySelfie.exception.usernameInUseException;
+import com.mySelfie.entity.User;
+import com.mySelfie.exception.EmailInUseException;
+import com.mySelfie.exception.UsernameInUseException;
 import com.mySelfie.function.UserUtils;
 import com.mySelfie.mail.SendMail;
 import com.mySelfie.security.SecurityUtils;
@@ -42,8 +40,6 @@ public class IndexServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        
         // Se il servlet è stato chiamato dalla form di registrazione
         if (request.getParameter("signUp") != null) {
         	
@@ -147,28 +143,25 @@ public class IndexServlet extends HttpServlet {
 			    
 			    
 	    	    // SALVATAGGIO INFORMAZIONI INSERITE DALL'UTENTE NEL DB
-	    	    
-	    	    // Immagazzina le informazioni inserite in una mappa per passarle alla classe responsabile dell'inserimento nel DB
-	        	Map<String, String> m = new HashMap<String, String>();
-	        	
-	        	m.put("username", request.getParameter("username"));
-	        	m.put("password", request.getParameter("password"));       	
-	        	m.put("checkPassword", request.getParameter("checkPassword"));
-	        	m.put("email", request.getParameter("email"));	 
-	        	m.put("profilePic", uploadedFileName);
+	    	    	        	
+	        	User user = new User();
+	        	user.setusername(request.getParameter("username"));
+	        	user.setPassword(request.getParameter("password"));
+	        	user.setEmail(request.getParameter("email"));
+	        	user.setProfilepic(uploadedFileName);
 	        	
 	        	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
 	            try {
 	                // salva le credenziali nel database
-	                UserUtils.signup(out, m);
+	                UserUtils.signUp(user);
 	                // se è andata a buon fine la registrazione 
 	                // viene mandata la mail per validare il nuovo account
-	                String code = SendMail.sendSignupConfirmation(m.get("username"), m.get("email"));
+	                String code = SendMail.sendSignupConfirmation(user.getusername(), user.getEmail());
 	                // se il codice tornato non è nullo viene salvato nel DB
 	                if(code!=null)
 	                {
 	                	// ricava l'id dello user appena registrato dal suo username
-	                	int userId = UserUtils.getId(m.get("username"));
+	                	int userId = UserUtils.getId(user.getusername());
 	                	// imposta il nuovo codice nel DB
 		                SecurityUtils.setUserValidationCode(userId, code);
 	                }
@@ -177,17 +170,21 @@ public class IndexServlet extends HttpServlet {
 					message.setTitle("You're almost there!");
 					message.setBody("We sent a code to activate your account on the email address specified, please check your inbox.");
 					request.setAttribute("toastMessage", message);
-	            } catch (NamingException e) {
-	                e.printStackTrace();
-	            } catch (usernameInUseException e) {
-	            	//	se lo username non è disponibile non viene effettuata la registrazione
+	            } catch ( EmailInUseException e) { // se la mail è in uso
+	            	//	va quindi eliminata l'immagine di profilo caricata
+	            	file.delete();
+					message.setType("fail");
+					message.setTitle("Registration failed");
+					message.setBody("email address already in use");
+					request.setAttribute("toastMessage", message);
+				} catch (UsernameInUseException e) { // se lo username è in uso
 	            	//	va quindi eliminata l'immagine di profilo caricata
 	            	file.delete();
 					message.setType("fail");
 					message.setTitle("Registration failed");
 					message.setBody("username already in use");
 					request.setAttribute("toastMessage", message);
-				}
+				} 
 	            
 	            // finita la registrazione viene renderizzata la homepage
 	    		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
@@ -222,23 +219,39 @@ public class IndexServlet extends HttpServlet {
     			
     			boolean check = false;
     			String free = "";
-            	// prova a registrare un nuovo utente, una possibile eccezione è: username in uso
-                try {
-                    // salva le credenziali nel database
-                    check = UserUtils.usernameAvailable(username);
-                    if(check){
-                    	free = "true";
-                    }else{
-                    	free = "false";
-                    }
-                } catch (NamingException e) {
-                    e.printStackTrace();
+
+    			// controlla che lo username sia libero
+                check = UserUtils.usernameAvailable(username);
+                if(check){
+                	free = "true";
+                }else{
+                	free = "false";
                 }
     			
     			response.setContentType("text/plain");
     			response.getWriter().write(free);
         	}
-        	
+        	break;
+        	// richiesta di controllare l'indirizzo email
+        	case "checkEmail":
+        	{
+        		String email = request.getParameter("email").trim();
+    			
+    			boolean check = false;
+    			String free = "";
+
+    			// controlla che la email sia libera
+                check = UserUtils.checkEmail(email);
+                if(check){
+                	free = "true";
+                }else{
+                	free = "false";
+                }
+    			
+    			response.setContentType("text/plain");
+    			response.getWriter().write(free);
+        	}
+        	break;
         }	
 		
 	}

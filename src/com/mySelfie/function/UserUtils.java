@@ -1,6 +1,5 @@
 package com.mySelfie.function;
 
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
@@ -10,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -18,8 +16,10 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.mySelfie.connection.ConnectionManager;
+import com.mySelfie.entity.User;
+import com.mySelfie.exception.EmailInUseException;
 import com.mySelfie.exception.NoSuchUserException;
-import com.mySelfie.exception.usernameInUseException;
+import com.mySelfie.exception.UsernameInUseException;
 import com.mySelfie.security.PasswordHash;
 
 public final class UserUtils {
@@ -77,105 +77,90 @@ public final class UserUtils {
 		return exst;
 	}
 
+	
 	/**
-	 * registra un nuovo utente
+	 * Prende in input un'oggetto user, controlla che lo username e la mail non siano
+	 * gia in uso, quindi lo memorizza nel DB
 	 * 
-	 * @param out
-	 * @param m
-	 * @throws NamingException
-	 * @throws usernameInUseException
+	 * @param user						user da registrare
+	 * @return							id nuovo user se tutto è andato bene
+	 * @throws EmailInUseException		se la mail è in uso
+	 * @throws UsernameInUseException	se lo username è in uso
 	 */
-	public static void signup(PrintWriter out, Map<String, String> m)
-			throws NamingException, usernameInUseException {
-		Context context = null; // contesto
-		DataSource datasource = null; // dove pescare i dati
-		Connection connect = null; // connessione al DB
-
-		try {
-			// Get the context and create a connection
-			context = new InitialContext();
-			// Prende le informazioni del database dal file sito in
-			// 'WebContent/META-INF/context.xml'
-			datasource = (DataSource) context
-					.lookup("java:/comp/env/jdbc/mySelfie");
-			connect = datasource.getConnection();
-
-			// verifica che lo username non sia gia in uso
-			String uniqueNickStr = "SELECT id_user FROM User WHERE username = ? ";
-			PreparedStatement uniqueNickSQL = connect
-					.prepareStatement(uniqueNickStr);
-			uniqueNickSQL.setString(1, m.get("username"));
-			ResultSet uniqueNickRes = uniqueNickSQL.executeQuery();
-
-			boolean resEmpty = uniqueNickRes.next();
-
-			// Se il nick è univoco
-			if (!resEmpty) {
-				// ricava l'hash dalla password
-				String hashedPassword = PasswordHash.createHash(m
-						.get("password"));
-
-				// costruisce ed esegue la query per inserire un nuovo record
-				// user
-				String newUserQuery = 
-							"INSERT INTO "
-						+ 		"User (username, password, email, profilepic, registration_date ) "
-						+ 	"VALUES "
-						+ 		"(?, ?, ?, ?, now())";
-				PreparedStatement newUserStatement = connect.prepareStatement(
-						newUserQuery, Statement.RETURN_GENERATED_KEYS);
-				newUserStatement.setString(1, m.get("username"));
-				newUserStatement.setString(2, hashedPassword);
-				newUserStatement.setString(3, m.get("email"));
-				newUserStatement.setString(4, m.get("profilePic"));
-				int affectedRows = newUserStatement.executeUpdate();
-
-				// se non è stato possibile inserire il nuovo utente
-				if (affectedRows == 0) {
-					throw new SQLException("signup failed, no rows affected.");
+	public static int signUp(User user) throws EmailInUseException, UsernameInUseException {
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// intero rappresentante l'id del nuovo user
+		int idNewUser = -1;
+		
+		boolean checkUsername = UserUtils.usernameAvailable(user.getusername());
+		// se lo username scelto è disponibile
+		if(checkUsername)
+		{
+			boolean checkEmail = UserUtils.checkEmail(user.getEmail());
+			// se la email fornita è libera
+			if(checkEmail)
+			{
+				try {
+					// ricava l'hash dalla password
+					String hashedPassword = PasswordHash.createHash(user.getPassword());
+					// costruisce la query per inserire un nuovo record
+					String newUserQuery = 
+								"INSERT INTO "
+							+ 		"User (username, password, email, profilepic, registration_date ) "
+							+ 	"VALUES "
+							+ 		"(?, ?, ?, ?, now())";
+					PreparedStatement newUserStatement = conn.prepareStatement(newUserQuery, Statement.RETURN_GENERATED_KEYS);
+					newUserStatement.setString(1, user.getusername());
+					newUserStatement.setString(2, hashedPassword);
+					newUserStatement.setString(3, user.getEmail());
+					newUserStatement.setString(4, user.getProfilepic());
+					// esegue la query e si fa ritornare le righe modificate
+					int affectedRows = newUserStatement.executeUpdate();
+					// se non è stato possibile inserire il nuovo utente
+					if (affectedRows == 0) {
+						throw new SQLException("signup failed, no rows affected.");
+					}
+					// se il signup è andato a buon fine
+					else {
+						
+						ResultSet generatedKeys = newUserStatement.getGeneratedKeys();
+						// query che inserisce l' utente stesso tra gli utenti che segue
+						if (generatedKeys.next())
+						{
+							// ricava l'id del nuovo utente
+							idNewUser = generatedKeys.getInt(1);
+							// costruisce ed esegue la query
+							String ufuQuery = "INSERT INTO user_follow_user (id_follower, id_followed) VALUES (?, ?)";
+							PreparedStatement ufuStatement = conn.prepareStatement(ufuQuery);
+							ufuStatement.setInt(1, idNewUser);
+							ufuStatement.setInt(2, idNewUser);
+							ufuStatement.executeUpdate();
+						}
+					}
+				} catch (NoSuchAlgorithmException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidKeySpecException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-				// se il signup è andato a buon fine
-				else {
-
-					int idNewUser = -1;
-					ResultSet generatedKeys = newUserStatement
-							.getGeneratedKeys();
-					if (generatedKeys.next())
-						idNewUser = generatedKeys.getInt(1);
-					else
-						throw new usernameInUseException();
-
-					// costruisce ed esegue la query che inserisce l' utente
-					// setesso tra gli utenti che segue
-					String ufuQuery = "INSERT INTO user_follow_user (id_follower, id_followed) VALUES (?, ?)";
-					PreparedStatement ufuStatement = connect
-							.prepareStatement(ufuQuery);
-					ufuStatement.setInt(1, idNewUser);
-					ufuStatement.setInt(2, idNewUser);
-					ufuStatement.executeUpdate();
-				}
-
-			} else {
-				// se lo username è in uso viene generata un'eccezione
-				throw new usernameInUseException();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace(out);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			// chiude la connessione
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				e.printStackTrace(out);
+			else { // nel caso la mail fosse in uso
+				throw new EmailInUseException("l'indirizzo email " + user.getEmail() + "risulta essere gia in uso");
 			}
 		}
+		else
+		{	// nel caso lo username fosse in uso
+			throw new UsernameInUseException("lo username " + user.getusername() + "risulta essere gia in uso");
+		}
+		
+		return idNewUser;
 	}
+	
 
 	/**
 	 * la funzione controlla se lo username passato è in uso, in caso
@@ -185,8 +170,7 @@ public final class UserUtils {
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean usernameAvailable(String username)
-			throws NamingException {
+	public static boolean usernameAvailable(String username){
 		Context context = null; // contesto
 		DataSource datasource = null; // dove pescare i dati
 		Connection connect = null; // connessione al DB
@@ -217,6 +201,9 @@ public final class UserUtils {
 												// quindi negato torna falso
 
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			// chiude la connessione
@@ -264,6 +251,40 @@ public final class UserUtils {
 		return resEmpty;
 	}
 
+	/**
+	 * Prende in input una mail e controlla se è in uso
+	 * 
+	 * @param email		email da controllare
+	 * @return			TRUE se la mail NON è in uso, FALSE altrimenti.
+	 */
+	public static boolean checkEmail(String email)
+	{
+		Connection conn = ConnectionManager.getConnection();
+		
+		// true se la mail è libera
+		boolean checkEmail = false;
+
+		try {
+			// verifica che la mail non sia gia in uso
+			String checkEmailString = "SELECT id_user FROM User WHERE email = ? ";
+			PreparedStatement checkEmailSQL;
+			checkEmailSQL = conn.prepareStatement(checkEmailString);
+			checkEmailSQL.setString(1, email);
+			ResultSet checkEmailRes = checkEmailSQL.executeQuery();
+
+			// se la mail non è presa imposta il flag a true
+			if (!checkEmailRes.next())
+				checkEmail = true;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// return flag mail
+		return checkEmail;
+	}
+	
 	/**
 	 * @param username
 	 * @param conn

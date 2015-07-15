@@ -44,16 +44,30 @@ public class ResetCredentials extends HttpServlet {
 		Message message = new Message();
 		// ricava il codice di reset dall'url
 		String code = request.getPathInfo().substring(1);
-		// lo mette nella risposta
-		request.setAttribute("secret", code);
-		// imposto un messaggio di successo da far vedere tramite toast
-		message.setType("info");
-		message.setTitle("Information");
-		message.setBody("Enter your new credentials");
-		request.setAttribute("toastMessage", message);
-		// mando la risposta al client
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/newcredentials.jsp"); 
-		dispatcher.forward(request,response);
+		
+		try {
+			// controlla che il codice sia valido
+			SecurityUtils.checkUserCredentialsResetCode(code);
+			// lo mette nella risposta
+			request.setAttribute("secret", code);
+			// imposto un messaggio di successo da far vedere tramite toast
+			message.setType("info");
+			message.setTitle("Information");
+			message.setBody("Enter your new credentials");
+			request.setAttribute("toastMessage", message);
+			// mando la risposta al client
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/newcredentials.jsp"); 
+			dispatcher.forward(request,response);
+		} catch (NoSuchUserException | InvalidResetCodeException e) {
+			// imposto un messaggio di errore da far vedere tramite toast
+			message.setType("fail");
+			message.setTitle("Invalid Code");
+			message.setBody("The code you supplied doesn't appear to be valid, please try again.");
+			request.setAttribute("toastMessage", message);
+			// mando la risposta al client
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
+			dispatcher.forward(request,response);
+		}
 	}
 
 	/**
@@ -87,15 +101,15 @@ public class ResetCredentials extends HttpServlet {
 						// imposta il codice di reset generato in fase di invio della mail
 						SecurityUtils.setUserCredentialsResetCode(userId, resetCode);
 						// imposto un messaggio di successo da far vedere tramite toast
-						message.setType("success");
-						message.setTitle("Reset Succeeded");
+						message.setType("info");
+						message.setTitle("Mail sent");
 						message.setBody("You've been sent a code to reset your credentials, please check your inbox.");
 						request.setAttribute("toastMessage", message);
 						
 					} catch (NoSuchUserException e) { // se nessuno user ha quell'indirizzo email
 						// imposto un messaggio di errore da far vedere tramite toast
 						message.setType("fail");
-						message.setTitle("Reset Failed");
+						message.setTitle("Uh-oh, something went wrong!");
 						message.setBody("There is no user for the email address specified, please check your input.");
 						request.setAttribute("toastMessage", message);
 					} catch (MessagingException e) { // non è stato possibile mandare la mail

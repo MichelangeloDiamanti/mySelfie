@@ -23,6 +23,7 @@
     <div class="form-group">
       <div class="col-md-8">
 	    <input type="email" name="email" required="required" placeholder="e-mail" class="form-control SUtxtbox" id="email"/>
+		<div id="emailAlert" class="col-xs-12"></div>
       </div>
     </div>
 

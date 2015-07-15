@@ -25,6 +25,7 @@
     <servlet-name>indexServlet</servlet-name>
     <url-pattern>/index/signup</url-pattern>
     <url-pattern>/index/checkUsername</url-pattern>
+    <url-pattern>/index/checkEmail</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>getPostsServlet</servlet-name>
@@ -136,7 +137,7 @@
   
   <listener>
     <listener-class>
-            com.cronJob.DeleteNonAuthenticatedUsers
+            com.mySelfie.cronJob.DeleteNonAuthenticatedUsers
         </listener-class>
   </listener>   
 
