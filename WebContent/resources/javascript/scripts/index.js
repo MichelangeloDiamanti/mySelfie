@@ -7,17 +7,19 @@ $("#input-id").fileinput({
 
 		
 /* Effetto immagini in background */
-$(window).load(function blurbgchange() {
+$(document).ready(function() 
+{
 	var photo=2, prevPhoto=1;
-	setInterval(function() { 
+	setInterval(function() 
+	{ 
 		$("#blur_img_" + photo).fadeTo( 2000 , 1);
 		$("#blur_img_" + prevPhoto).fadeTo( 2000 , 0);
 		photo++;
 		prevPhoto++;
 		if(photo>=9) photo=1;
 		if(prevPhoto>=9) prevPhoto=1;
-		}, 10000);
-	});
+	}, 10000);
+});
 
 
 /* Apre il form di registrazione (SignUp) */
@@ -123,6 +125,25 @@ function checkInput() {
 		return false;
 }
 
+/* Controlli input per la form reset password*/
+function checkInputRP() {
+
+	//controlla se le password sono uguali
+	var p = document.getElementById('rpassword').value;
+	var cp = document.getElementById('rchkpassword').value;
+	if(p === cp)
+	{
+		return true;
+	}
+	else 
+	{
+		toastr.error('Passwords don\'t match', 'Reset failed');
+		document.getElementById('rpassword').value = p;
+		document.getElementById('rchkpassword').value = cp;
+		return false;
+	}
+}
+
 
 /* Funzione login dinamico      */
 $(document).ready(function() {
@@ -151,3 +172,24 @@ $(document).ready(function() {
 		});
 	});
 });
+
+
+
+
+//funzione che mostra la form per resettare le credenziali
+function showNewCredentialsForm()
+{
+	var resetCredentialsForm = "<form id=\"formResetPassword\" action=\"/mySelfie/resetCredentials\" method=\"post\" >"
+							 + "<div id=\"emailContainer\">"
+							 + "<label>If you can't remember your password, you only have to tell us your e-mail address. You will receive a mail with a link to a page where you can reset you password.</label>"
+							 + "</div>"
+							 + "<input type=\"email\" required=\"required\" name=\"email\" id=\"username\" class=\"textbox form-control\" placeholder=\"Insert your email address\">"	
+							 + "<button type=\"submit\" name=\"logIn\" id=\"loginbtn\"> Send </button>"
+							 + "<label id=\"rttlp\" onClick=\"window.location='/mySelfie/'\">Back</label>"
+							 + "<input type=\"hidden\" name=\"action\" value=\"sendMail\" />"
+							 + "</form>";
+									 
+	$('#login_form').html(resetCredentialsForm);
+}
+
+

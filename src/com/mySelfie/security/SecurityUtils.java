@@ -20,6 +20,8 @@ import javax.sql.DataSource;
 
 import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.entity.User;
+import com.mySelfie.exception.InvalidResetCodeException;
+import com.mySelfie.exception.NoSuchUserException;
 import com.mysql.jdbc.Statement;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 
@@ -310,7 +312,7 @@ public final class SecurityUtils {
      * @param code	codice di validazione
      * @return		id utente se esiste altrimenti -1
      */
-	public static int checkUserValidationCode(String code)
+	public static int checkUserValidationCode(String code) 
 	{
 		// ottiene la connessione al database
 		Connection conn = ConnectionManager.getConnection();
@@ -348,4 +350,164 @@ public final class SecurityUtils {
 		}
 		return userId;
 	}
+	
+	/**
+	 * prende in input l'id dello user che vuole resettare le credenziali ed un codice
+	 * generato precedentemente e imposta crea un record nella tabella di reset delle credenziali
+	 * 
+	 * @param userId	id dello user che vuole resettare la password
+	 * @param code		codice di reset
+	 * @return			true se tutto è andato a buon fine, false altrimenti
+	 */
+	public static boolean setUserCredentialsResetCode(int userId, String code){
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		boolean result = false;
+		// query in formato stringa e statement
+		String resetCredentialsString = 
+					"INSERT INTO "
+				+ 		"user_reset_credentials(id_user, code, valid, issue_date) "
+				+ 	"VALUES "
+				+ 		"(?, ?, 1, now())";
+		PreparedStatement resetCredentialsSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			resetCredentialsSQL = conn.prepareStatement(resetCredentialsString);
+			// imposta i parametri nello statement
+			resetCredentialsSQL.setInt(1, userId);
+			resetCredentialsSQL.setString(2, code);
+			// esegue la query
+			int affectedRows = resetCredentialsSQL.executeUpdate();
+			// se non è stata modificata nessuna riga spara un'eccezione
+			if (affectedRows == 0) {
+				throw new SQLException(
+						"setting a reset code failed, no rows affected.");
+			}
+			// altrimenti
+			else {
+				result = true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+    /**
+     * Prende in input un codice di reset e vede se corrisponde ad un account esistente. 
+     * In caso affermativo ritorna l'id del possessore dell'account altrimenti -1
+     * 
+     * @param code	codice di validazione
+     * @return		id utente se esiste altrimenti -1
+     * @throws InvalidResetCodeException 
+     */
+	public static int checkUserCredentialsResetCode(String code) throws NoSuchUserException, InvalidResetCodeException
+	{
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		int userId = -1;
+		// query in formato stringa e statement
+		String passwordResetCodeString = "SELECT id_user, valid FROM user_reset_credentials WHERE code = ?";
+		PreparedStatement passwordResetCodeSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			passwordResetCodeSQL = conn.prepareStatement(passwordResetCodeString);
+			// imposta i parametri nello statement
+			passwordResetCodeSQL.setString(1, code);
+			// esegue la query
+			ResultSet passwordResetCodeRes = passwordResetCodeSQL.executeQuery();
+			// se c'è un risultato signigica che il codice di reset è valido
+			if (passwordResetCodeRes.next()) {
+				// in questo caso si imposta l'id dell'utente con quello ricavato
+				userId = passwordResetCodeRes.getInt("id_user");
+				int codeValid = passwordResetCodeRes.getInt("valid");
+				// controlla che il codice sia valido
+				if(codeValid == 0) 
+					throw new InvalidResetCodeException("The code you supplied for resetting credentials doesn't appear to be valid.");
+			}
+			else {
+				throw new NoSuchUserException("The code you supplied for resetting credentials doesn't belong to any user.");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return userId;
+	}
+	
+	/**
+	 * prende in input un codice di reset password e lo invalida
+	 * 
+	 * @param code
+	 * @return
+	 * @throws SQLException
+	 */
+    public static boolean invalidateUserCredentialsResetCode(String code) throws SQLException {
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		boolean result = false;
+		// query in formato stringa e statement
+		String invalidateCodeString = 
+					"UPDATE "
+				+ 		"user_reset_credentials "
+				+ 	"SET "
+				+ 		"valid = 0, "
+				+		"used_date = now() "
+				+ 	"WHERE "
+				+ 		"code = ?";
+		PreparedStatement invalidateCodeSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			invalidateCodeSQL = conn.prepareStatement(invalidateCodeString);
+			// imposta i parametri nello statement
+			invalidateCodeSQL.setString(1, code);
+			// esegue la query
+			int affectedRows = invalidateCodeSQL.executeUpdate();
+			// se non è stata modificata nessuna riga spara un'eccezione
+			if (affectedRows == 0) {
+				throw new SQLException(
+						"couldnt invalidate reset code, no rows affected.");
+			}
+			// altrimenti
+			else {
+				result = true;
+			}
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+    }
+	
 }

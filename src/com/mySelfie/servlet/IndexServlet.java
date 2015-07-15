@@ -173,9 +173,9 @@ public class IndexServlet extends HttpServlet {
 		                SecurityUtils.setUserValidationCode(userId, code);
 	                }
 	                // imposto un messaggio di successo
-					message.setType("success");
-					message.setTitle("Registration successful");
-					message.setBody("welcome aboard!");
+					message.setType("info");
+					message.setTitle("You're almost there!");
+					message.setBody("We sent a code to activate your account on the email address specified, please check your inbox.");
 					request.setAttribute("toastMessage", message);
 	            } catch (NamingException e) {
 	                e.printStackTrace();

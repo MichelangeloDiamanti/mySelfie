@@ -6,9 +6,6 @@
 
 	<jsp:attribute name="header">
 		<link
-			href="${pageContext.request.contextPath}/resources/css/formSignUp.css"
-			media="all" rel="stylesheet" type="text/css" />
-		<link
 			href="${pageContext.request.contextPath}/resources/css/index.css"
 			media="all" rel="stylesheet" type="text/css" />            
         
@@ -21,10 +18,10 @@
     </jsp:attribute>
 
 	<jsp:attribute name="javascripts">
-		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 				
 		<!-- se c'è un messaggio toast da visualizzare -->
 		<c:if test="${not empty requestScope.toastMessage}">
+			<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 			<c:choose> 
 			  <c:when test="${requestScope.toastMessage.type == 'success'}">
 			  	<script>
@@ -43,12 +40,9 @@
 			  </c:when>
 			</c:choose>
 		</c:if>
+
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/javascript/scripts/newCredentials.js"></script>
 		
-		<!-- plugin input file -->
-		<script src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
-		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/index.js"></script>
-
-
 	</jsp:attribute>
 
 	<jsp:body>
@@ -78,18 +72,10 @@
 			
 			<!-- form di login -->
 			<div id="login_form">
-				<jsp:include page="/WEB-INF/pages/formLogIn.jsp" />
+				<jsp:include page="/WEB-INF/pages/newCredentialsForm.jsp" />
 			</div>
 			
-		</div>
-		
-		<!-- form di registrazione -->
-		<div id="signup_form">
-			<div id="signup_form_container">
-				<jsp:include page="/WEB-INF/pages/formSignUp.jsp" />
-			</div>
-		</div>    
-    
+		</div> 
 	
     </jsp:body>
 

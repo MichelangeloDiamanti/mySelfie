@@ -63,12 +63,7 @@ public class ProfileServlet extends HttpServlet {
 						
 				// ricava l'id dello user al quale appartiene il profilo
 				int id_followed = -1;
-				try {
 					id_followed = UserUtils.getId(user);
-				} catch (NamingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 					
 				// flag che indica se lo user attuale segue il proprietario del profilo visitato
 				boolean follow = FollowUtils.checkFollow(myId, id_followed);

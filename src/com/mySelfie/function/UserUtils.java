@@ -18,6 +18,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.mySelfie.connection.ConnectionManager;
+import com.mySelfie.exception.NoSuchUserException;
 import com.mySelfie.exception.usernameInUseException;
 import com.mySelfie.security.PasswordHash;
 
@@ -116,7 +117,11 @@ public final class UserUtils {
 
 				// costruisce ed esegue la query per inserire un nuovo record
 				// user
-				String newUserQuery = "INSERT INTO User (username, password, email, profilepic ) VALUES (?, ?, ?, ?)";
+				String newUserQuery = 
+							"INSERT INTO "
+						+ 		"User (username, password, email, profilepic, registration_date ) "
+						+ 	"VALUES "
+						+ 		"(?, ?, ?, ?, now())";
 				PreparedStatement newUserStatement = connect.prepareStatement(
 						newUserQuery, Statement.RETURN_GENERATED_KEYS);
 				newUserStatement.setString(1, m.get("username"));
@@ -305,10 +310,10 @@ public final class UserUtils {
 	 *             ritorna l'id dell'utente a partire dal username (senza
 	 *             connessione)
 	 */
-	public static int getId(String username) throws NamingException {
+	public static int getId(String username) {
 		// ottiene la connessione al database
 		Connection conn = ConnectionManager.getConnection();
-		// true se lo username NON è in uso, falso altrimenti
+		// id da ritornare inizialmente impostato a -1 (inesistente)
 		int id_user = -1;
 
 		// verifica che lo username non sia gia in uso
@@ -338,6 +343,55 @@ public final class UserUtils {
 			}
 		}
 
+		// ritorna l'id dell'utente
+		return id_user;
+	}
+	
+	/**
+	 * Passo in input una email e ritorna l'id dell'untente a cui è associata
+	 * 
+	 * @param email				mail dello user
+	 * @return					id dello user, -1 se non esiste
+	 * @throws NamingException	
+	 */
+	public static int getIdByEmail(String email) throws NoSuchUserException{
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// id da ritornare inizialmente impostato a -1 (inesistente)
+		int id_user = -1;
+		
+		// query che torna l'id dello username con la mail passata in input
+		String userIdString = "SELECT id_user FROM User WHERE email = ? ";
+		PreparedStatement userIdSQL;
+		try {
+			userIdSQL = conn.prepareStatement(userIdString);
+			userIdSQL.setString(1, email);
+			ResultSet userIdRes = userIdSQL.executeQuery();
+			
+			// se c'è un risultato
+			if (userIdRes.next()) {
+				// imposta l'id dell'utente
+				id_user = userIdRes.getInt("id_user");
+			}
+			// se non c'è uno user con quel nome spara un'eccezione
+			else
+			{
+				throw new NoSuchUserException("There is no user with the email specified.");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		// ritorna l'id dell'utente
 		return id_user;
 	}
@@ -533,6 +587,45 @@ public final class UserUtils {
 
 		return Hpass;
 
+	}
+	
+	public static boolean setNewPassword(int userId, String password) throws SQLException {
+		// ottiene la connessione al database
+		Connection conn = ConnectionManager.getConnection();
+		// risultato dell'operazione
+		boolean result = false;
+		// query in formato stringa e statement
+		String setNewPasswordString = "UPDATE User SET password = ? where id_user = ?";
+		PreparedStatement setNewPasswordSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			setNewPasswordSQL = conn.prepareStatement(setNewPasswordString);
+			// imposta i parametri nello statement
+			setNewPasswordSQL.setString(1, password);
+			setNewPasswordSQL.setInt(2, userId);
+			// esegue la query
+			int affectedRows = setNewPasswordSQL.executeUpdate();
+			// se non è stata modificata nessuna riga spara un'eccezione
+			if (affectedRows == 0) {
+				throw new SQLException(
+						"Resetting credentials failed, no rows affected.");
+			}
+			// altrimenti
+			else {
+				result = true;
+			}
+		} finally {
+			try {
+				// chiude la connessione
+				conn.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 
 	public static boolean setValid(int userId) {
