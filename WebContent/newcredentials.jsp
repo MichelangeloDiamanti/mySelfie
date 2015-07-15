@@ -41,6 +41,8 @@
 			</c:choose>
 		</c:if>
 
+		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/javascript/scripts/newCredentials.js"></script>
+		
 	</jsp:attribute>
 
 	<jsp:body>
@@ -70,7 +72,7 @@
 			
 			<!-- form di login -->
 			<div id="login_form">
-				<jsp:include page="/WEB-INF/pages/newCredentials.jsp" />
+				<jsp:include page="/WEB-INF/pages/newCredentialsForm.jsp" />
 			</div>
 			
 		</div> 

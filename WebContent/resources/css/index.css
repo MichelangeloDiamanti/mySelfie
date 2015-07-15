@@ -138,23 +138,25 @@ body
 
 
 
-#username
+#username,
+#rpassword
 {
 	top: 75px;
 }
 
-#password
+#password,
+#rchkpassword
 {
-	top: 105px;
-
+	top: 115px;
 }
 
-#loginbtn
+#loginbtn,
+#setpassbtn
 {
 	position: absolute;
-	width: 16%;
+	padding-left: 30px;
+	padding-right: 30px;
 	height: 8%;
-	left: 42%;
 	top: 60%;
 	border:0px solid;
 	background-color: #00344F;
@@ -163,7 +165,8 @@ body
 	border-radius: 4px 4px 4px 4px;
 }
 
-#loginbtn:hover
+#loginbtn:hover,
+#setpassbtn:hover
 {
 	-webkit-box-shadow: 0px 1px 7px 0px rgba(0, 51, 79, 0.75);
 	-moz-box-shadow:    0px 1px 7px 0px rgba(0, 51, 79, 0.75);
@@ -171,6 +174,14 @@ body
 	box-shadow:         0px 1px 7px 0px rgba(0, 51, 79, 0.75);	
 }
 
+#loginbtn
+{
+	left: 42%;
+}
+#setpassbtn
+{
+	left: 210px;
+}
 
 #rm
 {
@@ -190,13 +201,26 @@ body
 {
 	position: absolute;
 	left: 82%;
-	top: 80%;
+	top: 265px;
 	text-decoration: underline;
 	color: #00344F;
 	cursor: pointer;
 }
 
-#signup:hover, #rmlbl:hover
+#forgot
+{
+	position: absolute;
+	left: 385px;
+	top: 290px;
+	text-decoration: underline;
+	color: #00344F;
+	cursor: pointer;
+}
+
+#signup:hover, 
+#rmlbl:hover, 
+#forgot:hover,
+#rttlp:hover
 {
 	text-shadow: 0px 0px 9px rgba(255, 255, 255, 1);
 }
@@ -244,3 +268,65 @@ body
 
 
 
+#usernamelbl,
+#passwordlbl
+{
+	color: #00344f;
+	position: absolute;	
+	text-shadow: 0px 0px 8px #B5F6FF;
+}
+
+#usernamelbl
+{
+	top: 54px;
+	left: 115px; 
+}
+
+
+#passwordlbl
+{
+	top: 125px;
+	left: 115px; 
+}
+
+#emailContainer
+{
+	position: relative;
+	top: 50px;
+	left: 50px;
+	width: 475px;
+	color: #00344f;
+	text-shadow: 0px 0px 8px #B5F6FF, 0px 0px 10px #fff;
+}
+
+#rttlp
+{
+	position: relative;
+	top: 185px;
+	left: 50px;
+	color: #00344f;
+}
+#rttlp:hover
+{
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+
+#npass,
+#cnpass
+{
+	color: #00344f;
+	position: absolute;	
+	text-shadow: 0px 0px 8px #B5F6FF;
+}
+#npass
+{
+	top: 54px;
+	left: 115px; 
+}
+#cnpass
+{
+	top: 125px;
+	left: 115px; 
+}
