@@ -122,7 +122,7 @@ public class ResetCredentials extends HttpServlet {
 				}
 				
 				// mando la risposta al client
-				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/resetcredentials.jsp"); 
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp"); 
 				dispatcher.forward(request,response);
 			}
 			break;
