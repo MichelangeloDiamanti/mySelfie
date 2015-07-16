@@ -31,15 +31,16 @@ public class PostUtils {
 
 		//html risultante
 		String HTMLres = "";
-		
+
 		if(queryType.equals("homepage"))
 			followedUsersPostsList = SelfieUtils.getFollowedUsersPosts(me_id, last_index, max_date);
+
+		if(queryType.equals("explore"))
+			followedUsersPostsList = SelfieUtils.getExplorationPosts(me_id, last_index, max_date);
 		
 		if(queryType.equals("profilePost"))
-		{
 			followedUsersPostsList.add(SelfieUtils.getPostById(id_req_obj));
-		}
-		
+				
 		if(queryType.equals("hashtag"))
 			followedUsersPostsList = SelfieUtils.getPostsByHashtag(id_req_obj, last_index, max_date);
 		
@@ -60,9 +61,16 @@ public class PostUtils {
 	        int id_uploader = selfie.getUploader();
 	        String username = UserUtils.getUsernameById(id_uploader);
 	        String profilepic = UserUtils.getUserProfilepicById(id_uploader);
-	            	
+	        String location = selfie.getLocation();  
+	        
 	        /* si inizia a generare la stringa di risposta con l' HTML per visualizzare i post */
-            HTMLres += "<table class=\"post_container\">"
+            HTMLres += "<table class=\"post_container";
+            
+            //in determinati casi la tabella va spostata leggermente a destra
+            if(queryType.equals("homepage") || queryType.equals("hashtag") || queryType.equals("explore"))
+            	HTMLres += " pstcntleft";
+            
+            HTMLres += "\">"
             		+ 	"<tr>"
             		+ 		"<th class=\"user_pic";
           
@@ -80,7 +88,7 @@ public class PostUtils {
         		HTMLres += "_white";
             	
             //se va aperta una foto dalla home, il nome dell' uploader va colorato in blu
-        	if(queryType.equals("homepage") || queryType.equals("hashtag"))
+        	if(queryType.equals("homepage") || queryType.equals("hashtag") || queryType.equals("explore"))
     			HTMLres += "_blue";
             	
         	HTMLres += "\">" + username + "</label>"
@@ -131,8 +139,9 @@ public class PostUtils {
 				
 				HTMLres += "> " + hashtag.getName() + "</a>";
  	        }
-
-			HTMLres += "</p></div>";
+		
+			if(hashtagList.size() > 0)
+				HTMLres += "</p></div>";
  	        
 			
 			
@@ -153,11 +162,22 @@ public class PostUtils {
 				HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + user.getusername() + "\" class=\"tag_link\">" + user.getusername() + " </a>";                 	
 
  	        }
-
-			HTMLres += "</p></div>";
+		
+			if(selfieUserTagsList.size() > 0)
+				HTMLres += "</p></div>";
+			
+			//stampa la location se presente
+			if(location != null && !location.equals(""))
+			{
+				HTMLres += "<div class=\"comment_section_location\"><p class=\"locationlbl\"> Location - </p><p>"
+						+  location
+						+ "</p></div>";
+			}
+			
 			HTMLres += "</div>";
 
-		   
+
+			
 			//viene settata un' altezza approssimativa per la sezione dei commenti
 			int commentH = 0;
 		    // Imposta il percorso dove salvare l'immagine

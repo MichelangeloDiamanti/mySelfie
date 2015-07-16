@@ -88,8 +88,10 @@ public class ModifyProfileUtils {
 			
 			// viene valorizzato l'id dello user nella clausola where
 			updateUserSQL.setInt(m, me_id);
+
 			// viene eseguita la query
 			updateUserSQL.executeUpdate();	
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

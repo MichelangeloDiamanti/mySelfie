@@ -851,5 +851,54 @@ public final class UserUtils {
 	}
 	
 	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce le note
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getUserNotesById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String notes = null;
 
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String notesString = "SELECT " + "US.notes " + "FROM User AS US " + "WHERE " + "US.id_user = ?";
+
+		// query formato SQL
+		PreparedStatement notesSQL;
+
+		try {
+			// imposto i parametri ed eseguo la query
+			notesSQL = connect.prepareStatement(notesString);
+			notesSQL.setInt(1, userId);
+			ResultSet notesRes = notesSQL.executeQuery();
+
+			/* se c'è un risultato */
+			if (notesRes.next()) {
+				// viene impostato lo username
+				notes = notesRes.getString("notes");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// ritorna la lista dei selfie
+		return notes;
+	}
+
+	
+	
 }

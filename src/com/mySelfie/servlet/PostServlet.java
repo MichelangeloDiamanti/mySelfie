@@ -67,14 +67,14 @@ public class PostServlet extends HttpServlet {
   		if(reqType.equals("getPosts"))
   			queryType = request.getParameter("queryType");
   		
-  		if(queryType.equals("homepage"))
+  		
+  		if(queryType.equals("homepage") || queryType.equals("explore"))
   		{
   			id_req_obj = me_id;
   			last_index = Integer.parseInt(request.getParameter("lastIndex"));          	   
-  			max_date = request.getParameter("date");  		
+  			max_date = request.getParameter("date"); 
   		}
   		
-  			
 		
 		if(queryType.equals("profilePost"))
 		{

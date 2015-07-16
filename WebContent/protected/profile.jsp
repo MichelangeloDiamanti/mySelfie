@@ -62,7 +62,7 @@
 				<br><br>
 			</c:if>
 		
-		
+					
 			<table id="infolbl">
 				<tr>
 					<td>
@@ -89,9 +89,15 @@
 					</td>
 				</tr>			
 			</table>				
-			
+		
 		</div>
 
+		<c:if test="${requestScope.profileNotes != NULL && requestScope.profileNotes != ''}">
+			<label id="userNotesLbl">Notes:</label>
+			<div id="userNotes">
+		  		${requestScope.profileNotes}
+			</div>
+		</c:if>
 
 	    <div id="postsContainer">
 	  		${requestScope.profilePosts}

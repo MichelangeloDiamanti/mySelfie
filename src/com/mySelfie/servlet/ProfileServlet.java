@@ -72,6 +72,7 @@ public class ProfileServlet extends HttpServlet {
 				int followers = UserUtils.getCountFollowers(id_followed);
 				int following = UserUtils.getCountFollowing(id_followed);
 				int nposts = UserUtils.getCountPosts(id_followed);
+				String userNotes = UserUtils.getUserNotesById(id_followed);
 				
 				// controlla se il profilo visitato è quello dello user che ha effettuato il login
 				if(user.equals(myUsername)){
@@ -94,6 +95,7 @@ public class ProfileServlet extends HttpServlet {
 				request.setAttribute("followers", followers);
 				request.setAttribute("following", following);
 				request.setAttribute("nposts", nposts);
+				request.setAttribute("profileNotes", userNotes);
 				
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/protected/profile.jsp"); 
 				dispatcher.forward(request,response);
