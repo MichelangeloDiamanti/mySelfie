@@ -11,6 +11,14 @@
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
+    
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+	<script type="text/javascript">
+		var city=document.getElementById('city');
+		var autocompleteCity = new google.maps.places.Autocomplete(city);
+	</script>
+		
+		
 	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
     
 	<script src="${pageContext.request.contextPath}/resources/javascript/jcrop/jquery.Jcrop.js"></script>
@@ -77,6 +85,11 @@
 				  				<input type="text" class="form-control" name="usertags" id="usertags"/>
 							</div>
 				
+						    <div class="form-group">
+								<label for="city">Location:</label>
+	  	  						<input type="text" id="city" name="city" class="form-control"/>
+      						</div>
+    
 							<div class="col-md-12 center-block">
 				   				<input type="submit" name="cheese" value="cheese!" class="btn btn-primary center-block" id="cheeseBtn">
 							</div>

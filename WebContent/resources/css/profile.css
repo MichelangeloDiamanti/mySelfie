@@ -146,3 +146,17 @@
 	font-size: 12px;
 }
 
+#userNotes
+{
+	position: relative;
+	left: 0px;
+	top: 0px;
+	width: 595px;
+	max-height: 150px;
+	border: 1px #999 solid;
+	border-radius: 4px;
+	overflow: auto;
+	padding: 4px;
+	margin-bottom: 25px;
+}
+

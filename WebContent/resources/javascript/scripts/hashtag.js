@@ -24,6 +24,8 @@ function getMorePosts(index){
 	var queryType = "hashtag";
 	var postsContainer = document.createElement("div");
 	document.getElementById("bcontainer").appendChild(postsContainer);		
+	postsContainer.innerHTML = "<img class=\"loadingGif\" src=\"/mySelfie/resources/images/loadingIMG.gif\" >";
+	
 	//chiamata post con ajax per visualizzare i post 
 	// se non si è raggiunta la fine dei post
 	if(!end){
@@ -176,7 +178,7 @@ $( document ).ready(function() {
 	});
 	
 	$(window).scroll(function() { //detect page scroll
-	    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+		if (((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 20) && !end) {
 	    	lastIndex += 10;
 	    	getMorePosts(lastIndex);
 	    }
@@ -230,3 +232,23 @@ function like(heart, id_selfie)
 	
 }
 	
+
+
+//binda il caricamento delle immagini home o explore al click del menu
+$(document).ready(function()
+{
+	//click sul menu sinistro (home)
+	$('#tabH').click(function()
+	{
+		window.location = "/mySelfie/";
+	});
+	
+	
+	//click sul menu sinistro (expolre)
+	$('#tabE').click(function()
+	{
+		window.location = "/mySelfie/?queryType=explore";
+	});
+	
+	
+});

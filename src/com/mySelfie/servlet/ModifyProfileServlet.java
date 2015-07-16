@@ -99,13 +99,13 @@ public class ModifyProfileServlet extends HttpServlet {
 	        case "submitInfo":
 	    	{
 	    		response.setContentType("text/plain");
-	    		
+
 	    		//prendo tutti i parametri della form (anche se sono vuoti)
 	    		String name = request.getParameter("name");
 	    		String surname = request.getParameter("surname");
 	    		String city = request.getParameter("city");
-	    		String birthdate = request.getParameter("birthdate");
-	    		String gender = request.getParameter("gender");
+	    		String birthdate = (request.getParameter("birthdate").equals("")) ? null : request.getParameter("birthdate");
+	    		String gender = (request.getParameter("gender")==null) ? "" : request.getParameter("gender");
 	    		String phone = request.getParameter("phone");
 	    		String notes = request.getParameter("notes");
 	    		String username = request.getParameter("username");
@@ -114,7 +114,6 @@ public class ModifyProfileServlet extends HttpServlet {
 	    		String checkpassword = request.getParameter("checkpassword");
 	    		String uploadedFileName = "";
 
-	    		
 	    		//stringa di appoggio per la password hashtata dell' utente
 	    		String realPassword = "";
 	        	
@@ -122,7 +121,7 @@ public class ModifyProfileServlet extends HttpServlet {
 	    		String status = "success";
 	    		String reason = "";
 	    		
-	    		
+
 	        	/* dalla sessione si ricava l' id dello user e il suo username */
 	    		HttpSession session = request.getSession();
 	    		User me = new User();
@@ -132,7 +131,7 @@ public class ModifyProfileServlet extends HttpServlet {
 	      		
 	      		//ricava la password criptata
 	    		realPassword = UserUtils.getHashedPassword(me_id);
-	    		
+
 	    		//controlli sugli input effettuati:
 	    		
 				//se la password è sbagliata
@@ -144,7 +143,7 @@ public class ModifyProfileServlet extends HttpServlet {
 						reason = "incorrect_password";							
 					}
 				} catch (NoSuchAlgorithmException | InvalidKeySpecException e){e.printStackTrace();}
-	        	
+
 	        	//se lo username esiste gia 
 		        try {
 					if(UserUtils.exist(username) && (!username.equals(me_username)) || username.isEmpty() || username.equals(""))
@@ -153,14 +152,14 @@ public class ModifyProfileServlet extends HttpServlet {
 						reason = "invalid_username";							
 					}
 				} catch (NamingException e1) { e1.printStackTrace(); }
-			        
+
 		        //le password non corrispondono
 		        if(!newpassword.equals(checkpassword))
 				{
 					status = "fail";
 					reason = "passwords_dont_match";								
 				}
-			        
+
 
 		        
 		        //se i controlli hanno prodotto degli errori:
@@ -168,18 +167,18 @@ public class ModifyProfileServlet extends HttpServlet {
 	        	{
 	        		response.sendRedirect("/mySelfie/protected/modifyProfile.jsp?status=" + status + "&reason=" + reason);
 	        	}
-	        	
+
 	        	//se vengono superati tutti i controlli
 	        	if(status.equals("success"))
 	        	{
 	        		//viene presa l' eventuale immagine di profilo inserita e viene salvato il nome
 	        		Part filePart = request.getPart("profilepic");	
         			String fileName = getFileName(filePart);
-        			
+
 	        		//se l'immagine non è vuota viene salvata (controllo con la size)
 	        		if(filePart.getSize() > 0)
 	        		{
-	        			        			
+    			
 	        			// Imposta il percorso dove salvare l'immagine
 	    	    		String homeFolder = System.getProperty("user.home");
 	    	    	    String uploadPath = homeFolder + "/mySelfie/resources/profilepics";
@@ -236,29 +235,30 @@ public class ModifyProfileServlet extends HttpServlet {
 	    			    ios.close();
 	    			    writer.dispose();
 	        		}   
-	        		
+
 	    			//eseguo la query per aggiornare il profilo
 	        		try {
 						ModifyProfileUtils.updateProfile(me_id, name, surname, city, birthdate, gender, phone, notes, username, newpassword, uploadedFileName);
 					} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 						e.printStackTrace();
 					}	   
-  
+
 	        		//aggiorna lo user della sessione con i nuovi parametri
 	        		me.setName(name);
 					me.setSurname(surname);
 					me.setCity(city);
+					if(birthdate==null) birthdate=""; //se la data è null va almeno riconvertita in stringa
 					try { me.setBirthdate(birthdate); } catch (ParseException e) { e.printStackTrace(); }
 					me.setGender(gender);
 					me.setPhone(phone);
 					me.setNotes(notes);
 					me.setusername(username);
 					if(!uploadedFileName.isEmpty() && !uploadedFileName.equals("")) me.setProfilepic(uploadedFileName);
-    					 
+
     			    session.setAttribute("user", me);
     	    	
-    			    
     			    response.sendRedirect("/mySelfie/protected/modifyProfile.jsp?status=" + status + "&reason=" + reason);
+
 	        	}
     	    		    		
 	       	}

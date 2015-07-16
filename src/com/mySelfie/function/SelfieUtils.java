@@ -34,8 +34,8 @@ public class SelfieUtils {
 			connect = datasource.getConnection();
 
 			// prepara la query per inserire il nuovo selfie
-			String sql = "INSERT INTO Selfie (uploader, description, date, picture) "
-					+ "VALUES (?, ?, ?, ?)";
+			String sql = "INSERT INTO Selfie (uploader, description, date, picture, location) "
+					+ "VALUES (?, ?, ?, ?, ?)";
 			
 			// dichiara lo statement specificando che deve ritornare la chiave della tabella della riga modificata
 			PreparedStatement statement = connect.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -45,6 +45,7 @@ public class SelfieUtils {
 			statement.setString(2, selfie.getDescription());
 			statement.setTimestamp(3, selfie.getDate());
 			statement.setString(4, selfie.getPicture());
+			statement.setString(5, selfie.getLocation());
 			
 			// esegue la query e ritorna un intero che indica le righe modificate
 	        int affectedRows = statement.executeUpdate();
@@ -137,7 +138,7 @@ public class SelfieUtils {
 		 */
 		String followedUsersPostsString = 
 				"SELECT "
-			+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader "
+			+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader, SE.location "
 			+ 	"FROM "
 			+ 		"(Selfie AS SE INNER JOIN user_follow_user AS UFU ON SE.uploader = UFU.id_followed) "
 			+ 	"WHERE "
@@ -171,6 +172,7 @@ public class SelfieUtils {
 				selfie.setPicture(followedUsersPostsRes.getString("picture"));
 				selfie.setDescription(followedUsersPostsRes.getString("description"));   
 				selfie.setUploader(followedUsersPostsRes.getInt("uploader"));
+				selfie.setLocation(followedUsersPostsRes.getString("location"));
 				// il selfie di appoggio viene aggiunto alla lista
 				followedUsersPostsList.add(selfie);
 
@@ -190,6 +192,80 @@ public class SelfieUtils {
 	}
 	
 	
+	/**
+	 * Prende in input l'id dello user attuale, e carica 10 post a partire dall'ultimo
+	 * visualizzato, per questo necessita di un indice che ne tiene traccia.
+	 * Si serve della data per caricare solo posts antecedenti al caricamento della pagina
+	 * 
+	 * @param userId 		id dello user attuale
+	 * @param lastIndex		indice che tiene traccia dei post visualizzati
+	 * @param maxDate		valore che indica il datetime di caricamento della pagina
+	 * @return 
+	 */
+	public static List<Selfie> getExplorationPosts(int userId, int lastIndex, String maxDate) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro una lista di selfie dove caricare i risultati
+		List<Selfie> explorationList = new ArrayList<Selfie>();
+
+		/*
+		 * query che restituisce tutti i post pubblicati dagli utenti seguiti dallo user
+		 */
+		String explorationString = 
+				"SELECT "
+			+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader,  SE.location "
+			+ 	"FROM "
+			+ 		"Selfie AS SE "
+			+ 	"WHERE "
+			+ 		"SE.uploader <> ALL ( SELECT S.uploader FROM Selfie AS S INNER JOIN user_follow_user AS U ON S.uploader = U.id_followed WHERE U.id_follower = ? AND S.uploader = U.id_followed)"
+			+ 		"AND SE.date < ? "
+			+ 	"ORDER BY "
+			+ 		"SE.date DESC "
+			+ 	"LIMIT "
+			+ 		"?,10";
+		
+		// query formato SQL
+		PreparedStatement explorationSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			explorationSQL = connect.prepareStatement(explorationString);
+			explorationSQL.setInt(1, userId);		        
+			explorationSQL.setString(2, maxDate);
+			explorationSQL.setInt(3, lastIndex); 	        
+ 
+			ResultSet explorationRes = explorationSQL.executeQuery();
+			
+			/* vengono scorsi tutti i selfie */
+			while (explorationRes.next()) 
+			{		
+				// selfie di appoggio per caricare la lista
+				Selfie selfie = new Selfie();
+				
+				/* vengono presi tutti gli attributi del selfie e messi nel selfie di appoggio */
+				selfie.setId_selfie(explorationRes.getInt("id_selfie"));
+				selfie.setPicture(explorationRes.getString("picture"));
+				selfie.setDescription(explorationRes.getString("description"));   
+				selfie.setUploader(explorationRes.getInt("uploader"));
+				selfie.setLocation(explorationRes.getString("location"));
+				// il selfie di appoggio viene aggiunto alla lista
+				explorationList.add(selfie);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+		
+			
+		//ritorna la lista dei selfie
+		return explorationList;
+
+	}
 	
 	/**
 	 * Prende in input l'id dell'hashtag da ricercare nei selfie, e carica 10 post a partire dall'ultimo
@@ -214,7 +290,7 @@ public class SelfieUtils {
 		 */
 		String hashtagPostsString = 
 					"SELECT "
-				+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader "
+				+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader, SE.location "
 				+ 	"FROM "
 				+ 		"Selfie AS SE "
 				+ 	"WHERE "
@@ -246,6 +322,7 @@ public class SelfieUtils {
 				selfie.setPicture(hashtagPostsRes.getString("picture"));
 				selfie.setDescription(hashtagPostsRes.getString("description"));   
 				selfie.setUploader(hashtagPostsRes.getInt("uploader"));
+				selfie.setLocation(hashtagPostsRes.getString("location"));
 				// il selfie di appoggio viene aggiunto alla lista
 				hashtagPostsList.add(selfie);
 			}
@@ -281,7 +358,7 @@ public class SelfieUtils {
 		 */
 		String singlePostString = 
 					"SELECT "
-				+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader "
+				+ 		"SE.id_selfie, SE.picture, SE.description, SE.uploader, SE.location "
 				+ 	"FROM "
 				+ 		"Selfie AS SE "
 				+ 	"WHERE "
@@ -303,6 +380,7 @@ public class SelfieUtils {
 				selfie.setPicture(hashtagPostsRes.getString("picture"));
 				selfie.setDescription(hashtagPostsRes.getString("description"));   
 				selfie.setUploader(hashtagPostsRes.getInt("uploader"));
+				selfie.setLocation(hashtagPostsRes.getString("location"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

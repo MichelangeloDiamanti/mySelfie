@@ -1,4 +1,5 @@
 package com.mySelfie.servlet;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -95,15 +96,26 @@ public class IndexServlet extends HttpServlet {
 	    	    // Crea il nuovo file, assicurandosi che il nome sia univoco nella directory (prefisso, suffisso, directory)
 	    	    String fileExtension = "." + FilenameUtils.getExtension(fileName);
 	    	    File file = File.createTempFile("567", fileExtension, uploads); 
-	    	    	    	    
+	    	    String uploadedFileName = file.getName();
+	    	    
 	    	    //Salva l'immagine caricata 
 	    	    try (InputStream input = filePart.getInputStream()) {  
 	    	        Files.copy(input, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 	    	    }
 	    	    
-	    	    BufferedImage picToCompress = ImageIO.read(file);
+	        	//converto l' immagine in jpg
+			    if(!fileExtension.equals(".jpg"))
+			    {
+				    BufferedImage PNGimage = ImageIO.read(file);
+			    
+		        	BufferedImage JPGimage = new BufferedImage(PNGimage.getWidth(), PNGimage.getHeight(), BufferedImage.TYPE_INT_RGB);
+	       		  	JPGimage.createGraphics().drawImage(PNGimage, 0, 0, Color.WHITE, null);
+	       		  	ImageIO.write(JPGimage, "jpg", new File(uploadPath + "/" + uploadedFileName));
+			    }
+			  
+			    //ridimensiona l'immagine
+	       	    BufferedImage picToCompress = ImageIO.read(file);
 	    	    
-	    	    //ridimensiona l'immagine
 			    int ptcW = picToCompress.getWidth();
 			    int ptcH = picToCompress.getHeight();
 			    
@@ -119,7 +131,7 @@ public class IndexServlet extends HttpServlet {
 	    	    
 	        	file.delete();		      
 	        	File cmprsdFile = File.createTempFile("567", fileExtension, uploads); 
-	        	String uploadedFileName = cmprsdFile .getName();
+	        	uploadedFileName = cmprsdFile.getName();
 	        	
 	        	//comprimo l' immagine
 				BufferedImage Cimage = Rimage;
@@ -141,6 +153,11 @@ public class IndexServlet extends HttpServlet {
 			    ios.close();
 			    writer.dispose();
 			    
+
+	        	
+	        	
+	        	
+	        	
 			    
 	    	    // SALVATAGGIO INFORMAZIONI INSERITE DALL'UTENTE NEL DB
 	    	    	        	

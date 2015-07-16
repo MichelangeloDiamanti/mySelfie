@@ -7,7 +7,7 @@
     <jsp:attribute name="header">
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="${pageContext.request.contextPath}/resources/css/postTable.css" media="all" rel="stylesheet" type="text/css" />    
-		<link href="${pageContext.request.contextPath}/resources/css/rightMenu.css" media="all" rel="stylesheet" type="text/css" />    
+		<link href="${pageContext.request.contextPath}/resources/css/leftMenu.css" media="all" rel="stylesheet" type="text/css" />    
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
@@ -19,6 +19,7 @@
 		<script type="text/javascript">
 			<jsp:include page="/resources/javascript/scripts/getPosts.js" />
 			<jsp:include page="/resources/javascript/scripts/comments.js" />
+			<jsp:include page="/resources/javascript/scripts/leftMenu.js" />
 		</script>
 		
 	</jsp:attribute>
@@ -26,7 +27,8 @@
     <jsp:body>
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
-<%-- 		<jsp:include page="/WEB-INF/pages/rightMenu.jsp" /> --%>
+
+		<jsp:include page="/WEB-INF/pages/leftMenu.jsp" /> 
 		
 		
 	

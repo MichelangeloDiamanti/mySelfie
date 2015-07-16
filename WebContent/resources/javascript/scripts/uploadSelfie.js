@@ -10,7 +10,10 @@ $("#sampleFile").fileinput({
 
 
 $('#sampleFile').change(function performAjaxSubmit() {
-
+	
+	//gif di caricamento
+	$('#uploadedIMG').html("<img id=\"loadingGifUpload\" src=\"/mySelfie/resources/images/loadingLarge.gif\" >");
+	
 	// prendo il file uplodato
 	var sampleFile = document.getElementById("sampleFile").files[0];
 
@@ -106,12 +109,15 @@ function cheeseIMG()
 	var description = $('#description').val();
 	var hashtags = $('#hashtags').val();
 	var usertags = $('#usertags').val();
+	var location = $('#city').val();
+	
 	
 	// passa tutti i parametri necessari per uplodare la selfie
 	formdata.append("action", "uploadSelfie"); // action da svolgere
 	formdata.append("hashtags", hashtags); // hashtags
 	formdata.append("usertags", usertags); // usertags	        
 	formdata.append("description", description); // descrizione
+	formdata.append("location", location); // citta
 	formdata.append("image", $('#cropbox').attr('src')); // nome dell'immagine
 
 	// mando la richiesta tramite POST

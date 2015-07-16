@@ -1,5 +1,8 @@
 // variabile usata per tener traccia dei post visualizzati
 var lastIndex = 0;
+//variabile che indica il tipo di query da eseguire
+var queryType = "homepage";
+
 // la data viene passata come parametro della query che prende nuovi post
 // serve ad evitare che i selfie uplodati dopo il caricamento della pagina
 // vengano mostrati più volte a causa dello spostamento dell'indice
@@ -19,22 +22,40 @@ var end = false;
 
 $( document ).ready(function() 
 {	
-	getMorePosts(lastIndex);
+	//seleziona la tab home
+	$('#tabH').addClass("seltab");
+
+	//se l' argomento specificato nell' url è explore
+	var exp = window.location.search.substring(1);
+	if(exp=="queryType=explore")
+	{
+		queryType = "explore";
+		
+		//deseleziona la tab home e seleziona la tab explore
+		$('#tabH').removeClass("seltab");
+		$('#tabE').addClass("seltab");
+
+	}
+
+	
+	getMorePosts(lastIndex, queryType);
 
 	$(window).scroll(function() { //detect page scroll
-	    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 20) {
+	    if (((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 20) && !end) {
 	    	lastIndex += 10;
-	    	getMorePosts(lastIndex);
+	    	getMorePosts(lastIndex, queryType);
 	    }
 	});
 
 });
 
-function getMorePosts(index){
-	var queryType = "homepage";
+
+function getMorePosts(index, queryType){
+
 	var postsContainer = document.createElement("div");
 	document.getElementById("bcontainer").appendChild(postsContainer);		
-	
+	postsContainer.innerHTML = "<img class=\"loadingGif\" src=\"/mySelfie/resources/images/loadingIMG.gif\" >";
+		
 	//chiamata post con ajax per visualizzare i post 
 	// se non si è raggiunta la fine dei post
 	if(!end){
@@ -55,7 +76,7 @@ function getMorePosts(index){
 				// quindi se la risposta è diversa vengono caricati i nuovi selfie
 				if(responseText != "failed")
 				{
-					
+				
 					//viene restituito l' HTML dei post, da poter iniettare nel div
 					postsContainer.innerHTML = responseText;
 					// viene bindato la funzione post_comment al click del bottone passando come parametro
@@ -156,3 +177,59 @@ function like(heart, id_selfie)
 	
 }
 	
+
+
+//binda il caricamento delle immagini home o explore al click del menu
+$(document).ready(function()
+{
+	
+	//click sul menu sinistro (home)
+	$('#tabH').click(function()
+	{
+		//aggiorna la data
+		var nowDate = new Date();
+		nowDate.setSeconds( nowDate.getSeconds() + 10);
+		nowDate = nowDate.getFullYear() + '-' +
+		        ('00' + (nowDate.getMonth() + 1)).slice(-2) + '-' +
+		        ('00' + nowDate.getDate()).slice(-2) + ' ' +
+		        ('00' + nowDate.getHours()).slice(-2) + ':' +
+		        ('00' + nowDate.getMinutes()).slice(-2) + ':' +
+		        ('00' + nowDate.getSeconds()).slice(-2);
+		date = nowDate;
+		//rimouve tutti i post gia caricati
+		$( ".post_container" ).remove();
+		$( ".empty_label" ).remove();
+		//azzera l' indice e l' end
+		lastIndex=0;
+		end = false;
+		
+		//prende i post (eventualmente aggiornati)
+		getMorePosts(lastIndex, "homepage");	
+	});
+	
+	
+	//click sul menu sinistro (expolre)
+	$('#tabE').click(function()
+	{
+		//aggiorna la data
+		var nowDate = new Date();
+		nowDate.setSeconds( nowDate.getSeconds() + 10);
+		nowDate = nowDate.getFullYear() + '-' +
+		        ('00' + (nowDate.getMonth() + 1)).slice(-2) + '-' +
+		        ('00' + nowDate.getDate()).slice(-2) + ' ' +
+		        ('00' + nowDate.getHours()).slice(-2) + ':' +
+		        ('00' + nowDate.getMinutes()).slice(-2) + ':' +
+		        ('00' + nowDate.getSeconds()).slice(-2);
+		date = nowDate;
+		//rimouve tutti i post gia caricati
+		$( ".post_container" ).remove();
+		$( ".empty_label" ).remove();
+		//azzera l' indice e l' end
+		lastIndex=0;
+		end = false;				
+		//prende i post (eventualmente aggiornati)
+		getMorePosts(lastIndex, "explore");
+	});
+
+	
+});

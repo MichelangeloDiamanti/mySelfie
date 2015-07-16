@@ -849,44 +849,44 @@ public final class UserUtils {
 		return expUsrId;
 
 	}
-	
+
+
 	/**
-	 * prende in input uno username e ritorna informazioni riguardanti
-	 * l'utente a cui appartiene
+	 * prende in input uno username e ritorna informazioni riguardanti l'utente
+	 * a cui appartiene
 	 * 
-	 * @param username	username da ricercare
-	 * @return			utente a cui appartiene lo username
+	 * @param username
+	 *            username da ricercare
+	 * @return utente a cui appartiene lo username
 	 */
-	public static User getUserByUsername(String username){
+	public static User getUserByUsername(String username) {
 		// ottengo la connessione al DB
 		Connection connect = ConnectionManager.getConnection();
-		
+
 		// dichiaro uno user da restituire
 		User user = new User();
 		/*
-		 * query che restituisce tutti gli user che hanno lo username che contiene la keyword
+		 * query che restituisce tutti gli user che hanno lo username che
+		 * contiene la keyword
 		 */
-		String userMatchesString = 
-							"SELECT "
-						+ 		"* "
-						+ 	"FROM "
-						+ 		"User "
-						+ 	"WHERE "
-						+ 		"username = ?";
+		String userMatchesString = "SELECT " + "* " + "FROM " + "User "
+				+ "WHERE " + "username = ?";
 		// query formato SQL
 		PreparedStatement userMatchesSQL;
-		
+
 		try {
 			// imposto i parametri ed eseguo la query
 			userMatchesSQL = connect.prepareStatement(userMatchesString);
-			userMatchesSQL.setString(1, username);	
+			userMatchesSQL.setString(1, username);
 			ResultSet userMatchesRes = userMatchesSQL.executeQuery();
-			
+
 			/* vengono scorsi tutti i selfie */
-			if(userMatchesRes.next()) 
-			{		
-				
-				/* vengono presi tutti gli attributi dello user e messi nello user di appoggio */
+			if (userMatchesRes.next()) {
+
+				/*
+				 * vengono presi tutti gli attributi dello user e messi nello
+				 * user di appoggio
+				 */
 				user.setId_user(userMatchesRes.getInt("id_user"));
 				user.setusername(userMatchesRes.getString("username"));
 				user.setEmail(userMatchesRes.getString("email"));
@@ -899,16 +899,69 @@ public final class UserUtils {
 				user.setProfilepic(userMatchesRes.getString("profilepic"));
 				user.setBirthdate(userMatchesRes.getDate("birthdate"));
 			}
-			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			// chiude la connessione
-			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		
-		//ritorna l'utente trovato
+
+		// ritorna l'utente trovato
 		return user;
 	}
+
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce le note
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getUserNotesById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String notes = null;
+
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String notesString = "SELECT " + "US.notes " + "FROM User AS US "
+				+ "WHERE " + "US.id_user = ?";
+
+		// query formato SQL
+		PreparedStatement notesSQL;
+
+		try {
+			// imposto i parametri ed eseguo la query
+			notesSQL = connect.prepareStatement(notesString);
+			notesSQL.setInt(1, userId);
+			ResultSet notesRes = notesSQL.executeQuery();
+
+			/* se c'è un risultato */
+			if (notesRes.next()) {
+				// viene impostato lo username
+				notes = notesRes.getString("notes");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// ritorna la lista dei selfie
+		return notes;
+	}
+
 }
