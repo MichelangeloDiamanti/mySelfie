@@ -263,5 +263,59 @@ public class HashtagUtils {
 		
 	}
 	
+	
+	/**
+	 * prende in input il nome di un hashtag e torna tutte le info
+	 * se esiste
+	 * 
+	 * @param name	hashtag da cercare
+	 * @return		hashtag se esiste
+	 */
+	public static Hashtag getHashTagByName(String name){
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro un hashtag da restituire
+		Hashtag hashtag = new Hashtag();
+		/*
+		 * query che restituisce l'hashtag che ha come nome quello passato
+		 */
+		String hashTagMatchString = 
+							"SELECT "
+						+ 		"* "
+						+ 	"FROM "
+						+ 		"Hashtag "
+						+ 	"WHERE "
+						+ 		"name = ?";
+		// query formato SQL
+		PreparedStatement hashTagMatchSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			hashTagMatchSQL = connect.prepareStatement(hashTagMatchString);
+			hashTagMatchSQL.setString(1, name);	
+			ResultSet hashTagMatchRes = hashTagMatchSQL.executeQuery();
+			
+			/* se c'è un ristultato */
+			if(hashTagMatchRes.next()) 
+			{		
+				
+				/* vengono presi tutti gli attributi dell'hashtag e messi in quello di appoggio */
+				hashtag.setId_hashtag(hashTagMatchRes.getInt("id_hashtag"));
+				hashtag.setName(hashTagMatchRes.getString("name"));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		//ritorna l'hashtag trovato
+		return hashtag;
+	}
+	
 
 }

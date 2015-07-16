@@ -11,9 +11,9 @@
         <div class="collapse navbar-collapse navbar-menubuilder">
             <ul class="nav navbar-nav navbar-left">
                 <li>
-	                <form action="search/" method="post" class="form-inline" role="form">
+	                <form action="/mySelfie/protected/search" method="post" class="form-inline" role="form">
 	                	<div id="searchdiv">
-							<input type="text" id="search"/>
+							<input type="text" name="keyword" id="search" placeholder="search..."/>
 							<button id="searchbtn">
 								<span class="glyphicon glyphicon-search" style="color: #00344f"></span>
 							</button>

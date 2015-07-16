@@ -850,6 +850,65 @@ public final class UserUtils {
 
 	}
 	
-	
-
+	/**
+	 * prende in input uno username e ritorna informazioni riguardanti
+	 * l'utente a cui appartiene
+	 * 
+	 * @param username	username da ricercare
+	 * @return			utente a cui appartiene lo username
+	 */
+	public static User getUserByUsername(String username){
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro uno user da restituire
+		User user = new User();
+		/*
+		 * query che restituisce tutti gli user che hanno lo username che contiene la keyword
+		 */
+		String userMatchesString = 
+							"SELECT "
+						+ 		"* "
+						+ 	"FROM "
+						+ 		"User "
+						+ 	"WHERE "
+						+ 		"username = ?";
+		// query formato SQL
+		PreparedStatement userMatchesSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			userMatchesSQL = connect.prepareStatement(userMatchesString);
+			userMatchesSQL.setString(1, username);	
+			ResultSet userMatchesRes = userMatchesSQL.executeQuery();
+			
+			/* vengono scorsi tutti i selfie */
+			if(userMatchesRes.next()) 
+			{		
+				
+				/* vengono presi tutti gli attributi dello user e messi nello user di appoggio */
+				user.setId_user(userMatchesRes.getInt("id_user"));
+				user.setusername(userMatchesRes.getString("username"));
+				user.setEmail(userMatchesRes.getString("email"));
+				user.setPhone(userMatchesRes.getString("phone"));
+				user.setName(userMatchesRes.getString("name"));
+				user.setSurname(userMatchesRes.getString("surname"));
+				user.setGender(userMatchesRes.getString("gender"));
+				user.setNotes(userMatchesRes.getString("notes"));
+				user.setCity(userMatchesRes.getString("city"));
+				user.setProfilepic(userMatchesRes.getString("profilepic"));
+				user.setBirthdate(userMatchesRes.getDate("birthdate"));
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		//ritorna l'utente trovato
+		return user;
+	}
 }

@@ -317,10 +317,129 @@ public class SelfieUtils {
 		
 	}
 	
-
-
 	
+	/**
+	 * ritorna tutti i selfie che ha caricato lo user
+	 * 
+	 * @param uploaderId	id dell'utente
+	 * @return				lista di selfie
+	 */
+	public static List<Selfie> getSelfieByUploaderId(int uploaderId){
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro una lista di users dove caricare i risultati
+		List<Selfie> selfiesByUploader = new ArrayList<Selfie>();
+		
+		/*
+		 * query che restituisce tutti i selfie di uno user
+		 */
+		String selfiesByUploaderString = 
+				"SELECT "
+						+ 		"* "
+						+ 	"FROM "
+						+ 		"Selfie "
+						+ 	"WHERE "
+						+ 		"uploader = ?";
+		// query formato SQL
+		PreparedStatement selfiesByUploaderSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			selfiesByUploaderSQL = connect.prepareStatement(selfiesByUploaderString);
+			selfiesByUploaderSQL.setInt(1, uploaderId);	
+			ResultSet selfiesByUploaderRes = selfiesByUploaderSQL.executeQuery();
+			
+			/* vengono scorsi tutti i selfie */
+			while (selfiesByUploaderRes.next()) 
+			{		
+				// selfie di appoggio per caricare la lista
+				Selfie selfie = new Selfie();
+				
+				/* vengono presi tutti gli attributi del selfie e messi in quello di appoggio */
+				selfie.setId_selfie(selfiesByUploaderRes.getInt("id_selfie"));
+				selfie.setUploader(selfiesByUploaderRes.getInt("uploader"));
+				selfie.setDescription(selfiesByUploaderRes.getString("description"));
+				selfie.setLocation(selfiesByUploaderRes.getString("location"));
+				selfie.setDate(selfiesByUploaderRes.getTimestamp("date"));
+				selfie.setPicture(selfiesByUploaderRes.getString("picture"));
+				
+				// il selfie di appoggio viene aggiunto alla lista
+				selfiesByUploader.add(selfie);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		//ritorna la lista dei selfie
+		return selfiesByUploader;
+	}
 	
+	/**
+	 * prende in input una stringa (di un luogo) e ritorna tutti i selfie
+	 * che hanno location uguale alla keyword
+	 * 
+	 * @param location	stringa rappresentante un luogo
+	 * @return			lista di selfie location = keyword
+	 */
+	public static List<Selfie> getSelfieByLocation(String location){
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro una lista di selfie dove caricare i risultati
+		List<Selfie> selfiesByLocation = new ArrayList<Selfie>();
+		
+		/*
+		 * query che restituisce tutti i selfie caricati in un certo posto
+		 */
+		String selfiesByLocationString = 
+				"SELECT "
+						+ 		"* "
+						+ 	"FROM "
+						+ 		"Selfie "
+						+ 	"WHERE "
+						+ 		"location = ?";
+		// query formato SQL
+		PreparedStatement selfiesByLocationSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			selfiesByLocationSQL = connect.prepareStatement(selfiesByLocationString);
+			selfiesByLocationSQL.setString(1, location);	
+			ResultSet selfiesByLocationRes = selfiesByLocationSQL.executeQuery();
+			
+			/* vengono scorsi tutti i selfie */
+			while (selfiesByLocationRes.next()) 
+			{		
+				// selfie di appoggio per caricare la lista
+				Selfie selfie = new Selfie();
+				
+				/* vengono presi tutti gli attributi del selfie e messi in quello di appoggio */
+				selfie.setId_selfie(selfiesByLocationRes.getInt("id_selfie"));
+				selfie.setUploader(selfiesByLocationRes.getInt("uploader"));
+				selfie.setDescription(selfiesByLocationRes.getString("description"));
+				selfie.setLocation(selfiesByLocationRes.getString("location"));
+				selfie.setDate(selfiesByLocationRes.getTimestamp("date"));
+				selfie.setPicture(selfiesByLocationRes.getString("picture"));
+				
+				// il selfie di appoggio viene aggiunto alla lista
+				selfiesByLocation.add(selfie);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		//ritorna la lista dei selfie
+		return selfiesByLocation;
+	}
 
 }
 

@@ -38,6 +38,15 @@
     <url-pattern>/protected/postComment</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>searchServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.SearchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>searchServlet</servlet-name>
+    <url-pattern>/protected/search</url-pattern>
+    <url-pattern>/protected/search/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>followServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.FollowServlet</servlet-class>
   </servlet>
@@ -134,11 +143,9 @@
     <filter-name>UserCheckFilter</filter-name>
     <url-pattern>/protected/*</url-pattern>
   </filter-mapping>
-  
   <listener>
     <listener-class>
             com.mySelfie.cronJob.DeleteNonAuthenticatedUsers
         </listener-class>
-  </listener>   
-
+  </listener>
 </web-app>

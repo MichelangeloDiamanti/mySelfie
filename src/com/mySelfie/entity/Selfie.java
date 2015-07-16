@@ -47,5 +47,32 @@ public class Selfie {
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
+	
+	/**
+	 * compara due selfies
+	 */
+    public boolean equals(Object obj) {
+        /*
+         * se l'oggetto in questione è lo stesso
+         * l'esito è banalmente true
+         */
+    	if (obj == this) {
+            return true;
+        }
+    	/*
+    	 * se l'oggetto passato non è un'istanza di Selfie
+    	 * i due non sono confrontabili quindi torna false
+    	 */
+        if (!(obj instanceof Selfie)) {
+            return false;
+        }
+        /*
+         * altrimenti si fa il casting a Selfie
+         * e si confrontano gli id.
+         */
+        Selfie other = (Selfie) obj;
+        return this.id_selfie == other.id_selfie;
+    }
+	
 
 }
