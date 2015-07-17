@@ -58,7 +58,7 @@ function getMorePosts(index){
 						post_comment(this);
 					});
 					
-					//una volta che le immagini si sono caricate, è possibile applicare il plugin unveil
+					//una volta che le immagini si sono caricate, è possibile resizare i commenti
 					$('.selfie').on('load change', function()
 					{
 						resizeComments();
@@ -234,21 +234,3 @@ function like(heart, id_selfie)
 	
 
 
-//binda il caricamento delle immagini home o explore al click del menu
-$(document).ready(function()
-{
-	//click sul menu sinistro (home)
-	$('#tabH').click(function()
-	{
-		window.location = "/mySelfie/";
-	});
-	
-	
-	//click sul menu sinistro (expolre)
-	$('#tabE').click(function()
-	{
-		window.location = "/mySelfie/?queryType=explore";
-	});
-	
-	
-});

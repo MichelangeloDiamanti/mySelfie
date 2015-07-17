@@ -169,7 +169,7 @@ public class PostUtils {
 			//stampa la location se presente
 			if(location != null && !location.equals(""))
 			{
-				HTMLres += "<div class=\"comment_section_location\"><p class=\"locationlbl\"> Location - </p><p>"
+				HTMLres += "<div class=\"comment_section_location\"><span class=\"glyphicon glyphicon-map-marker locationlbl\"></span><p class=\"lctn\">"
 						+  location
 						+ "</p></div>";
 			}
@@ -235,6 +235,7 @@ public class PostUtils {
 						+ "<label class=\"profile_name_comment\">"
 						+ UserUtils.getUsernameById(comment.getId_user()) + "</label>" + "</a></li>"
 						+ "<li class=\"comment_container\">" + comment.getText()
+						+ "<br><label class=\"commentDate\"> " + comment.getDate() + "</label>"
 						+ "</li>";
 			}
 		        HTMLres += "</ul>"
@@ -300,6 +301,7 @@ public class PostUtils {
 					+ "<label class=\"profile_name_comment\">"
 					+ UserUtils.getUsernameById(comment.getId_user()) + "</label>" + "</a></li>"
 					+ "<li class=\"comment_container\">" + comment.getText()
+					+ "<br><label class=\"commentDate\"> " + comment.getDate() + "</label>"
 					+ "</li>";
 		}
        	
@@ -326,14 +328,9 @@ public class PostUtils {
 	        ppostsSQL.setString(1, user);
 	        ResultSet ppostsRes = ppostsSQL.executeQuery();
 	     
-	        /* flag che indica se non ci sono foto da visualizzare */
-			boolean emptyFlag = false;
-			
-			/* vengono scorsi tutti i selfie */
+	        /* vengono scorsi tutti i selfie */
             while (ppostsRes.next()) 
             {
-            	emptyFlag = true;
-     
             	String picture = ppostsRes.getString("picture");
             	int id_selfie = ppostsRes.getInt("id_selfie");
             	
@@ -361,13 +358,7 @@ public class PostUtils {
             	HTMLres += "<div class=\"postContainer\"><img id=\"selfie-" + id_selfie + "\" class=\"" + picClass + "\" src=\"" + contextPath + "/protected/resources/selfies/compressedSize/" + picture + "\" data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\" /></div>";
 
             }
-            
-            /* se non sono stati trovati selfie, viene stampato un messaggio all' utente */
- 	        if(!emptyFlag)
- 	        {
- 	        	HTMLres = "<div class=\"empty\"><label class=\"empty_label\">There are no posts here...</label></div>";
- 	        }
-            
+                        
         } catch (SQLException e) { e.printStackTrace();
         } finally {
             // chiude la connessione

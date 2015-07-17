@@ -73,7 +73,7 @@ public class HashtagServlet extends HttpServlet {
 		}
 		else
 		{
-			HTMLres = "<div class=\"empty\"><label class=\"empty_label\">There are no posts with that hashtag...</label></div>";
+			HTMLres = "<div class=\"empty\"><label class=\"empty_label\">There are no posts with that hashtag</label></div>";
 		}
 		
 		request.setAttribute("hashtagPosts", HTMLres);

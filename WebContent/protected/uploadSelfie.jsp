@@ -9,6 +9,7 @@
 		<link href="${pageContext.request.contextPath}/resources/css/uploadSelfie.css" media="all" rel="stylesheet" type="text/css" />       
 		<link href="${pageContext.request.contextPath}/resources/css/fileInput/fileinput.css" media="all" rel="stylesheet" type="text/css" />       
 		<link href="${pageContext.request.contextPath}/resources/css/jcrop/jquery.Jcrop.css" media="all" rel="stylesheet" type="text/css" />       
+      	<link href="${pageContext.request.contextPath}/resources/css/leftMenu.css" media="all" rel="stylesheet" type="text/css" />
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
@@ -29,7 +30,10 @@
 	<script src="${pageContext.request.contextPath}/resources/javascript/fileInput/fileinput.js"></script>
 			
 	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/uploadSelfie.js"></script>
+
+	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/leftMenu.js"></script>
 			
+	
 
 
      
@@ -39,6 +43,7 @@
     <jsp:body>
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
+		<jsp:include page="/WEB-INF/pages/leftMenu.jsp" /> 
 		
 		
 		<label id="upHeader">Select a picture:</label>
@@ -90,7 +95,7 @@
 				
 						    <div class="form-group">
 								<label for="city">Location:</label>
-	  	  						<input type="text" id="city" name="city" class="form-control"/>
+	  	  						<input type="text" id="city" name="city" placeholder="" class="form-control"/>
       						</div>
     
 							<div class="col-md-12 center-block">

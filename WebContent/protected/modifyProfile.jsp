@@ -9,6 +9,7 @@
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="${pageContext.request.contextPath}/resources/css/formModifyProfile.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
+	 	<link href="${pageContext.request.contextPath}/resources/css/leftMenu.css" media="all" rel="stylesheet" type="text/css" />
 		
 	</jsp:attribute>
 	
@@ -72,13 +73,15 @@
 	
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/modifyProfile.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/selfieAnimation.js"></script>
-		
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/leftMenu.js"></script>
 	</jsp:attribute>
 	
 	
 	<jsp:body>
 		
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
+		
+		<jsp:include page="/WEB-INF/pages/leftMenu.jsp" /> 
 		
 			<label id="mpTitle">
 				<span id="wrench" class="glyphicon glyphicon-wrench"></span>

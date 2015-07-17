@@ -72,8 +72,26 @@ public class ProfileServlet extends HttpServlet {
 				int followers = UserUtils.getCountFollowers(id_followed);
 				int following = UserUtils.getCountFollowing(id_followed);
 				int nposts = UserUtils.getCountPosts(id_followed);
-				String userNotes = UserUtils.getUserNotesById(id_followed);
+				String uNotes = UserUtils.getUserNotesById(id_followed);
+				String uName = UserUtils.getNameById(id_followed);
+				String uSurname = UserUtils.getSurnameById(id_followed);
+				String uGender = UserUtils.getGenderById(id_followed);
+				String uBirthdate = UserUtils.getBirthdateById(id_followed);
+				String uCity = UserUtils.getCityById(id_followed);
+				String uPhone = UserUtils.getPhoneById(id_followed);
 				
+				//flag che controlla se almeno un' informazione personale viene mostrata
+				boolean inf = false;
+				if( (!uNotes.equals("") && uNotes!=null) ||
+					(!uName.equals("") && uName!=null) ||
+					(!uSurname.equals("") && uSurname!=null) ||
+					(!uBirthdate.equals("") && uBirthdate!=null) ||
+					(!uCity.equals("") && uCity!=null) ||
+					(!uPhone.equals("") && uPhone!=null))
+					inf = true;
+					
+					
+					
 				// controlla se il profilo visitato è quello dello user che ha effettuato il login
 				if(user.equals(myUsername)){
 					request.setAttribute("myProfile", true);
@@ -95,7 +113,16 @@ public class ProfileServlet extends HttpServlet {
 				request.setAttribute("followers", followers);
 				request.setAttribute("following", following);
 				request.setAttribute("nposts", nposts);
-				request.setAttribute("profileNotes", userNotes);
+				
+				//infomazioni personali
+				request.setAttribute("profileInfoFlag", inf);
+				request.setAttribute("profileNotes", uNotes);
+				request.setAttribute("profileName", uName);
+				request.setAttribute("profileSurname", uSurname);
+				request.setAttribute("profileGender", uGender);
+				request.setAttribute("profileBirthdate", uBirthdate);
+				request.setAttribute("profileCity", uCity);
+				request.setAttribute("profilePhone", uPhone);
 				
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/protected/profile.jsp"); 
 				dispatcher.forward(request,response);

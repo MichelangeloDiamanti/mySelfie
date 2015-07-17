@@ -216,10 +216,8 @@ public class UploadServlet extends HttpServlet {
 				
 				case "uploadSelfie":
 				{
-					
 					// ottengo la descrizione dell'immagine dal campo della form
 					String upImageDesc = formFields.get("description");
-					
 					// ottengo gli hashtags dell'immagine dal campo della form				
 					String hashtagString = formFields.get("hashtags");
 					// elimina tutti gli spazi vuoti

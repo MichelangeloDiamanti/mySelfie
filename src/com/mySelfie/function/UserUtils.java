@@ -910,4 +910,312 @@ public final class UserUtils {
 		return notes;
 	}
 
+	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce il nome
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getNameById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String name = null;
+	
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String nameString = "SELECT " + "US.name " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+	
+		// query formato SQL
+		PreparedStatement nameSQL;
+	
+		try {
+			// imposto i parametri ed eseguo la query
+			nameSQL = connect.prepareStatement(nameString);
+			nameSQL.setInt(1, userId);
+			ResultSet nameRes = nameSQL.executeQuery();
+	
+			/* se c'è un risultato */
+			if (nameRes.next()) {
+				// viene impostato lo username
+				name = nameRes.getString("name");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		// ritorna la lista dei selfie
+		return name;
+	}
+	
+	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce il cognome
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getSurnameById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String surname = null;
+	
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String surnameString = "SELECT " + "US.surname " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+	
+		// query formato SQL
+		PreparedStatement surnameSQL;
+	
+		try {
+			// imposto i parametri ed eseguo la query
+			surnameSQL = connect.prepareStatement(surnameString);
+			surnameSQL.setInt(1, userId);
+			ResultSet surnameRes = surnameSQL.executeQuery();
+	
+			/* se c'è un risultato */
+			if (surnameRes.next()) {
+				// viene impostato lo username
+				surname = surnameRes.getString("surname");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		// ritorna la lista dei selfie
+		return surname;
+	}
+	
+
+
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce il sesso
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getGenderById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String gender = null;
+	
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String genderString = "SELECT " + "US.gender " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+	
+		// query formato SQL
+		PreparedStatement genderSQL;
+	
+		try {
+			// imposto i parametri ed eseguo la query
+			genderSQL = connect.prepareStatement(genderString);
+			genderSQL.setInt(1, userId);
+			ResultSet genderRes = genderSQL.executeQuery();
+	
+			/* se c'è un risultato */
+			if (genderRes.next()) {
+				// viene impostato lo username
+				gender = genderRes.getString("gender");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		// ritorna la lista dei selfie
+		return gender;
+	}
+	
+	
+	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce la data di nascita
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getBirthdateById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String birthdate = null;
+	
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String birthdateString = "SELECT " + "US.birthdate " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+	
+		// query formato SQL
+		PreparedStatement birthdateSQL;
+	
+		try {
+			// imposto i parametri ed eseguo la query
+			birthdateSQL = connect.prepareStatement(birthdateString);
+			birthdateSQL.setInt(1, userId);
+			ResultSet birthdateRes = birthdateSQL.executeQuery();
+	
+			/* se c'è un risultato */
+			if (birthdateRes.next()) {
+				// viene impostato lo username
+				birthdate = birthdateRes.getString("birthdate");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//va convertito perchè il tipo Date sennò da problemi
+		if(birthdate==null)
+			birthdate="";
+		
+		// ritorna la lista dei selfie
+		return birthdate;
+	}
+	
+	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce la citta
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getCityById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String city = null;
+	
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String cityString = "SELECT " + "US.city " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+	
+		// query formato SQL
+		PreparedStatement citySQL;
+	
+		try {
+			// imposto i parametri ed eseguo la query
+			citySQL = connect.prepareStatement(cityString);
+			citySQL.setInt(1, userId);
+			ResultSet cityRes = citySQL.executeQuery();
+	
+			/* se c'è un risultato */
+			if (cityRes.next()) {
+				// viene impostato lo username
+				city = cityRes.getString("city");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		// ritorna la lista dei selfie
+		return city;
+	}
+	
+	
+	/**
+	 * Metodo che prende in input l'id di un utente e ne restituisce il telefono
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static String getPhoneById(int userId) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		// username da ritornare
+		String phone = null;
+	
+		/*
+		 * query che restituisce l'immagine di profilo di un utente grazie al
+		 * suo id
+		 */
+		String phoneString = "SELECT " + "US.phone " + "FROM "
+				+ "User AS US " + "WHERE " + "US.id_user = ?";
+	
+		// query formato SQL
+		PreparedStatement phoneSQL;
+	
+		try {
+			// imposto i parametri ed eseguo la query
+			phoneSQL = connect.prepareStatement(phoneString);
+			phoneSQL.setInt(1, userId);
+			ResultSet phoneRes = phoneSQL.executeQuery();
+	
+			/* se c'è un risultato */
+			if (phoneRes.next()) {
+				// viene impostato lo username
+				phone = phoneRes.getString("phone");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try {
+				connect.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	
+		// ritorna la lista dei selfie
+		return phone;
+	}
+	
+	
+	
 }
