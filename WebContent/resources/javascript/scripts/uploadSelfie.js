@@ -93,7 +93,10 @@ $('#uploadedIMG').keypress(function(e)
 {
     if(e.which == 13) 
     {
-     	cropIMG();
+    	if(document.activeElement.id == "uploadedIMG")
+    	{
+    		cropIMG();
+    	}
     }
 });
 

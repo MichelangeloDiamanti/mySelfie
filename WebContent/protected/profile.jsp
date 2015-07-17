@@ -8,6 +8,7 @@
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="${pageContext.request.contextPath}/resources/css/profile.css" media="all" rel="stylesheet" type="text/css" />            
 		<link href="${pageContext.request.contextPath}/resources/css/postTable.css" media="all" rel="stylesheet" type="text/css" />            
+      	<link href="${pageContext.request.contextPath}/resources/css/leftMenu.css" media="all" rel="stylesheet" type="text/css" />
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">
@@ -16,12 +17,15 @@
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/openPost.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/comments.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/follow.js"></script>
-			
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/leftMenu.js"></script>
+				
 	</jsp:attribute>
     
     <jsp:body>
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
+
+		<jsp:include page="/WEB-INF/pages/leftMenu.jsp" /> 
 
 
 
@@ -92,10 +96,24 @@
 		
 		</div>
 
-		<c:if test="${requestScope.profileNotes != NULL && requestScope.profileNotes != ''}">
-			<label id="userNotesLbl">Notes:</label>
-			<div id="userNotes">
-		  		${requestScope.profileNotes}
+		<c:if test="${requestScope.profileInfoFlag}">
+			<label id="userInfoLbl">Info:</label>
+			<div id="userInfo">
+				<c:if test="${requestScope.profileName != NULL && requestScope.profileName != '' || requestScope.profileSurname != NULL && requestScope.profileSurname != ''}"> 
+					<c:if test="${requestScope.profileGender == 'M' || requestScope.profileGender == 'm'}">
+						<p class="infolbl" style="color: blue">${requestScope.profileName} ${requestScope.profileSurname}</p> 		
+					</c:if>
+					<c:if test="${requestScope.profileGender == 'F' || requestScope.profileGender == 'f'}">
+						<p class="infolbl" style="color: mediumvioletred">${requestScope.profileName} ${requestScope.profileSurname}</p> 			
+					</c:if>					
+					<c:if test="${requestScope.profileGender != 'F' && requestScope.profileGender == 'f' && requestScope.profileGender != 'M' && requestScope.profileGender == 'M' }">
+						<p class="infolbl">${requestScope.profileName} ${requestScope.profileSurname}</p> 			
+					</c:if>
+				</c:if>
+				<c:if test="${requestScope.profileBirthdate != NULL && requestScope.profileBirthdate != '' }"> <p class="infolbl">Born on ${requestScope.profileBirthdate}</p> </c:if>
+				<c:if test="${requestScope.profileCity != NULL && requestScope.profileCity != '' }"> <p class="infolbl">Lives in ${requestScope.profileCity}</p> </c:if>
+				<c:if test="${requestScope.profilePhone != NULL && requestScope.profilePhone != '' }"> <p class="infolbl">Phone number: ${requestScope.profilePhone}</p> </c:if>
+				<c:if test="${requestScope.profileNotes != NULL && requestScope.profileNotes != '' }"> <p class="infolbl">${requestScope.profileNotes}</p> </c:if>
 			</div>
 		</c:if>
 

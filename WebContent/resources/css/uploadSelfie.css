@@ -2,6 +2,8 @@
 {
 	color: #00344F;
 	font-size: 18px;
+	position: relative;
+	left: 75px;
 }
 
 #sampleFileContainer
@@ -29,6 +31,8 @@
 #unploadTable
 {
 	border-collapse: collapse;
+	position: relative;
+	left: 75px;
 }
 
 #fileInputTH

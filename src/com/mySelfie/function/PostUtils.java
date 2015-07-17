@@ -235,6 +235,7 @@ public class PostUtils {
 						+ "<label class=\"profile_name_comment\">"
 						+ UserUtils.getUsernameById(comment.getId_user()) + "</label>" + "</a></li>"
 						+ "<li class=\"comment_container\">" + comment.getText()
+						+ "<br><label class=\"commentDate\"> " + comment.getDate() + "</label>"
 						+ "</li>";
 			}
 		        HTMLres += "</ul>"
@@ -300,6 +301,7 @@ public class PostUtils {
 					+ "<label class=\"profile_name_comment\">"
 					+ UserUtils.getUsernameById(comment.getId_user()) + "</label>" + "</a></li>"
 					+ "<li class=\"comment_container\">" + comment.getText()
+					+ "<br><label class=\"commentDate\"> " + comment.getDate() + "</label>"
 					+ "</li>";
 		}
        	

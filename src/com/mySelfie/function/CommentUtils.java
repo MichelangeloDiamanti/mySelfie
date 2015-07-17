@@ -169,7 +169,8 @@ public class CommentUtils {
 				comment.setId_user(selfieCommentsRes.getInt("id_user"));
 				comment.setId_selfie(selfieCommentsRes.getInt("id_selfie"));
 				comment.setText(selfieCommentsRes.getString("text"));
-				comment.setDate(selfieCommentsRes.getDate("date"));
+				comment.setDate(selfieCommentsRes.getTimestamp("date"));
+
 				// l'hashtag di appoggio viene aggiunto alla lista
 				selfieCommentsList.add(comment);
 			}

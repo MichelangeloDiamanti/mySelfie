@@ -5,7 +5,7 @@
 {
 	position: relative;
 	top: 10px;
-	left: 10px;
+	left: 75px;
 	width: 450px;
 	height: auto;
 	border: 1px #aaa solid;
@@ -53,7 +53,7 @@
 	color: #00344f;
 	position: relative;
 	font-size: 17px;
-	left: 20px;
+	left: 85px;
 	top: 10px;
 }
 

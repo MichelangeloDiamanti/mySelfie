@@ -6,17 +6,21 @@
     
     <jsp:attribute name="header">
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
+       	<link href="${pageContext.request.contextPath}/resources/css/leftMenu.css" media="all" rel="stylesheet" type="text/css" />
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">	
 
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
-		
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/leftMenu.js"></script>
+			
 	</jsp:attribute>
     
     <jsp:body>
 
 		<jsp:include page="/WEB-INF/pages/navbar.jsp" />
+		<jsp:include page="/WEB-INF/pages/leftMenu.jsp" /> 
+		
 		
 		<h1>Users:</h1>
 		

@@ -2,7 +2,8 @@
 
 #postsContainer
 {
-	width: 1000px;
+	width: 1005px;
+	margin-left: 75px;
 }
 
 .postContainer
@@ -70,7 +71,8 @@
 #infoContainer
 {
 	margin-top: 25px;
-	height: 150px; //in teoria va tolto!!
+	height: 150px;
+	padding-left: 75px;
 }
 
 #profilepicbig
@@ -146,10 +148,16 @@
 	font-size: 12px;
 }
 
-#userNotes
+#userInfoLbl
 {
 	position: relative;
-	left: 0px;
+	left: 75px;	
+}
+
+#userInfo
+{
+	position: relative;
+	left: 75px;
 	top: 0px;
 	width: 595px;
 	max-height: 150px;
