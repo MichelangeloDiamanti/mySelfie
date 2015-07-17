@@ -6,6 +6,7 @@
     
     <jsp:attribute name="header">
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
+		<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 		<link href="${pageContext.request.contextPath}/resources/css/profile.css" media="all" rel="stylesheet" type="text/css" />            
 		<link href="${pageContext.request.contextPath}/resources/css/postTable.css" media="all" rel="stylesheet" type="text/css" />            
     </jsp:attribute>
@@ -16,6 +17,7 @@
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/openPost.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/comments.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/follow.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 			
 	</jsp:attribute>
     

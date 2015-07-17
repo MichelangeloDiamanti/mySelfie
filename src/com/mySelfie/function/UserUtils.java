@@ -53,7 +53,7 @@ public final class UserUtils {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 
 		return exist;
 	}
@@ -73,6 +73,10 @@ public final class UserUtils {
 		Connection connect = ConnectionManager.getConnection();
 		// controllo se lo user esiste usando il metodo con connessione
 		exst = UserUtils.exist(username, connect);
+        
+		// chiude la connessione
+        try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		
 		// torna l'esito del controllo
 		return exst;
 	}
@@ -147,7 +151,10 @@ public final class UserUtils {
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
+				}finally {
+		            // chiude la connessione
+		            try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+		        }
 			}
 			else { // nel caso la mail fosse in uso
 				throw new EmailInUseException("l'indirizzo email " + user.getEmail() + "risulta essere gia in uso");
@@ -279,7 +286,10 @@ public final class UserUtils {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} finally {
+            // chiude la connessione
+            try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
 		
 		// return flag mail
 		return checkEmail;
@@ -417,62 +427,6 @@ public final class UserUtils {
 		return id_user;
 	}
 
-	/**
-	 * 
-	 * @param username
-	 * @param conn
-	 * @return
-	 * @throws NamingException
-	 * 
-	 *             Tagga uno user in una selfie (con connessione)
-	 * 
-	 */
-	public static boolean userTagSelfie(int id_user, int id_selfie,
-			Connection conn) throws NamingException {
-
-		boolean result = false;
-		// query in formato stringa e statement
-		String userSelfieString = "INSERT INTO user_tag_selfie(id_user, id_selfie) VALUES (?, ?)";
-		PreparedStatement userSelfieSQL;
-
-		try {
-
-			// prepara lo statement a partire dalla stringa
-			userSelfieSQL = conn.prepareStatement(userSelfieString);
-			// imposta i parametri nello statement
-			userSelfieSQL.setInt(1, id_user);
-			userSelfieSQL.setInt(2, id_selfie);
-			// esegue la query
-			int affectedRows = userSelfieSQL.executeUpdate();
-			// se non è stata modificata nessuna riga spara un'eccezione
-			if (affectedRows == 0) {
-				throw new SQLException("tagging user failed, no rows affected.");
-			}
-			// altrimenti
-			else {
-				result = true;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	/**
-	 * 
-	 * @param username
-	 * @param conn
-	 * @return
-	 * @throws NamingException
-	 * 
-	 *             Tagga uno user in una selfie (senza connessione)
-	 * 
-	 */
-	public static boolean userTagSelfie(String username) throws NamingException {
-		return false;
-
-	}
 
 	/**
 	 * Metodo che prende in input l'id di un utente e ne restituisce lo username
@@ -903,13 +857,9 @@ public final class UserUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			// chiude la connessione
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
 
 		// ritorna l'utente trovato
 		return user;
@@ -952,13 +902,9 @@ public final class UserUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			// chiude la connessione
-			try {
-				connect.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
 
 		// ritorna la lista dei selfie
 		return notes;

@@ -38,6 +38,14 @@
     <url-pattern>/protected/postComment</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>getNotificationsServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.NotificationsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getNotificationsServlet</servlet-name>
+    <url-pattern>/protected/getNotifications</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>searchServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.SearchServlet</servlet-class>
   </servlet>

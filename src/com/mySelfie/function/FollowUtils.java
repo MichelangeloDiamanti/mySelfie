@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,17 +102,18 @@ public class FollowUtils {
 
 	/**
 	 * prende in input l'id del follower e quello del followed e crea una
-	 * connessione nel database, ritorna true se tutto è andato a buon fine
+	 * connessione nel database, ritorna l'id del nuovo record 
+	 * se tutto è andato a buon fine
 	 * 
 	 * @param id_follower
 	 * @param id_followed
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean followUser(int id_follower, int id_followed,
+	public static int followUser(int id_follower, int id_followed,
 			Connection conn) throws NamingException {
-		// risultato dell'operazione
-		boolean result = false;
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
 		// query in formato stringa e statement
 		String followUserString = "INSERT INTO user_follow_user(id_follower, id_followed) VALUES (?, ?)";
 		PreparedStatement followUserSQL;
@@ -119,7 +121,7 @@ public class FollowUtils {
 		try {
 
 			// prepara lo statement a partire dalla stringa
-			followUserSQL = conn.prepareStatement(followUserString);
+			followUserSQL = conn.prepareStatement(followUserString, Statement.RETURN_GENERATED_KEYS);
 			// imposta i parametri nello statement
 			followUserSQL.setInt(1, id_follower);
 			followUserSQL.setInt(2, id_followed);
@@ -131,14 +133,17 @@ public class FollowUtils {
 						"following user failed, no rows affected.");
 			}
 			// altrimenti
-			else {
-				result = true;
+			ResultSet generatedKeys = followUserSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id del record generato
+				generatedId = generatedKeys.getInt(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return result;
+		return generatedId;
 	}
 
 	/**
@@ -152,13 +157,13 @@ public class FollowUtils {
 	 * @return
 	 * @throws NamingException
 	 */
-	public static boolean followUser(int id_follower, int id_followed)
+	public static int followUser(int id_follower, int id_followed)
 			throws NamingException {
 
 		// ottiene la connessione al database
 		Connection conn = ConnectionManager.getConnection();
-		// risultato dell'operazione
-		boolean result = false;
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
 		// query in formato stringa e statement
 		String followUserString = "INSERT INTO user_follow_user(id_follower, id_followed) VALUES (?, ?)";
 		PreparedStatement followUserSQL;
@@ -166,7 +171,7 @@ public class FollowUtils {
 		try {
 
 			// prepara lo statement a partire dalla stringa
-			followUserSQL = conn.prepareStatement(followUserString);
+			followUserSQL = conn.prepareStatement(followUserString, Statement.RETURN_GENERATED_KEYS);
 			// imposta i parametri nello statement
 			followUserSQL.setInt(1, id_follower);
 			followUserSQL.setInt(2, id_followed);
@@ -178,8 +183,11 @@ public class FollowUtils {
 						"following user failed, no rows affected.");
 			}
 			// altrimenti
-			else {
-				result = true;
+			ResultSet generatedKeys = followUserSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id del record generato
+				generatedId = generatedKeys.getInt(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -193,7 +201,7 @@ public class FollowUtils {
 				e.printStackTrace();
 			}
 		}
-		return result;
+		return generatedId;
 	}
 
 	/**
@@ -371,6 +379,95 @@ public class FollowUtils {
 			}
 		}
 		return followedIds;
+	}
+	
+	
+	/**
+	 * prende in input un'istanza di chiave primaria della tabella 
+	 * user_tag_selfie e ritorna l'id dello user seguace
+	 * 
+	 * @param id_ufu
+	 * @return
+	 */
+	public static int getFollowerUser(int id_ufu)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// id dell'untente seguace
+		int user_id = -1;
+		
+		try 
+		{       
+			
+			// query che ritorna l'id dello user a cui fa riferimento la chiave
+			String followerUserString = 
+						"SELECT "
+					+ 		"id_follower "
+					+ 	"FROM "
+					+ 		"user_follow_user "
+					+ 	"WHERE "
+					+ 		"id_ufu = ?";
+					
+			PreparedStatement followerUserSQL = connect.prepareStatement(followerUserString);
+			followerUserSQL.setInt(1, id_ufu);
+			ResultSet followerUserRes = followerUserSQL.executeQuery(); 			
+			
+			if(followerUserRes.next())
+			{
+				user_id = followerUserRes.getInt("id_follower");
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}  	 
+		return user_id;
+	}
+	
+	/**
+	 * prende in input un'istanza di chiave primaria della tabella 
+	 * user_tag_selfie e ritorna l'id dello user seguito
+	 * 
+	 * @param id_ufu
+	 * @return
+	 */
+	public static int getFollowedUser(int id_ufu)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// id dell'untente seguace
+		int user_id = -1;
+		
+		try 
+		{       
+			
+			// query che ritorna l'id dello user a cui fa riferimento la chiave
+			String followerUserString = 
+						"SELECT "
+					+ 		"id_followed "
+					+ 	"FROM "
+					+ 		"user_follow_user "
+					+ 	"WHERE "
+					+ 		"id_ufu = ?";
+					
+			PreparedStatement followerUserSQL = connect.prepareStatement(followerUserString);
+			followerUserSQL.setInt(1, id_ufu);
+			ResultSet followerUserRes = followerUserSQL.executeQuery(); 			
+			
+			if(followerUserRes.next())
+			{
+				user_id = followerUserRes.getInt("id_followed");
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}  	 
+		return user_id;
 	}
 
 }

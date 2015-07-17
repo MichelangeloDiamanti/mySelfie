@@ -39,7 +39,7 @@ public class PostUtils {
 			followedUsersPostsList = SelfieUtils.getExplorationPosts(me_id, last_index, max_date);
 		
 		if(queryType.equals("profilePost"))
-			followedUsersPostsList.add(SelfieUtils.getPostById(id_req_obj));
+			followedUsersPostsList.add(SelfieUtils.getSelfieById(id_req_obj));
 				
 		if(queryType.equals("hashtag"))
 			followedUsersPostsList = SelfieUtils.getPostsByHashtag(id_req_obj, last_index, max_date);

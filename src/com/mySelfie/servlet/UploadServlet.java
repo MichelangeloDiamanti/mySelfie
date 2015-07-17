@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,9 +35,14 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 
+import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.entity.Selfie;
 import com.mySelfie.entity.User;
+import com.mySelfie.function.HashtagUtils;
+import com.mySelfie.function.NotificationUtils;
 import com.mySelfie.function.SelfieUtils;
+import com.mySelfie.function.UserUtils;
+import com.mySelfie.function.UsertagsUtils;
 
 /**
  * Servlet implementation class UploadServlet
@@ -348,7 +354,50 @@ public class UploadServlet extends HttpServlet {
 					selfie.setPicture(upImage.getName());
 					selfie.setLocation(location);
 					
-					SelfieUtils.uploadSelfie(selfie, hashtags, usertags);
+					int id_selfie = SelfieUtils.uploadSelfie(selfie, hashtags, usertags);
+					
+					Connection connect = ConnectionManager.getConnection();
+					
+	            	// scorre tutti gli hashtags che devono essere messi nella selfie
+	            	for (String hashtag : hashtags) {
+	    				
+	    				// se l'hashtag esiste
+	    				if(HashtagUtils.exist(hashtag, connect))
+	    				{
+	    					// ricava il suo id
+	    					int id_hashtag = HashtagUtils.getId(hashtag, connect);
+	    					// inserisce il tag
+	    					HashtagUtils.hashtagInSelfie(id_selfie, id_hashtag, connect);
+	    				}
+	    				// se l'hashtag NON esiste
+	    				else
+	    				{
+	    					// crea un nuovo hashtag e si fa ritornare l'id
+	    					int id_hashtag = HashtagUtils.newHashTag(hashtag, connect);
+	    					// inserisce il tag
+	    					HashtagUtils.hashtagInSelfie(id_selfie, id_hashtag, connect);
+	    					
+	    				}
+	    				
+	    			}
+	            	
+	            	// scorre tutti gli usertags che devono essere messi nella selfie
+	            	for (String usertag : usertags) {
+	            		
+	            		// controlla se lo user esiste
+	            		if(UserUtils.exist(usertag, connect))
+	            		{
+	            			// ricava il suo id
+	            			int id_user = UserUtils.getId(usertag, connect);
+	            			// inserisce il tag
+	            			int uts = UsertagsUtils.userTagSelfie(id_user, id_selfie, connect);
+	    					// se lo user taggato non sono io
+	            			if(id_user != user.getId_user()){
+	            				// mando una notifica agli utenti taggati
+	            				NotificationUtils.setTagNotification(id_user, uts);
+	            			}
+	            		}
+	            	}
 					
 					ajaxUpdateResult = "/mySelfie/protected/homepage.jsp";
 				}

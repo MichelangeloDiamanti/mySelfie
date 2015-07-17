@@ -18,11 +18,13 @@ import com.mySelfie.entity.Selfie;
 
 public class SelfieUtils {
 
-	public static void uploadSelfie(Selfie selfie, List<String> hashtags, List<String> usertags) throws NamingException {
+	public static int uploadSelfie(Selfie selfie, List<String> hashtags, List<String> usertags) throws NamingException {
 		Context context = null; // contesto
 		DataSource datasource = null; // dove pescare i dati
 		Connection connect = null; // connessione al DB
-
+		// id del nuovo selfie creato
+		int id_selfie = -1;
+		
 		try {
 			// Get the context and create a connection
 			context = new InitialContext();
@@ -61,43 +63,8 @@ public class SelfieUtils {
 	        	if (generatedKeys.next()) {
 	        		
 	        		// imposta l'id del selfie alla chiave ritornata
-	            	int id_selfie = generatedKeys.getInt(1);
+	            	id_selfie = generatedKeys.getInt(1);
 	    			
-	            	// scorre tutti gli hashtags che devono essere messi nella selfie
-	            	for (String hashtag : hashtags) {
-	    				
-	    				// se l'hashtag esiste
-	    				if(HashtagUtils.exist(hashtag, connect))
-	    				{
-	    					// ricava il suo id
-	    					int id_hashtag = HashtagUtils.getId(hashtag, connect);
-	    					// inserisce il tag
-	    					HashtagUtils.hashtagInSelfie(id_selfie, id_hashtag, connect);
-	    				}
-	    				// se l'hashtag NON esiste
-	    				else
-	    				{
-	    					// crea un nuovo hashtag e si fa ritornare l'id
-	    					int id_hashtag = HashtagUtils.newHashTag(hashtag, connect);
-	    					// inserisce il tag
-	    					HashtagUtils.hashtagInSelfie(id_selfie, id_hashtag, connect);
-	    					
-	    				}
-	    				
-	    			}
-	            	
-	            	// scorre tutti gli usertags che devono essere messi nella selfie
-	            	for (String usertag : usertags) {
-	            		
-	            		// controlla se lo user esiste
-	            		if(UserUtils.exist(usertag, connect))
-	            		{
-	            			// ricava il suo id
-	            			int id_user = UserUtils.getId(usertag, connect);
-	            			// inserisce il tag
-	            			UserUtils.userTagSelfie(id_user, id_selfie, connect);
-	            		}
-	            	}
 	            }
 	            else {
 	                throw new SQLException("Creating user failed, no ID obtained.");
@@ -114,6 +81,7 @@ public class SelfieUtils {
 				e.printStackTrace();
 			}
 		}
+		return id_selfie;
 	}
 
 	/**
@@ -347,7 +315,7 @@ public class SelfieUtils {
 	 * @param selfieId	id del selfie da cercare
 	 * @return
 	 */
-	public static Selfie getPostById(int selfieId) {
+	public static Selfie getSelfieById(int selfieId) {
 		// ottengo la connessione al DB
 		Connection connect = ConnectionManager.getConnection();
 		// selfie da ritornare

@@ -7,10 +7,12 @@
     <jsp:attribute name="header">
 		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />
 		<link href="${pageContext.request.contextPath}/resources/css/pageNotFound.css" media="all" rel="stylesheet" type="text/css" />
+    	<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     </jsp:attribute>
     
     <jsp:attribute name="javascripts">
     	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>	
+    	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 	</jsp:attribute>
     
     <jsp:body>

@@ -14,7 +14,10 @@ import javax.servlet.http.HttpSession;
 import com.mySelfie.entity.User;
 import com.mySelfie.function.CommentUtils;
 import com.mySelfie.function.LikeUtils;
+import com.mySelfie.function.NotificationUtils;
 import com.mySelfie.function.PostUtils;
+import com.mySelfie.function.SelfieUtils;
+import com.mySelfie.function.UsertagsUtils;
 
 
 /**
@@ -102,10 +105,27 @@ public class PostServlet extends HttpServlet {
            	// intercetta la richiesta ajax per mettere/togliere i like ai post
         	case "like":
         	{
+        		// id generato nella tabella user_like_selfie
+        		int generatedId = -1;
         		String heart = request.getParameter("heart");
-        		int idSelfie = Integer.parseInt(request.getParameter("selfie"));
-        				    	  		
-        		LikeUtils.likeSelfie(heart, me_id, idSelfie);
+        		int idSelfie = Integer.parseInt(request.getParameter("selfie"));  	  		
+        		generatedId = LikeUtils.likeSelfie(heart, me_id, idSelfie);
+        		// se il like è stato messo correttamente
+        		if (generatedId > 0)
+        		{
+        			// ricavo l'id dell'uploader del selfie
+        			int uploaderId = SelfieUtils.getSelfieById(idSelfie).getUploader();
+        			// se l'uploader del selfie non sono io
+        			if(uploaderId != me_id){
+            			// gli mando una notifica
+            			NotificationUtils.setLikeNotification(uploaderId, generatedId);
+        			}
+        			// mando la notifica a tutti gli utenti taggati nel selfie
+        			for(User user : UsertagsUtils.getSelfieUserTags(idSelfie))
+        			{
+        				NotificationUtils.setLikeNotification(user.getId_user(), generatedId);
+        			}
+        		}
 
         	}
         	break;

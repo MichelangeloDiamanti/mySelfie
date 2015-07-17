@@ -25,6 +25,9 @@
       		<div id="buttons">
        			<ul class="nav navbar-nav navbar-right">
 	                <li>
+						<button id="showNotifications">notifications!</button>
+	                </li>
+	                <li>
 	                	<div id="updiv" class="iconsdiv">
 							<div class="circle"></div>
 							<a  href="${pageContext.request.contextPath}/protected/uploadSelfie.jsp" >

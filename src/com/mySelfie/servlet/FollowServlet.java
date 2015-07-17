@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import com.mySelfie.entity.User;
 import com.mySelfie.function.FollowUtils;
+import com.mySelfie.function.NotificationUtils;
 
 /**
  * Servlet implementation class FollowServlet
@@ -55,16 +56,19 @@ public class FollowServlet extends HttpServlet {
 	    		// prende l'ID dell'utente da seguire
 	    		int id_to_follow = Integer.parseInt(request.getParameter("idToFollow"));
 	    		response.setContentType("text/plain");	
-	    		boolean result = false;
+	    		// id risultato dell'operazione
+	    		int resultId = -1;
 	    		try {
 	    			// effettua la chiamata followUser grazie alla classe FollowUtils
-					result = FollowUtils.followUser(me_id, id_to_follow);
+					resultId = FollowUtils.followUser(me_id, id_to_follow);
+					// manda una notifica all'utente seguito
+					NotificationUtils.setFollowNotification(id_to_follow, resultId);
 				} catch (NamingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	    		// se il metodo non ha incontrato problemi
-	    		if(result){
+	    		if(resultId > 0){
 	    			// viene mandata la form per fare l'unfollow
 	    			response.getWriter().write(
 	    				  	  "<form id=\"unfollow_form\" class=\"form-inline\" onsubmit=\"return false\">"

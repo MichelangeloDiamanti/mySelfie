@@ -4,8 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.naming.NamingException;
 
 import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.entity.User;
@@ -80,6 +83,157 @@ public class UsertagsUtils {
 		//ritorna la lista di hashtags
 		return selfieUserTagsList;
 
+	}
+	
+	/**
+	 * 
+	 * @param username
+	 * @param conn
+	 * @return
+	 * @throws NamingException
+	 * 
+	 *             Tagga uno user in una selfie (con connessione)
+	 * 
+	 */
+	public static int userTagSelfie(int id_user, int id_selfie,
+			Connection conn) throws NamingException {
+
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
+		
+		// query in formato stringa e statement
+		String userSelfieString = "INSERT INTO user_tag_selfie(id_user, id_selfie) VALUES (?, ?)";
+		PreparedStatement userSelfieSQL;
+
+		try {
+
+			// prepara lo statement a partire dalla stringa
+			userSelfieSQL = conn.prepareStatement(userSelfieString, Statement.RETURN_GENERATED_KEYS);
+			// imposta i parametri nello statement
+			userSelfieSQL.setInt(1, id_user);
+			userSelfieSQL.setInt(2, id_selfie);
+			// esegue la query
+			int affectedRows = userSelfieSQL.executeUpdate();
+			// se non è stata modificata nessuna riga spara un'eccezione
+			if (affectedRows == 0) {
+				throw new SQLException("tagging user failed, no rows affected.");
+			}
+			// altrimenti
+			ResultSet generatedKeys = userSelfieSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id del record generato
+				generatedId = generatedKeys.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return generatedId;
+	}
+
+	/**
+	 * 
+	 * @param username
+	 * @param conn
+	 * @return
+	 * @throws NamingException
+	 * 
+	 *             Tagga uno user in una selfie (senza connessione)
+	 * 
+	 */
+	public static boolean userTagSelfie(String username) throws NamingException {
+		return false;
+
+	}
+	
+	
+	/**
+	 * prende in input un'istanza di chiave primaria della tabella 
+	 * user_tag_selfie e ritorna l'id dello user taggato
+	 * 
+	 * @param id_uts
+	 * @return
+	 */
+	public static int getTaggedUser(int id_uts)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// id dell'untente taggato nel selfie
+		int user_id = -1;
+		
+		try 
+		{       
+			
+			// query che ritorna l'id dello user a cui fa riferimento la chiave
+			String taggedUserString = 
+						"SELECT "
+					+ 		"id_user "
+					+ 	"FROM "
+					+ 		"user_tag_selfie "
+					+ 	"WHERE "
+					+ 		"id_uts = ?";
+					
+			PreparedStatement taggedUserSQL = connect.prepareStatement(taggedUserString);
+			taggedUserSQL.setInt(1, id_uts);
+			ResultSet taggedUserRes = taggedUserSQL.executeQuery(); 			
+			
+			if(taggedUserRes.next())
+			{
+				user_id = taggedUserRes.getInt("id_user");
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}  	 
+		return user_id;
+	}
+	
+	/**
+	 * prende in input un'istanza di chiave primaria della tabella 
+	 * user_tag_selfie e ritorna l'id del selfie
+	 * 
+	 * @param id_uls
+	 * @return
+	 */
+	public static int getTaggedSelfie(int id_uls)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// id del selfie taggato
+		int selfie_id = -1;
+		
+		try 
+		{       
+			
+			// query che ritorna l'id del selfie taggato
+			String taggedSelfieString = 
+					"SELECT "
+							+ 		"id_selfie "
+							+ 	"FROM "
+							+ 		"user_tag_selfie "
+							+ 	"WHERE "
+							+ 		"id_uts = ?";
+			
+			PreparedStatement taggedSelfieSQL = connect.prepareStatement(taggedSelfieString);
+			taggedSelfieSQL.setInt(1, id_uls);
+			ResultSet likeQueryRes = taggedSelfieSQL.executeQuery(); 			
+			
+			if(likeQueryRes.next())
+			{
+				selfie_id = likeQueryRes.getInt("id_selfie");
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}  	 
+		return selfie_id;
 	}
 	
 }

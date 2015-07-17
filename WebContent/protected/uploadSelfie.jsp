@@ -4,7 +4,8 @@
 <t:template>
     
     <jsp:attribute name="header">
-		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" />       
+		<link href="${pageContext.request.contextPath}/resources/css/navbar.css" media="all" rel="stylesheet" type="text/css" /> 
+		<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 		<link href="${pageContext.request.contextPath}/resources/css/uploadSelfie.css" media="all" rel="stylesheet" type="text/css" />       
 		<link href="${pageContext.request.contextPath}/resources/css/fileInput/fileinput.css" media="all" rel="stylesheet" type="text/css" />       
 		<link href="${pageContext.request.contextPath}/resources/css/jcrop/jquery.Jcrop.css" media="all" rel="stylesheet" type="text/css" />       
@@ -20,6 +21,8 @@
 		
 		
 	<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	
     
 	<script src="${pageContext.request.contextPath}/resources/javascript/jcrop/jquery.Jcrop.js"></script>
 	

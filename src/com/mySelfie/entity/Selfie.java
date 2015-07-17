@@ -4,8 +4,8 @@ import java.sql.Timestamp;
 
 public class Selfie {
 	
-	private int id_selfie = 0;
-	private int uploader = 0;
+	private int id_selfie = -1;
+	private int uploader = -1;
 	private String description = null;
     private String location = null;
     private Timestamp date = null;
