@@ -58,7 +58,7 @@ function getMorePosts(index){
 						post_comment(this);
 					});
 					
-					//una volta che le immagini si sono caricate, è possibile applicare il plugin unveil
+					//una volta che le immagini si sono caricate, è possibile resizare i commenti
 					$('.selfie').on('load change', function()
 					{
 						resizeComments();
