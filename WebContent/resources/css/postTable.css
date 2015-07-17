@@ -207,7 +207,7 @@
 .locationlbl
 {
 	display: inline;
-	color: #7a7a7a;
+	color: #B53F3F;
 	float: left;
 	margin-right: 5px;
 }
@@ -346,3 +346,4 @@
 	font-weight: 1px;
 	opacity: 0;
 }
+

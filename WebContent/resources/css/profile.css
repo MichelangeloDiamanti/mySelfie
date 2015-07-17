@@ -159,8 +159,8 @@
 	position: relative;
 	left: 75px;
 	top: 0px;
-	width: 595px;
-	max-height: 150px;
+	width: 995px;
+	max-height: 200px;
 	border: 1px #999 solid;
 	border-radius: 4px;
 	overflow: auto;
@@ -168,3 +168,19 @@
 	margin-bottom: 25px;
 }
 
+.malesign
+{
+	color: blue; 
+	position: relative; 
+	float: left;
+	margin-right: 5px;
+
+}
+
+.femalesign
+{
+	color: mediumvioletred;
+	position: relative; 
+	float: left;
+	margin-right: 5px;
+}

@@ -29,6 +29,7 @@ $('#sampleFile').change(function performAjaxSubmit() {
 	xhr.open("POST", "/mySelfie/protected/upload", true);
 	xhr.send(formdata);
 
+	
 	// quando ottengo la risposta
 	xhr.onload = function(e) {
 

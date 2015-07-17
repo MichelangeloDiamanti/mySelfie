@@ -169,7 +169,7 @@ public class PostUtils {
 			//stampa la location se presente
 			if(location != null && !location.equals(""))
 			{
-				HTMLres += "<div class=\"comment_section_location\"><p class=\"locationlbl\"> Location - </p><p>"
+				HTMLres += "<div class=\"comment_section_location\"><span class=\"glyphicon glyphicon-map-marker locationlbl\"></span><p class=\"lctn\">"
 						+  location
 						+ "</p></div>";
 			}

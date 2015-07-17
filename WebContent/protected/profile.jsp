@@ -99,17 +99,20 @@
 		<c:if test="${requestScope.profileInfoFlag}">
 			<label id="userInfoLbl">Info:</label>
 			<div id="userInfo">
-				<c:if test="${requestScope.profileName != NULL && requestScope.profileName != '' || requestScope.profileSurname != NULL && requestScope.profileSurname != ''}"> 
-					<c:if test="${requestScope.profileGender == 'M' || requestScope.profileGender == 'm'}">
-						<p class="infolbl" style="color: blue">${requestScope.profileName} ${requestScope.profileSurname}</p> 		
-					</c:if>
-					<c:if test="${requestScope.profileGender == 'F' || requestScope.profileGender == 'f'}">
-						<p class="infolbl" style="color: mediumvioletred">${requestScope.profileName} ${requestScope.profileSurname}</p> 			
-					</c:if>					
-					<c:if test="${requestScope.profileGender != 'F' && requestScope.profileGender == 'f' && requestScope.profileGender != 'M' && requestScope.profileGender == 'M' }">
-						<p class="infolbl">${requestScope.profileName} ${requestScope.profileSurname}</p> 			
-					</c:if>
+			
+				<c:if test="${requestScope.profileGender == 'M' || requestScope.profileGender == 'm'}">
+					<p class="infolbl malesign" > &#9794 </p>
 				</c:if>
+				<c:if test="${requestScope.profileGender == 'F' || requestScope.profileGender == 'f'}">
+					<p class="infolbl femalesign" > &#9792 </p> 			
+				</c:if>	
+				
+				<c:if test="${requestScope.profileName != NULL && requestScope.profileName != '' || requestScope.profileSurname != NULL && requestScope.profileSurname != ''}"> 
+					<p class="infolbl namesurname" >${requestScope.profileName} ${requestScope.profileSurname} </p> 	
+				</c:if>
+				
+								
+				
 				<c:if test="${requestScope.profileBirthdate != NULL && requestScope.profileBirthdate != '' }"> <p class="infolbl">Born on ${requestScope.profileBirthdate}</p> </c:if>
 				<c:if test="${requestScope.profileCity != NULL && requestScope.profileCity != '' }"> <p class="infolbl">Lives in ${requestScope.profileCity}</p> </c:if>
 				<c:if test="${requestScope.profilePhone != NULL && requestScope.profilePhone != '' }"> <p class="infolbl">Phone number: ${requestScope.profilePhone}</p> </c:if>
