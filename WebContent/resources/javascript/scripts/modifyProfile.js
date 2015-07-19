@@ -107,6 +107,8 @@ $("#username").on({
 });
 
 
+$(document).ready(function(){ $('#tabS').addClass("seltab"); });
+
 
 //controllo password prima del submit
 function checkPwd()

@@ -138,6 +138,78 @@ public class NotificationUtils {
 
 	}
 	
+	
+	/**
+	 * Prende in input uno user e ritorna tutte le notifiche non ancora
+	 * lette
+	 * 
+	 * @param user	User a cui sono associate le notifiche
+	 * @return		Lista di notifiche non lette
+	 */
+	public static List<Notification> getSeenUserNotifications(User user) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// dichiaro una lista di notifiche dove caricare i risultati
+		List<Notification> userNotificationsList = new ArrayList<Notification>();
+
+		/*
+		 * query che restituisce le ultime 25 notifiche non lette di uno user
+		 * 
+		 */
+		String userNotificationsString = 
+				"SELECT "
+			+ 		"* "
+			+ 	"FROM "
+			+ 		"user_notifications "
+			+ 	"WHERE "
+			+ 		"id_user = ? AND "
+			+ 		"seen_date IS NOT NULL "
+			+ 	"ORDER BY "
+			+ 		"issue_date DESC "
+			+ 	"LIMIT 25";
+		
+		// query formato SQL
+		PreparedStatement userNotificationsSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			userNotificationsSQL = connect.prepareStatement(userNotificationsString);
+			userNotificationsSQL.setInt(1, user.getId_user());		        	        
+ 
+			ResultSet userNotificationsRes = userNotificationsSQL.executeQuery();
+
+			/* vengono scorse tutte le notifiche */
+			while (userNotificationsRes.next()) 
+			{		
+				// notifica di appoggio per caricare la lista
+				Notification notification = new Notification();
+				
+				/* vengono presi tutti gli attributi del selfie e messi nel selfie di appoggio */
+				notification.setId_notification(userNotificationsRes.getInt("id_notification"));
+				notification.setId_user(userNotificationsRes.getInt("id_user"));
+				notification.setType(userNotificationsRes.getString("type"));
+				notification.setText(userNotificationsRes.getString("text"));
+				notification.setIssue_date(userNotificationsRes.getTimestamp("issue_date"));
+				notification.setSeen_date(userNotificationsRes.getTimestamp("seen_date"));
+
+				// la notifica di appoggio viene messa nella lista
+				userNotificationsList.add(notification);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+            // chiude la connessione
+            try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+        }
+			
+		//ritorna la lista dei selfie
+		return userNotificationsList;
+
+	}
+	
+	
 	/**
 	 * Prende in input uno user e ritorna tutte le notifiche 
 	 * 
@@ -290,7 +362,7 @@ public class NotificationUtils {
 	        // imposto il tipo di notifica su like
 	        likeNotificationSQL.setString(2, "like");
 	        // imposto il messaggio da far vedere
-	        likeNotificationSQL.setString(3, userLikeUsername + " just liked your selfie");
+	        likeNotificationSQL.setString(3, userLikeUsername + " liked your selfie");
 	        // imposto l'id del record corrispondente nella tabella user_like_selfie
 	        likeNotificationSQL.setInt(4, uls);
 
@@ -412,7 +484,7 @@ public class NotificationUtils {
 			// imposto il tipo di notifica su tag
 			likeNotificationSQL.setString(2, "tag");
 			// imposto il messaggio da far vedere
-			likeNotificationSQL.setString(3, taggerUsername + " just tagged you in a selfie");
+			likeNotificationSQL.setString(3, taggerUsername + " tagged you in a selfie");
 			// imposto l'id del record corrispondente nella tabella user_tag_selfie
 			likeNotificationSQL.setInt(4, uts);
 			
@@ -472,7 +544,7 @@ public class NotificationUtils {
 			// imposto il tipo di notifica su tag
 			likeNotificationSQL.setString(2, "follow");
 			// imposto il messaggio da far vedere
-			likeNotificationSQL.setString(3, followerUsername + " just began following you");
+			likeNotificationSQL.setString(3, followerUsername + " is following you");
 			// imposto l'id del record corrispondente nella tabella user_tag_selfie
 			likeNotificationSQL.setInt(4, ufu);
 			

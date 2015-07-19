@@ -81,6 +81,7 @@ public class ProfileServlet extends HttpServlet {
 				String uPhone = UserUtils.getPhoneById(id_followed);
 				
 				//flag che controlla se almeno un' informazione personale viene mostrata
+				
 				boolean inf = false;
 				if( (!uNotes.equals("") && uNotes!=null) ||
 					(!uName.equals("") && uName!=null) ||

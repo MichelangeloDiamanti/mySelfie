@@ -33,43 +33,6 @@ $(document).click(function(e) {
 });
 
 
-// funzione di polling che ricava ogni 20 secondi il numero di notifiche
-// non visualizzate
-(function poll() {
-	setTimeout(function() {
-		$.ajax({
-			method: "GET",
-			url : '/mySelfie/protected/getNotifications',
-			data : 
-			{ 
-				action: "getNotificationsCount"
-			},
-			success : function(notificationsCount) {
-				//Update your dashboard gauge
-				if(notificationsCount != "none")
-					toastr.info("You have " + notificationsCount + " unread notifications", 'Wow!');
 
-				//Setup the next poll recursively
-				poll();
-			},
-			dataType : "html"
-		});
-	}, 20000);
-})();
 
-$('#showNotifications').click(function() {
-	$.ajax({
-		method: "GET",
-		url : '/mySelfie/protected/getNotifications',
-		data : 
-		{ 
-			action: "getNotifications"
-		},
-		success : function(notifications) {
-			//Update your dashboard gauge
-			toastr.info(notifications, 'Notifications:');
-		},
-		dataType : "html"
-	});
-});
 

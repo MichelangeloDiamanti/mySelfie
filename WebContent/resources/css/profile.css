@@ -3,7 +3,7 @@
 #postsContainer
 {
 	width: 1005px;
-	margin-left: 75px;
+	margin-left: 125px;
 }
 
 .postContainer
@@ -63,7 +63,7 @@
 {
 	margin-top: 25px;
 	height: 150px;
-	padding-left: 75px;
+	padding-left: 125px;
 }
 
 #profilepicbig
@@ -142,13 +142,13 @@
 #userInfoLbl
 {
 	position: relative;
-	left: 75px;	
+	left: 125px;	
 }
 
 #userInfo
 {
 	position: relative;
-	left: 75px;
+	left: 125px;
 	top: 0px;
 	width: 995px;
 	max-height: 200px;
