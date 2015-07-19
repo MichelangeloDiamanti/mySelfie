@@ -21,6 +21,10 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/leftMenu.js"></script>
 
+		<script>
+			$(document).ready(function(){ $('#tabP').addClass("seltab"); });
+		</script>
+		
 	</jsp:attribute>
     
     <jsp:body>

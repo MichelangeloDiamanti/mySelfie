@@ -6,7 +6,7 @@ public class Notification {
 
 	private int id_notification = -1;
 	private int id_user = -1;
-	private String type = null;
+	private String type = null; //like tag follow comment
 	private String text = null;
 	private Timestamp issue_date = null;
 	private Timestamp seen_date = null;

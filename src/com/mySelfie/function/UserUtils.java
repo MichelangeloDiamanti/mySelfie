@@ -906,6 +906,9 @@ public final class UserUtils {
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
         }
 
+		if(notes==null)
+			notes="";
+		
 		// ritorna la lista dei selfie
 		return notes;
 	}
@@ -956,6 +959,9 @@ public final class UserUtils {
 			}
 		}
 	
+		if(name==null)
+			name="";
+		
 		// ritorna la lista dei selfie
 		return name;
 	}
@@ -1006,6 +1012,8 @@ public final class UserUtils {
 			}
 		}
 	
+		if(surname==null)
+			surname="";
 		// ritorna la lista dei selfie
 		return surname;
 	}
@@ -1056,6 +1064,9 @@ public final class UserUtils {
 				e.printStackTrace();
 			}
 		}
+		
+		if(gender==null)
+			gender="";
 	
 		// ritorna la lista dei selfie
 		return gender;
@@ -1162,6 +1173,8 @@ public final class UserUtils {
 			}
 		}
 	
+		if(city==null)
+			city="";
 		// ritorna la lista dei selfie
 		return city;
 	}
@@ -1212,6 +1225,8 @@ public final class UserUtils {
 			}
 		}
 	
+		if(phone==null)
+			phone="";
 		// ritorna la lista dei selfie
 		return phone;
 	}
