@@ -118,12 +118,12 @@ public class PostServlet extends HttpServlet {
         			// se l'uploader del selfie non sono io
         			if(uploaderId != me_id){
             			// gli mando una notifica
-            			NotificationUtils.setLikeNotification(uploaderId, generatedId);
+            			NotificationUtils.setLikeOnUploadedSelfieNotification(uploaderId, generatedId);
         			}
         			// mando la notifica a tutti gli utenti taggati nel selfie
         			for(User user : UsertagsUtils.getSelfieUserTags(idSelfie))
         			{
-        				NotificationUtils.setLikeNotification(user.getId_user(), generatedId);
+        				NotificationUtils.setLikeOnTaggedSelfieNotification(user.getId_user(), generatedId);
         			}
         		}
 
@@ -144,9 +144,24 @@ public class PostServlet extends HttpServlet {
         		if (!comment.trim().equals("")) {
             		// viene aggiunto il nuovo commento per mezzo della classe CommentUtils
             		try {
-    					boolean result = CommentUtils.addComment(me_id, idSelfie, comment);
+    					int generatedId = CommentUtils.addComment(me_id, idSelfie, comment);
     					// se la funzione ha avuto esito positivo
-    	        		if (result) {
+    	        		if (generatedId > 0) {
+    	        			// ricavo l'id dell'uploader del selfie
+    	        			int uploaderId = SelfieUtils.getSelfieById(idSelfie).getUploader();
+    	        			if(uploaderId != me_id){ // non ricevo notifiche per commenti che metto ai miei selfie
+        	        			// mando una notifica all'uploader del selfie
+        	        			NotificationUtils.setCommentOnUploadedSelfieNotification(uploaderId, generatedId);	
+    	        			}
+    	        			// mando una notifica a tutti gli user taggati
+    	        			for(User user : UsertagsUtils.getSelfieUserTags(idSelfie))
+    	        			{
+    	        				// evito di mandare la notifica all'uploader 2 volte se è taggato nella sua foto
+    	        				if(user.getId_user() != uploaderId)
+    	        				{
+    	        					NotificationUtils.setCommentOnTaggedSelfieNotification(user.getId_user(), generatedId);
+    	        				}
+    	        			}
     		        		// viene ricavata la nuova lista dei commenti e mandata al client
     		        		String HTMLres = PostUtils.getComments(contextPath, idSelfie);
     		        		response.getWriter().write(HTMLres);

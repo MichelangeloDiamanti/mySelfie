@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class Comment {
 
-	private int id_comment = 0;
-	private int id_user = 0;
-	private int id_selfie = 0;
+	private int id_comment = -1;
+	private int id_user = -1;
+	private int id_selfie = -1;
 	private String text = null;
 	private Date date = null;
 

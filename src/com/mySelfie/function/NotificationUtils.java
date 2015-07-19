@@ -262,7 +262,7 @@ public class NotificationUtils {
 	 * @param uls		chiave primaria della tabella user_like_selfie
 	 * @return			id della notifica creata
 	 */
-	public static int setLikeNotification(int userId, int uls)
+	public static int setLikeOnUploadedSelfieNotification(int userId, int uls)
 	{
 		// ottengo la connessione al DB
 		Connection connect = ConnectionManager.getConnection();
@@ -313,6 +313,66 @@ public class NotificationUtils {
         }
         //ritorna l'id della nuova notifica
         return generatedId;
+	}
+	
+	/**
+	 * crea una notifica 'like' all'interno del DB
+	 * 
+	 * @param userId	id dello user a cui è indirizzata la notifica
+	 * @param uls		chiave primaria della tabella user_like_selfie
+	 * @return			id della notifica creata
+	 */
+	public static int setLikeOnTaggedSelfieNotification(int userId, int uls)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
+		
+		// ottengo l'id dello user a cui è piaciuto il selfie
+		int userLikeId = LikeUtils.getLikeUser(uls);
+		//ottengo lo username dello user a cui è piaciuto il selfie
+		String userLikeUsername = UserUtils.getUsernameById(userLikeId);
+		
+		try 
+		{      
+			
+			String likeNotificationString = 
+					"INSERT INTO "
+							+ 		"user_notifications (id_user, type, text, issue_date, user_like_selfie ) "
+							+ 	"VALUES "
+							+ 		"( ? , ? , ? , NOW() , ? ) ";
+			
+			PreparedStatement likeNotificationSQL = connect.prepareStatement(likeNotificationString, Statement.RETURN_GENERATED_KEYS);
+			// imposto lo user a cui è diretta la notifica
+			likeNotificationSQL.setInt(1, userId);
+			// imposto il tipo di notifica su like
+			likeNotificationSQL.setString(2, "like");
+			// imposto il messaggio da far vedere
+			likeNotificationSQL.setString(3, userLikeUsername + " liked a selfie you're tagged in");
+			// imposto l'id del record corrispondente nella tabella user_like_selfie
+			likeNotificationSQL.setInt(4, uls);
+			
+			int affectedRows = likeNotificationSQL.executeUpdate();
+			if (affectedRows == 0)
+				throw new SQLException("Inserting notification failed, no rows affected");		        
+			
+			// se la notifica è stata inserita correttamente ricavo la chiave generata
+			ResultSet generatedKeys = likeNotificationSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id della nuova notifica
+				generatedId = generatedKeys.getInt(1);
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		//ritorna l'id della nuova notifica
+		return generatedId;
 	}
 	
 	/**
@@ -377,6 +437,13 @@ public class NotificationUtils {
 		return generatedId;
 	}
 	
+	/**
+	 * crea una notifica 'follow' all'interno del DB
+	 * 
+	 * @param userId	id dell'utente a cui è indirizzata la notifica
+	 * @param uts		chiave primaria della tabella user_follow_user
+	 * @return			chiave del record appena generato
+	 */
 	public static int setFollowNotification(int userId, int ufu)
 	{
 		// ottengo la connessione al DB
@@ -415,6 +482,127 @@ public class NotificationUtils {
 			
 			// se la notifica è stata inserita correttamente ricavo la chiave generata
 			ResultSet generatedKeys = likeNotificationSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id della nuova notifica
+				generatedId = generatedKeys.getInt(1);
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		//ritorna l'id della nuova notifica
+		return generatedId;
+	}
+	
+
+	/**
+	 * crea una notifica 'comment' all'interno del DB
+	 * 
+	 * @param userId		id dell'utente a cui è indirizzata la notifica
+	 * @param commentId		chiave primaria della tabella comment
+	 * @return				chiave del record appena generato
+	 */
+	public static int setCommentOnUploadedSelfieNotification(int userId, int commentId)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
+		
+		// ottengo l'id del commentatore
+		int commentatorId = CommentUtils.getCommentator(commentId);
+		// ottengo lo username del seguace
+		String commentatorUsername = UserUtils.getUsernameById(commentatorId);
+		
+		try 
+		{      
+			
+			String commentNotificationString = 
+					"INSERT INTO "
+							+ 		"user_notifications (id_user, type, text, issue_date, comment) "
+							+ 	"VALUES "
+							+ 		"( ? , ? , ? , NOW() , ? ) ";
+			
+			PreparedStatement commentNotificationSQL = connect.prepareStatement(commentNotificationString, Statement.RETURN_GENERATED_KEYS);
+			// imposto lo user a cui è diretta la notifica
+			commentNotificationSQL.setInt(1, userId);
+			// imposto il tipo di notifica su tag
+			commentNotificationSQL.setString(2, "comment");
+			// imposto il messaggio da far vedere
+			commentNotificationSQL.setString(3, commentatorUsername + " left a comment on your selfie");
+			// imposto l'id del record corrispondente nella tabella Comment
+			commentNotificationSQL.setInt(4, commentId);
+			
+			int affectedRows = commentNotificationSQL.executeUpdate();
+			if (affectedRows == 0)
+				throw new SQLException("Inserting notification failed, no rows affected");		        
+			
+			// se la notifica è stata inserita correttamente ricavo la chiave generata
+			ResultSet generatedKeys = commentNotificationSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id della nuova notifica
+				generatedId = generatedKeys.getInt(1);
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		//ritorna l'id della nuova notifica
+		return generatedId;
+	}
+	
+	/**
+	 * crea una notifica 'comment' all'interno del DB
+	 * 
+	 * @param userId		id dell'utente a cui è indirizzata la notifica
+	 * @param commentId		chiave primaria della tabella comment
+	 * @return				chiave del record appena generato
+	 */
+	public static int setCommentOnTaggedSelfieNotification(int userId, int commentId)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
+		
+		// ottengo l'id del commentatore
+		int commentatorId = CommentUtils.getCommentator(commentId);
+		// ottengo lo username del seguace
+		String commentatorUsername = UserUtils.getUsernameById(commentatorId);
+		
+		try 
+		{      
+			
+			String commentNotificationString = 
+					"INSERT INTO "
+							+ 		"user_notifications (id_user, type, text, issue_date, comment) "
+							+ 	"VALUES "
+							+ 		"( ? , ? , ? , NOW() , ? ) ";
+			
+			PreparedStatement commentNotificationSQL = connect.prepareStatement(commentNotificationString, Statement.RETURN_GENERATED_KEYS);
+			// imposto lo user a cui è diretta la notifica
+			commentNotificationSQL.setInt(1, userId);
+			// imposto il tipo di notifica su tag
+			commentNotificationSQL.setString(2, "comment");
+			// imposto il messaggio da far vedere
+			commentNotificationSQL.setString(3, commentatorUsername + " left a comment on a selfie you're tagged in");
+			// imposto l'id del record corrispondente nella tabella Comment
+			commentNotificationSQL.setInt(4, commentId);
+			
+			int affectedRows = commentNotificationSQL.executeUpdate();
+			if (affectedRows == 0)
+				throw new SQLException("Inserting notification failed, no rows affected");		        
+			
+			// se la notifica è stata inserita correttamente ricavo la chiave generata
+			ResultSet generatedKeys = commentNotificationSQL.getGeneratedKeys();
 			if (generatedKeys.next())
 			{
 				// ricava l'id della nuova notifica

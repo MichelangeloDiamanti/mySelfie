@@ -13,6 +13,7 @@ public class Notification {
 	private int user_like_selfie = -1;
 	private int user_tag_selfie = -1;
 	private int user_follow_user = -1;
+	private int comment = -1;
 
 	public int getId_notification() {
 		return id_notification;
@@ -84,6 +85,14 @@ public class Notification {
 
 	public void setUser_follow_user(int user_follow_user) {
 		this.user_follow_user = user_follow_user;
+	}
+
+	public int getComment() {
+		return comment;
+	}
+
+	public void setComment(int comment) {
+		this.comment = comment;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,13 +74,14 @@ public class CommentUtils {
 	 * @param comment
 	 * @return
 	 */
-	public static boolean addComment(int id_user, int id_selfie, String comment) throws SQLException {
+	public static int addComment(int id_user, int id_selfie, String comment) throws SQLException {
 
 		Context context = null; // contesto
 		DataSource datasource = null; // dove pescare i dati
 		Connection connect = null; // connessione al DB
 
-		boolean result = false;
+		// chiave generata, risultato dell'operazione
+		int generatedId = -1;
 		// query in formato stringa e statement
 		String newCommentString = "INSERT INTO Comment(id_user, id_selfie, text, date) VALUES (?, ?, ?, now())";
 		PreparedStatement newCommentSQL;
@@ -95,7 +97,7 @@ public class CommentUtils {
 			connect = datasource.getConnection();
 
 			// prepara lo statement a partire dalla stringa
-			newCommentSQL = connect.prepareStatement(newCommentString);
+			newCommentSQL = connect.prepareStatement(newCommentString, Statement.RETURN_GENERATED_KEYS);
 			// imposta i parametri nello statement
 			newCommentSQL.setInt(1, id_user);
 			newCommentSQL.setInt(2, id_selfie);
@@ -107,9 +109,12 @@ public class CommentUtils {
 				throw new SQLException(
 						"couldn't add comment, no rows affected.");
 			}
-			// altrimenti
-			else {
-				result = true;
+		    // se il commento è stato inserito correttamente ricavo la chiave generata
+			ResultSet generatedKeys = newCommentSQL.getGeneratedKeys();
+			if (generatedKeys.next())
+			{
+				// ricava l'id del record generato
+				generatedId = generatedKeys.getInt(1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -121,7 +126,7 @@ public class CommentUtils {
             // chiude la connessione
             try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
         }
-		return result;
+		return generatedId;
 	}
 
 	
@@ -186,5 +191,93 @@ public class CommentUtils {
 		return selfieCommentsList;
 
 	}
+	
+	/**
+	 * prende in input un'istanza di chiave primaria della tabella 
+	 * Comment e ritorna l'id del commentatore
+	 * 
+	 * @param commentId		chiave primaria della tabella Comment
+	 * @return				commentatore
+	 */
+	public static int getCommentator(int commentId)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// id del selfie piaciuto
+		int commentatorId = -1;
+		
+		try 
+		{       
+			
+			// query che ritorna l'id del selfie piaciuto
+			String getCommentatorString = 
+					"SELECT "
+							+ 		"id_user "
+							+ 	"FROM "
+							+ 		"Comment "
+							+ 	"WHERE "
+							+ 		"id_comment = ?";
+			
+			PreparedStatement getCommentatorSQL = connect.prepareStatement(getCommentatorString);
+			getCommentatorSQL.setInt(1, commentId);
+			ResultSet getCommentatorRes = getCommentatorSQL.executeQuery(); 			
+			
+			if(getCommentatorRes.next())
+			{
+				commentatorId = getCommentatorRes.getInt("id_user");
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}  	 
+		return commentatorId;
+	}
 
+	/**
+	 * prende in input un'istanza di chiave primaria della tabella 
+	 * Comment e ritorna l'id del selfie commentato
+	 * 
+	 * @param commentId		chiave primaria della tabella Comment
+	 * @return				commentatore
+	 */
+	public static int getCommentedSelfie(int commentId)
+	{
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		
+		// id del selfie piaciuto
+		int commentedSelfieId = -1;
+		
+		try 
+		{       
+			
+			// query che ritorna l'id del selfie piaciuto
+			String getCommentedSelfieString = 
+					"SELECT "
+							+ 		"id_selfie "
+							+ 	"FROM "
+							+ 		"Comment "
+							+ 	"WHERE "
+							+ 		"id_comment = ?";
+			
+			PreparedStatement getCommentedSelfieSQL = connect.prepareStatement(getCommentedSelfieString);
+			getCommentedSelfieSQL.setInt(1, commentId);
+			ResultSet getCommentedSelfieRes = getCommentedSelfieSQL.executeQuery(); 			
+			
+			if(getCommentedSelfieRes.next())
+			{
+				commentedSelfieId = getCommentedSelfieRes.getInt("id_user");
+			}
+			
+		} catch (SQLException e) { e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}  	 
+		return commentedSelfieId;
+	}
+	
 }
