@@ -17,6 +17,7 @@
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/navbar.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/notifications.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/leftMenu.js"></script>
+		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/comments.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/javascript/scripts/openPost.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 		

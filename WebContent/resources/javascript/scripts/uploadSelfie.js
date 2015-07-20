@@ -78,7 +78,10 @@ $('#notesContainer').keypress(function(e)
 {
     if(e.which == 13) 
     {
-    	cheeseIMG();
+    	if(document.activeElement.id != "cheeseBtn")
+    	{
+    		cheeseIMG();
+    	}
     }
 });
 

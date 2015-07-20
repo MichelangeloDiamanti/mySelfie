@@ -123,7 +123,10 @@ public class PostServlet extends HttpServlet {
         			// mando la notifica a tutti gli utenti taggati nel selfie
         			for(User user : UsertagsUtils.getSelfieUserTags(idSelfie))
         			{
-        				NotificationUtils.setLikeOnTaggedSelfieNotification(user.getId_user(), generatedId);
+        				if(user.getId_user() != me_id)
+        				{// non mando le notifiche a me stesso se sono taggato
+            				NotificationUtils.setLikeOnTaggedSelfieNotification(user.getId_user(), generatedId);
+        				}
         			}
         		}
 
@@ -157,7 +160,8 @@ public class PostServlet extends HttpServlet {
     	        			for(User user : UsertagsUtils.getSelfieUserTags(idSelfie))
     	        			{
     	        				// evito di mandare la notifica all'uploader 2 volte se è taggato nella sua foto
-    	        				if(user.getId_user() != uploaderId)
+    	        				// evito di notificare chi commenta se è taggato nella foto
+    	        				if(user.getId_user() != uploaderId && user.getId_user() != me_id)
     	        				{
     	        					NotificationUtils.setCommentOnTaggedSelfieNotification(user.getId_user(), generatedId);
     	        				}
