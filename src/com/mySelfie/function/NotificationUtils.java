@@ -338,8 +338,8 @@ public class NotificationUtils {
 
 		if(Type.equalsIgnoreCase("tag"))
 			userNotificationsString = "SELECT User.id_user "
-									+ "FROM (User INNER JOIN user_tag_selfie ON User.id_user = user_tag_selfie.id_user) INNER JOIN user_notifications ON user_tag_selfie.id_uts = user_notifications.user_tag_selfie "
-									+ "WHERE id_notification = ? "; 
+									+ "FROM ((user_tag_selfie INNER JOIN Selfie ON user_tag_selfie.id_selfie = Selfie.id_selfie) INNER JOIN User ON Selfie.uploader = User.id_user) INNER JOIN user_notifications ON user_tag_selfie.id_uts = user_notifications.user_tag_selfie "
+									+ "WHERE id_notification =  ? ";
 
 		if(Type.equalsIgnoreCase("follow"))
 			userNotificationsString = "SELECT User.id_user "

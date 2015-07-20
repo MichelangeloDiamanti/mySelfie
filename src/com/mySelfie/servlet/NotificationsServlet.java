@@ -127,9 +127,6 @@ public class NotificationsServlet extends HttpServlet {
 	  				}
 					HTMLres += "</td></tr>";		
 	  					  				
-	  						
-	  				// segna le notifiche che verranno restituite come "lette"
-	  				NotificationUtils.setSeenNotification(notification.getId_notification());
 	  			}
 	  			
 	  			HTMLres += "</table>"
@@ -197,6 +194,12 @@ public class NotificationsServlet extends HttpServlet {
 	  			
 	  			HTMLres += "</table>";
 	  			
+	  			//setta tutte le notifiche non lette a lette
+	  			for(Notification notification : NotificationUtils.getUnseenUserNotifications(user))
+	  			{
+	  				// segna le notifiche che verranno restituite come "lette"
+	  				NotificationUtils.setSeenNotification(notification.getId_notification());
+	  			}
 	  			
 	  			response.getWriter().write(HTMLres);
   			}
