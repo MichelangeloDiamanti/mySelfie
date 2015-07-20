@@ -269,7 +269,7 @@ public class CommentUtils {
 			
 			if(getCommentedSelfieRes.next())
 			{
-				commentedSelfieId = getCommentedSelfieRes.getInt("id_user");
+				commentedSelfieId = getCommentedSelfieRes.getInt("id_selfie");
 			}
 			
 		} catch (SQLException e) { e.printStackTrace();

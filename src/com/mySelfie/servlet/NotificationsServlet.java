@@ -13,9 +13,13 @@ import javax.servlet.http.HttpSession;
 import com.mySelfie.entity.Notification;
 import com.mySelfie.entity.Selfie;
 import com.mySelfie.entity.User;
+import com.mySelfie.function.CommentUtils;
+import com.mySelfie.function.FollowUtils;
 import com.mySelfie.function.LikeUtils;
 import com.mySelfie.function.NotificationUtils;
 import com.mySelfie.function.SelfieUtils;
+import com.mySelfie.function.UserUtils;
+import com.mySelfie.function.UsertagsUtils;
 
 /**
  * Servlet implementation class NotificationsServlet
@@ -64,13 +68,16 @@ public class NotificationsServlet extends HttpServlet {
   		  		ServletContext servletContext = getServletContext();
   				String contextPath = servletContext.getContextPath();
   				
-	  	  		String HTMLres = "<ul id=\"newNotifications\">";
+	  	  		String HTMLres = "<table id=\"newNotificationsTable\">";
 	  	  		
 	  	  		//tutte le notifiche non lette
 	  			for(Notification notification : NotificationUtils.getUnseenUserNotifications(user))
 	  			{
-	  				
-	  				HTMLres += "<li><label class=\"ntfctn\">";
+	  				int idNotifier = NotificationUtils.getNotifierUserIdByNotification(notification.getId_notification(), notification.getType());
+
+	  				int idTarget = -1;
+	  					  				
+	  				HTMLres += "<tr class=\"notificationsTR\"><td class=\"typeTD\">";
 	  				
 	  				if(notification.getType().equalsIgnoreCase("like"))
 	  					HTMLres += "<span class=\"glyphicon glyphicon-heart-empty notyphication\"></span>";
@@ -84,42 +91,60 @@ public class NotificationsServlet extends HttpServlet {
 	  				if(notification.getType().equalsIgnoreCase("comment"))
 	  					HTMLres += "<span class=\"glyphicon glyphicon-comment notyphication\"></span>";
 	  				
-	  				HTMLres += notification.getText();
-	  				HTMLres += "</label>";
+	  				HTMLres += "</td><td class=\"thumbnailTD\">";
 	  				
-
+	  				HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + UserUtils.getUsernameById(idNotifier) + "\">"
+	  						+  "<img class=\"profileThumbnail\" src=\"" + contextPath + "/protected/resources/profilepics/" + UserUtils.getUserProfilepicById(idNotifier) + "\">"
+	  						+  "</a></td><td class=\"textTD\">";
+					
+					HTMLres += "<label class=\"ntfctn\">" + notification.getText() + "</label>";
+					HTMLres += "</td><td class=\"thumbnailTD\">";
+					
 	  				if(notification.getType().equalsIgnoreCase("like"))
-  					{
-  						int idLikedSelfie = LikeUtils.getLikeSelfie(notification.getUser_like_selfie());
-  						Selfie likedSelfie = SelfieUtils.getSelfieById(idLikedSelfie);
-  						
-  						HTMLres += "<img id=\"selfie-" + idLikedSelfie + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + likedSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
-  					}
-	  						
-	  					
+  					{	
+  						idTarget = LikeUtils.getLikeSelfie(notification.getUser_like_selfie());
+  						Selfie targetSelfie = SelfieUtils.getSelfieById(idTarget);
+  						HTMLres += "<img id=\"selfie-" + idTarget + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + targetSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
+  					} 				
+	  				if(notification.getType().equalsIgnoreCase("tag"))
+	  				{
+	  					idTarget = UsertagsUtils.getTaggedSelfie(notification.getUser_tag_selfie()); 
+	  					Selfie targetSelfie = SelfieUtils.getSelfieById(idTarget);
+	  					HTMLres += "<img id=\"selfie-" + idTarget + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + targetSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
+	  				}
+	  				if(notification.getType().equalsIgnoreCase("comment"))
+	  				{
+	  					idTarget = CommentUtils.getCommentedSelfie(notification.getComment()); 
+	  					Selfie targetSelfie = SelfieUtils.getSelfieById(idTarget);
+	  					HTMLres += "<img id=\"selfie-" + idTarget + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + targetSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
+	  				}
 	  				if(notification.getType().equalsIgnoreCase("follow"))
 	  				{
-
+	  					idTarget = FollowUtils.getFollowedUser(notification.getUser_follow_user());
+	  					HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + UserUtils.getUsernameById(idTarget) + "\">"
+		  						+  "<img class=\"profileThumbnail\" src=\"" + contextPath + "/protected/resources/profilepics/" + UserUtils.getUserProfilepicById(idTarget) + "\">"
+		  						+  "</a>";
 	  				}
-	  				
-	  				
-	  				
-	  				HTMLres += "</li>";						
+					HTMLres += "</td></tr>";		
+	  					  				
 	  						
 	  				// segna le notifiche che verranno restituite come "lette"
 	  				NotificationUtils.setSeenNotification(notification.getId_notification());
 	  			}
 	  			
-	  			HTMLres += "</ul>"
+	  			HTMLres += "</table>"
 	  					+  "<hr id=\"hrNotifications\">"
-	  					+  "<ul id=\"oldNotifications\">";
+	  					+  "<table id=\"oldNotificationsTable\">";
 	  					
 	  			  			
 				//tutte le notifiche lette
 	  			for(Notification notification : NotificationUtils.getSeenUserNotifications(user))
 	  			{
+	  				int idNotifier = NotificationUtils.getNotifierUserIdByNotification(notification.getId_notification(), notification.getType());
 
-	  				HTMLres += "<li><label class=\"ntfctn\">";
+	  				int idTarget = -1;
+	  					  				
+	  				HTMLres += "<tr class=\"notificationsTR\"><td class=\"typeTD\">";
 	  				
 	  				if(notification.getType().equalsIgnoreCase("like"))
 	  					HTMLres += "<span class=\"glyphicon glyphicon-heart-empty seenotyphication\"></span>";
@@ -133,12 +158,45 @@ public class NotificationsServlet extends HttpServlet {
 	  				if(notification.getType().equalsIgnoreCase("comment"))
 	  					HTMLres += "<span class=\"glyphicon glyphicon-comment seenotyphication\"></span>";
 	  				
-	  				HTMLres += notification.getText();
-	  				HTMLres += "</label></li>";						
+	  				HTMLres += "</td><td class=\"thumbnailTD\">";
 	  				
+	  				HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + UserUtils.getUsernameById(idNotifier) + "\">"
+	  						+  "<img class=\"profileThumbnail\" src=\"" + contextPath + "/protected/resources/profilepics/" + UserUtils.getUserProfilepicById(idNotifier) + "\">"
+	  						+  "</a></td><td class=\"textTD\">";
+					
+					HTMLres += "<label class=\"ntfctn\">" + notification.getText() + "</label>";
+					HTMLres += "</td><td class=\"thumbnailTD\">";
+					
+	  				if(notification.getType().equalsIgnoreCase("like"))
+  					{	
+  						idTarget = LikeUtils.getLikeSelfie(notification.getUser_like_selfie());
+  						Selfie targetSelfie = SelfieUtils.getSelfieById(idTarget);
+  						HTMLres += "<img id=\"selfie-" + idTarget + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + targetSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
+  					} 				
+	  				if(notification.getType().equalsIgnoreCase("tag"))
+	  				{
+	  					idTarget = UsertagsUtils.getTaggedSelfie(notification.getUser_tag_selfie()); 
+	  					Selfie targetSelfie = SelfieUtils.getSelfieById(idTarget);
+	  					HTMLres += "<img id=\"selfie-" + idTarget + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + targetSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
+	  				}
+	  				if(notification.getType().equalsIgnoreCase("comment"))
+	  				{
+	  					idTarget = CommentUtils.getCommentedSelfie(notification.getComment()); 
+	  					Selfie targetSelfie = SelfieUtils.getSelfieById(idTarget);
+	  					HTMLres += "<img id=\"selfie-" + idTarget + "\" class=\"notificationThumbnail\" src='" + contextPath + "/protected/resources/selfies/compressedSize/" + targetSelfie.getPicture() + "' data-toggle=\"modal\" data-target=\"#modalTable\" onClick=\"openIMG(this)\">";	  					
+	  				}
+	  				if(notification.getType().equalsIgnoreCase("follow"))
+	  				{
+	  					idTarget = FollowUtils.getFollowedUser(notification.getUser_follow_user());
+	  					HTMLres += "<a href=\"" + contextPath + "/protected/profile/" + UserUtils.getUsernameById(idTarget) + "\">"
+		  						+  "<img class=\"profileThumbnail\" src=\"" + contextPath + "/protected/resources/profilepics/" + UserUtils.getUserProfilepicById(idTarget) + "\">"
+		  						+  "</a>";
+	  				}
+					HTMLres += "</td></tr>";	
 	  			}		
 	  			
-	  			HTMLres += "</ul>";
+	  			HTMLres += "</table>";
+	  			
 	  			
 	  			response.getWriter().write(HTMLres);
   			}

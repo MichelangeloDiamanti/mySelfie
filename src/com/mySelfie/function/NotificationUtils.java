@@ -121,6 +121,18 @@ public class NotificationUtils {
 				notification.setIssue_date(userNotificationsRes.getTimestamp("issue_date"));
 				notification.setSeen_date(userNotificationsRes.getTimestamp("seen_date"));
 
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("like"))
+					notification.setUser_like_selfie(userNotificationsRes.getInt("user_like_selfie"));
+			
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("tag"))
+					notification.setUser_tag_selfie(userNotificationsRes.getInt("user_tag_selfie")); 
+				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("comment"))
+					notification.setComment(userNotificationsRes.getInt("comment"));
+				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("follow"))
+					notification.setUser_follow_user(userNotificationsRes.getInt("user_follow_user")); 
+
 				// la notifica di appoggio viene messa nella lista
 				userNotificationsList.add(notification);
 
@@ -193,6 +205,18 @@ public class NotificationUtils {
 				notification.setIssue_date(userNotificationsRes.getTimestamp("issue_date"));
 				notification.setSeen_date(userNotificationsRes.getTimestamp("seen_date"));
 
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("like"))
+					notification.setUser_like_selfie(userNotificationsRes.getInt("user_like_selfie"));
+			
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("tag"))
+					notification.setUser_tag_selfie(userNotificationsRes.getInt("user_tag_selfie")); 
+				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("comment"))
+					notification.setComment(userNotificationsRes.getInt("comment"));
+				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("follow"))
+					notification.setUser_follow_user(userNotificationsRes.getInt("user_follow_user")); 
+				
 				// la notifica di appoggio viene messa nella lista
 				userNotificationsList.add(notification);
 			}
@@ -260,6 +284,18 @@ public class NotificationUtils {
 				notification.setIssue_date(userNotificationsRes.getTimestamp("issue_date"));
 				notification.setSeen_date(userNotificationsRes.getTimestamp("seen_date"));
 				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("like"))
+					notification.setUser_like_selfie(userNotificationsRes.getInt("user_like_selfie"));
+			
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("tag"))
+					notification.setUser_tag_selfie(userNotificationsRes.getInt("user_tag_selfie")); 
+				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("comment"))
+					notification.setComment(userNotificationsRes.getInt("comment"));
+				
+				if(userNotificationsRes.getString("type").equalsIgnoreCase("follow"))
+					notification.setUser_follow_user(userNotificationsRes.getInt("user_follow_user")); 
+				
 				// la notifica di appoggio viene messa nella lista
 				userNotificationsList.add(notification);
 				
@@ -276,6 +312,72 @@ public class NotificationUtils {
 		return userNotificationsList;
 		
 	}
+	
+	
+	/**
+	 * ritorna l' id dell' utente notificatore 
+	 * 
+	 * @param id_notification	id della notifica
+	 * @param type	tipo di notifica
+	 * @return		Lista di notifiche
+	 */
+	public static int getNotifierUserIdByNotification(int id_notification, String Type) {
+		// ottengo la connessione al DB
+		Connection connect = ConnectionManager.getConnection();
+		 
+		int idNotifier = -1;
+		
+		//stringa d' appoggio per la query
+		String userNotificationsString = "";
+		
+		//in base al tipo di notifica viene creata una query differente
+		if(Type.equalsIgnoreCase("like"))
+			userNotificationsString = "SELECT User.id_user "
+									+ "FROM (User INNER JOIN user_like_selfie ON User.id_user = user_like_selfie.id_user) INNER JOIN user_notifications ON user_like_selfie.id_uls = user_notifications.user_like_selfie "
+									+ "WHERE id_notification = ? "; 
+
+		if(Type.equalsIgnoreCase("tag"))
+			userNotificationsString = "SELECT User.id_user "
+									+ "FROM (User INNER JOIN user_tag_selfie ON User.id_user = user_tag_selfie.id_user) INNER JOIN user_notifications ON user_tag_selfie.id_uts = user_notifications.user_tag_selfie "
+									+ "WHERE id_notification = ? "; 
+
+		if(Type.equalsIgnoreCase("follow"))
+			userNotificationsString = "SELECT User.id_user "
+									+ "FROM (User INNER JOIN user_follow_user ON User.id_user = user_follow_user.id_follower) INNER JOIN user_notifications ON user_follow_user.id_ufu = user_notifications.user_follow_user "
+									+ "WHERE id_notification = ? "; 
+		
+		if(Type.equalsIgnoreCase("comment"))
+			userNotificationsString = "SELECT User.id_user "
+									+ "FROM (User INNER JOIN Comment ON User.id_user = Comment.id_user) INNER JOIN user_notifications ON Comment.id_comment = user_notifications.comment "
+									+ "WHERE id_notification = ? "; 
+
+		// query formato SQL
+		PreparedStatement userNotificationsSQL;
+		
+		try {
+			// imposto i parametri ed eseguo la query
+			userNotificationsSQL = connect.prepareStatement(userNotificationsString);
+			userNotificationsSQL.setInt(1, id_notification);		        	        
+			
+			ResultSet userNotificationsRes = userNotificationsSQL.executeQuery();
+			
+			/* vengono scorse tutte le notifiche */
+			while (userNotificationsRes.next()) 
+				idNotifier = userNotificationsRes.getInt("id_user");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// chiude la connessione
+			try { connect.close(); } catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		//ritorna la lista dei selfie
+		return idNotifier;
+		
+	}
+	
 	
 	
 	/**
@@ -689,6 +791,8 @@ public class NotificationUtils {
 		//ritorna l'id della nuova notifica
 		return generatedId;
 	}
+	
+	
 	
 	
 }

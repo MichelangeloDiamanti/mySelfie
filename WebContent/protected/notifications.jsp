@@ -28,7 +28,8 @@
 
 		<jsp:include page="/WEB-INF/pages/leftMenu.jsp" /> 
 		
-		<div id="oldAndNewNotifications"></div>
+		<div id="oldAndNewNotifications">				
+		</div>
 
 
 		<!-- Modal -->
