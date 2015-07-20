@@ -1,10 +1,13 @@
 package com.mySelfie.entity;
 
-import java.sql.Date;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 public class User {
-	private int id_user = 0;
-	private String nickname = null;
+	private int id_user = -1;
+	private String username = null;
     private String password = null;
     private String name = null;
     private String email = null;
@@ -31,12 +34,12 @@ public class User {
 		this.id_user = id_user;
 	}
 
-	public String getNickname() {
-		return nickname;
+	public String getusername() {
+		return username;
 	}
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setusername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
@@ -119,6 +122,24 @@ public class User {
 		this.birthdate = birthdate;
 	}
 
+	public void setBirthdate(String birthdate) throws ParseException  {
+		
+		if(!birthdate.equals(""))
+		{
+			//converto la stringa in Data
+			SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd"); 
+			Date bd = df.parse(birthdate);    					  
+			java.sql.Date dateSQL = new java.sql.Date(bd.getTime());
+			//setto l' attributo birthdate con la data convertita
+			this.birthdate = dateSQL;			
+		}
+		else
+		{
+			this.birthdate = null;
+		}
+	
+	}
+
 	public boolean isValid() {
 		return isValid;
 	}
@@ -126,5 +147,35 @@ public class User {
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
 	}
+	
+	/**
+	 * compara due utenti
+	 */
+    public boolean equals(Object obj) {
+        /*
+         * se l'oggetto in questione è lo stesso
+         * l'esito è banalmente true
+         */
+    	if (obj == this) {
+            return true;
+        }
+    	/*
+    	 * se l'oggetto passato non è un'istanza di user
+    	 * i due non sono confrontabili quindi torna false
+    	 */
+        if (!(obj instanceof User)) {
+            return false;
+        }
+        /*
+         * altrimenti si fa il casting a user
+         * e si confrontano gli id.
+         */
+        User other = (User) obj;
+        return this.id_user == other.id_user;
+    }
+    
+//    public int hashCode() {
+//        return username.hashCode();
+//    }
     
 }

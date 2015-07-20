@@ -1,0 +1,134 @@
+#searchResTable
+{
+	position: relative;
+	left: 75px;
+	table-layout:fixed;
+	width: 999px;
+	border-collapse: collapse;
+}
+
+.searchProfileA
+{
+	color: #333;
+}
+.searchProfileA:hover
+{
+	color: #005782;
+}
+
+
+.searchHead
+{
+	text-align: center;
+	color: #999;
+	font-size: 24px;
+	font-weight: bold;
+	width: 333px;
+}
+.searchLine
+{
+	border-right-style: solid;
+    border-right-width: 1px;
+    border-right-color: #999;
+}
+
+#searchheader > th
+{
+	padding-bottom: 35px;
+}
+
+#searchHashtagList
+{
+	list-style-type: none;
+}
+
+#searchUserList
+{
+	list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.searchUserItem
+{
+	padding-bottom: 10px;
+}
+
+.searchUser,
+.searchSelfie,
+.searchHashtag
+{
+	vertical-align: top;
+}
+
+.searchProfilepic
+{
+	position: relative;
+	float: left;
+	width: 50px;
+	height: 50px;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	border-radius: 50%;
+	background-size: 150%;
+}
+.searchUsername
+{
+	margin-left: 20px;
+	cursor: pointer;
+}
+
+
+.searchUserInfos
+{
+	font-weight: normal;
+	
+}
+
+
+.searchUserInfo
+{
+	position: relative;
+	padding-left: 70px;
+	width: 333px;
+	min-height: 25px;
+	z-index: -1;
+}
+
+
+.searchThumbnail
+{
+	position: relative;
+	float: left;
+	width: 104px;
+	height: 104px;
+	margin: 3px;
+	border-radius: 2px;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	background-size: 200%;
+	cursor: pointer;
+}
+.searchThumbnail:hover
+{
+	opacity: 0.75;	
+}
+
+.modal-dialog
+{
+	position: relative;
+	left: -150px;
+	top: 25px;
+}
+.modal-backdrop
+{
+    opacity:0.75 !important;
+}
+
+.search_empty_label
+{
+    text-shadow: 1px 1px 0px #d8d8d8, 2px 2px 0px #BABABA;
+	margin: 50px 0px 0px 75px;
+	color: #9C9C9C;
+	font-size: 35px;
+}

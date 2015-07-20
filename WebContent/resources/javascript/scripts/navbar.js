@@ -12,3 +12,27 @@ $('#logOutBtn').click(function() {
 		}
 	});
 });
+
+
+$('#hiddenMenuBtn').click(function() 
+{
+	$("#hiddenMenuContainer").slideToggle( "fast" );	
+});
+
+
+
+$(document).click(function(e) {
+	
+		
+	  if ($("#hiddenMenuContainer").is(":visible") &&
+		  $(e.target).attr("id") != "hiddenMenuBtn"  &&
+		  $(e.target).closest('#hiddenMenuContainer').length === 0) 
+	  {
+		  $( "#hiddenMenuContainer" ).slideUp( "fast" );		
+	  }
+});
+
+
+
+
+

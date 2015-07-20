@@ -2,26 +2,30 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>mySelfie</display-name>
   <welcome-file-list>
-        <welcome-file>protected/homepage.jsp</welcome-file>
-    </welcome-file-list>
+    <welcome-file>protected/homepage.jsp</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
   <resource-ref>
     <description>JDBC</description>
     <res-ref-name>jdbc/mySelfie</res-ref-name>
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
+  <resource-ref>
+    <description>JavaMail</description>
+    <res-ref-name>javaMail/myselfieConfirmation</res-ref-name>
+    <res-type>com.mySelfie.mail.Mail</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
   <servlet>
-    <servlet-name>TomcatJDBC</servlet-name>
-    <servlet-class>com.mySelfie.servlet.myServlet</servlet-class>
+    <servlet-name>indexServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.IndexServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>TomcatJDBC</servlet-name>
-    <url-pattern>/homepage/index.jsp</url-pattern>
-    <url-pattern>/homepage/homepage.jsp</url-pattern>
-    <url-pattern>/homepage/profile.jsp</url-pattern>
-    <url-pattern>/homepage/signup</url-pattern>
-    <url-pattern>/homepage/checkNickname</url-pattern>
-    <url-pattern>/homepage/ajax</url-pattern>
+    <servlet-name>indexServlet</servlet-name>
+    <url-pattern>/index/signup</url-pattern>
+    <url-pattern>/index/checkUsername</url-pattern>
+    <url-pattern>/index/checkEmail</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>getPostsServlet</servlet-name>
@@ -30,6 +34,66 @@
   <servlet-mapping>
     <servlet-name>getPostsServlet</servlet-name>
     <url-pattern>/protected/getPosts</url-pattern>
+    <url-pattern>/protected/openPost</url-pattern>
+    <url-pattern>/protected/postComment</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>getNotificationsServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.NotificationsServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getNotificationsServlet</servlet-name>
+    <url-pattern>/protected/getNotifications</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>searchServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.SearchServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>searchServlet</servlet-name>
+    <url-pattern>/protected/search</url-pattern>
+    <url-pattern>/protected/search/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>followServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.FollowServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>followServlet</servlet-name>
+    <url-pattern>/protected/followUser</url-pattern>
+    <url-pattern>/protected/unfollowUser</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>profileServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>profileServlet</servlet-name>
+    <url-pattern>/protected/profile/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>hashtagServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.HashtagServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>hashtagServlet</servlet-name>
+    <url-pattern>/protected/hashtag/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>likePostsServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.PostServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>likePostsServlet</servlet-name>
+    <url-pattern>/protected/likePosts</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>modifyProfileServlet</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ModifyProfileServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>modifyProfileServlet</servlet-name>
+    <url-pattern>/protected/modifyProfile</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>UploadServlet</servlet-name>
@@ -40,14 +104,6 @@
     <url-pattern>/protected/upload</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>userValidator</servlet-name>
-    <servlet-class>com.mySelfie.servlet.UserValidator</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>userValidator</servlet-name>
-    <url-pattern>/userValidator</url-pattern>
-  </servlet-mapping>
-  <servlet>
     <servlet-name>protectedResourcesServlet</servlet-name>
     <servlet-class>com.mySelfie.servlet.ProtectedResourcesServlet</servlet-class>
   </servlet>
@@ -55,6 +111,34 @@
     <servlet-name>protectedResourcesServlet</servlet-name>
     <url-pattern>/protected/resources/*</url-pattern>
   </servlet-mapping>
+  <servlet>
+    <servlet-name>userValidator</servlet-name>
+    <servlet-class>com.mySelfie.servlet.UserValidator</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>userValidator</servlet-name>
+    <url-pattern>/userValidator</url-pattern>
+    <url-pattern>/validation/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>resetCredentials</servlet-name>
+    <servlet-class>com.mySelfie.servlet.ResetCredentials</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>resetCredentials</servlet-name>
+    <url-pattern>/resetCredentials/*</url-pattern>
+  </servlet-mapping>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>mySelfie</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
   <filter>
     <filter-name>UserCheckFilter</filter-name>
     <filter-class>com.mySelfie.filter.UserCheckFilter</filter-class>
@@ -67,4 +151,9 @@
     <filter-name>UserCheckFilter</filter-name>
     <url-pattern>/protected/*</url-pattern>
   </filter-mapping>
+  <listener>
+    <listener-class>
+            com.mySelfie.cronJob.DeleteNonAuthenticatedUsers
+        </listener-class>
+  </listener>
 </web-app>

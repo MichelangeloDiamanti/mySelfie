@@ -1,17 +1,26 @@
 package com.mySelfie.servlet;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,9 +35,14 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 
+import com.mySelfie.connection.ConnectionManager;
 import com.mySelfie.entity.Selfie;
 import com.mySelfie.entity.User;
-import com.mySelfie.function.UploadSelfie;
+import com.mySelfie.function.HashtagUtils;
+import com.mySelfie.function.NotificationUtils;
+import com.mySelfie.function.SelfieUtils;
+import com.mySelfie.function.UserUtils;
+import com.mySelfie.function.UsertagsUtils;
 
 /**
  * Servlet implementation class UploadServlet
@@ -71,8 +85,10 @@ public class UploadServlet extends HttpServlet {
 		String homeFolder = System.getProperty("user.home");
 		// Immagini temporanee (da troncare etc...)
 		String tmpUploadPath = homeFolder + "/mySelfie/resources/tmp";
-		// Immagini persistenti
-		String uploadPath = homeFolder + "/mySelfie/resources/selfies";
+		// Immagini persistenti compresse
+		String uploadCPath = homeFolder + "/mySelfie/resources/selfies/compressedSize";
+		// Immagini persistenti originali
+		String uploadOPath = homeFolder + "/mySelfie/resources/selfies/originalSize";
 
 
 		try {
@@ -107,136 +123,282 @@ public class UploadServlet extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 
 			// intercetto il tipo di azione richiesta
-			switch (formFields.get("action")) {
-			// in questo caso devo solamente fare l'upload dell'immagine e
-			// ritornare l'URL
-			case "showImage":
-				// Istanzia un nuovo file nel path specificato
-				File uploads = new File(tmpUploadPath);
-				// ricava l'estensione del file uplodato
-				String fileExtension = "."
-						+ FilenameUtils.getExtension(fileName);
-				// Crea il nuovo file, assicurandosi che il nome sia univoco
-				// nella directory (prefisso, suffisso, directory)
-				File file = File.createTempFile("567", fileExtension, uploads);
-
-				try {
-					// istazio un nuovo stream di output dal file creato
-					OutputStream os = new FileOutputStream(file);
-					// buffer, serve a leggere l'immagine
-					byte[] buffer = new byte[1024];
-					int bytesRead;
-
-					// scrive l'immagine nello stream di output, a pezzi di 1024
-					// bytes finchè il file non è stato completamente letto
-					while ((bytesRead = content.read(buffer)) != -1) {
-						os.write(buffer, 0, bytesRead);
+			switch (formFields.get("action")) 
+			{
+				// in questo caso devo solamente fare l'upload dell'immagine e
+				// ritornare l'URL
+				case "showImage":
+				{
+					// Istanzia un nuovo file nel path specificato
+					File uploads = new File(tmpUploadPath);
+					// ricava l'estensione del file uplodato
+					String fileExtension = "."
+							+ FilenameUtils.getExtension(fileName);
+					// Crea il nuovo file, assicurandosi che il nome sia univoco
+					// nella directory (prefisso, suffisso, directory)
+					File file = File.createTempFile("567", fileExtension, uploads);
+					file.deleteOnExit();
+					
+					try {
+						// istazio un nuovo stream di output dal file creato
+						OutputStream os = new FileOutputStream(file);
+						// buffer, serve a leggere l'immagine
+						byte[] buffer = new byte[1024];
+						int bytesRead;
+	
+						// scrive l'immagine nello stream di output, a pezzi di 1024
+						// bytes finchè il file non è stato completamente letto
+						while ((bytesRead = content.read(buffer)) != -1) {
+							os.write(buffer, 0, bytesRead);
+						}
+						content.close();
+						// chiude il flusso di output
+						os.flush();
+						os.close();
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
-					content.close();
-					// chiude il flusso di output
-					os.flush();
-					os.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+					
+					// leggo l'immagine che ho salvato
+					BufferedImage bimg = ImageIO.read(file);
+					// ricavo la larghezza e l'altezza
+					int width = bimg.getWidth();
+					int height = bimg.getHeight();
+					
+					// ritorna una img la cui src è l'URL a cui il file uplodato è accessibile e i suoi valori di altezza e larghezza
+					// necessari a jcrop se l'immagine viene scalata dal browser
+					ajaxUpdateResult = "<img id=\"cropbox\" class=\"img-responsive\" src=\"/mySelfie/protected/resources/tmp/"+ file.getName() + "\">"
+							+ "<input type=\"hidden\" name=\"trueHeight\" id=\"trueHeight\" value=\"" + height + "\"/>"
+							+ "<input type=\"hidden\" name=\"trueWidth\" id=\"trueWidth\" value=\"" + width + "\"/>";
 				}
-				
-				// leggo l'immagine che ho salvato
-				BufferedImage bimg = ImageIO.read(file);
-				// ricavo la larghezza e l'altezza
-				int width = bimg.getWidth();
-				int height = bimg.getHeight();
-				
-				// ritorna una img la cui src è l'URL a cui il file uplodato è accessibile e i suoi valori di altezza e larghezza
-				// necessari a jcrop se l'immagine viene scalata dal browser
-				ajaxUpdateResult = "<img id=\"cropbox\" class=\"img-responsive\" src=\"/mySelfie/protected/resources/tmp/"+ file.getName() + "\">"
-						+ "<input type=\"hidden\" name=\"trueHeight\" id=\"trueHeight\" value=\"" + height + "\"/>"
-						+ "<input type=\"hidden\" name=\"trueWidth\" id=\"trueWidth\" value=\"" + width + "\"/>";
-
 				break;
 
-			case "cropImage":
+				case "cropImage":
+				{
 				
-				// prende i parametri cartesiani con cui troncare l'immagine
-				int x1 = Math.round(Float.parseFloat(formFields.get("x1")));
-				int y1 = Math.round(Float.parseFloat(formFields.get("y1")));
-				// int x2= Integer.parseInt(formFields.get("x2"));	// a quanto pare sti due sono inutili
-				// int y2= Integer.parseInt(formFields.get("y2"));
-				int w = Math.round(Float.parseFloat(formFields.get("w")));
-				int h = Math.round(Float.parseFloat(formFields.get("h")));
-
-				// ricavo il nome dell'immagine e la sua estensione
-				String imageName = FilenameUtils.getName(formFields.get("image"));
-				String imageExt = FilenameUtils.getExtension(formFields.get("image"));
-				
-				// leggo l'immagine da troncare
-				BufferedImage image = ImageIO.read(new File(tmpUploadPath + "/" + imageName));
-
-				// cancello l'immagine (quella troncata sarà salvata su un nuovo file)
-				File deleteFile = new File(tmpUploadPath + "/" + imageName);
-				deleteFile.delete();
-
-				// tronco l'immagine con le coordinate specificate
-				BufferedImage out = image.getSubimage(x1, y1, w, h);
-
-				// Istanzia un nuovo file nel path specificato
-				File cropLoads = new File(tmpUploadPath);
-				File croppedImage = File.createTempFile("567", "." + imageExt, cropLoads);
-
-				// scrivo l'immagine nel nuovo file, in modo tale che, quando rispondo al client
-				// l'URL della src sarà cambiato, quindi il browser sarà costretto a refreshare l'immagine
-				// serve a non far usare la versione cashata (vecchia)
-				ImageIO.write(out, imageExt, croppedImage);
-
-				// preparo la risposta da mandare al browser
-				ajaxUpdateResult = "<IMG id=\"cropbox\" class=\"img-responsive\" src=\"/mySelfie/protected/resources/tmp/"
-						+ croppedImage.getName() + "\">";
-
+					// prende i parametri cartesiani con cui troncare l'immagine
+					int x1 = Math.round(Float.parseFloat(formFields.get("x1")));
+					int y1 = Math.round(Float.parseFloat(formFields.get("y1")));
+					// int x2= Integer.parseInt(formFields.get("x2"));	// a quanto pare sti due sono inutili
+					// int y2= Integer.parseInt(formFields.get("y2"));
+					int w = Math.round(Float.parseFloat(formFields.get("w")));
+					int h = Math.round(Float.parseFloat(formFields.get("h")));
+	
+					// ricavo il nome dell'immagine e la sua estensione
+					String imageName = FilenameUtils.getName(formFields.get("image"));
+					String imageExt = FilenameUtils.getExtension(formFields.get("image"));
+					
+					// leggo l'immagine da troncare
+					BufferedImage image = ImageIO.read(new File(tmpUploadPath + "/" + imageName));
+	
+					// cancello l'immagine (quella troncata sarà salvata su un nuovo file)
+					File deleteFile = new File(tmpUploadPath + "/" + imageName);
+					deleteFile.delete();
+	
+					// tronco l'immagine con le coordinate specificate
+					BufferedImage out = image.getSubimage(x1, y1, w, h);
+	
+					// Istanzia un nuovo file nel path specificato
+					File cropLoads = new File(tmpUploadPath);
+					File croppedImage = File.createTempFile("567", "." + imageExt, cropLoads);
+					croppedImage.deleteOnExit();
+					
+					// scrivo l'immagine nel nuovo file, in modo tale che, quando rispondo al client
+					// l'URL della src sarà cambiato, quindi il browser sarà costretto a refreshare l'immagine
+					// serve a non far usare la versione cashata (vecchia)
+					ImageIO.write(out, imageExt, croppedImage);
+	
+					// preparo la risposta da mandare al browser
+					ajaxUpdateResult = "<IMG id=\"cropbox\" class=\"img-responsive\" src=\"/mySelfie/protected/resources/tmp/"
+							+ croppedImage.getName() + "\">";
+				}
 				break;
 				
-			case "uploadSelfie":
+				case "uploadSelfie":
+				{
+					// ottengo la descrizione dell'immagine dal campo della form
+					String upImageDesc = formFields.get("description");
+					// ottengo gli hashtags dell'immagine dal campo della form				
+					String hashtagString = formFields.get("hashtags");
+					// elimina tutti gli spazi vuoti
+					hashtagString = hashtagString.replaceAll("\\s+", "");
+					
+					// imposto il delimitatore con cui separare i vari tags (cancelletto)
+					String delims = "#";
+					// creo un vettore di stringhe contenente i tags separati
+					String[] hashtagStrings = hashtagString.split(delims);
+					
+					//ottengo la citta
+					String location = formFields.get("location");
+					
+					// diachiaro una lista di stringhe dove inserire gli hastags effettivi
+					ArrayList<String> hashtags = new ArrayList<String>();
+	
+					// itero tutti gli hashtags
+					for (String hashtagstring : hashtagStrings) {
+						// quelli che non sono vuoti li metto in una lista di stringhe 
+						// rimettendoci i il cancelletto tolto dalla funzione split
+						if(!hashtagstring.equals("")) hashtags.add("#" + hashtagstring);
+					}
+					
+					// ottengo gli usertags dell'immagine dal campo della form e trimmo la stringa
+					String usertagString = formFields.get("usertags");
+					// sostituisce i molteplici spazi vuoti con uno solo
+					usertagString = usertagString.replaceAll("\\s+", " ");
+					
+					// imposto il delimitatore con cui separare i vari tags (cancelletto)
+					delims = " ";
+					// creo un vettore di stringhe contenente i tags separati
+					String[] usertagStrings = usertagString.split(delims);
+					
+					// diachiaro una lista di stringhe dove inserire gli usertags effettivi
+					ArrayList<String> usertags = new ArrayList<String>();
+	
+					// itero tutti gli usertags
+					for (String usertagstring : usertagStrings) {
+						// quelli che non sono vuoti li metto nella lista
+						if(!usertagstring.equals("")) usertags.add(usertagstring);
+					}
+					
+					// ricavo il nome dell'immagine e la sua estensione
+					String upImageName = FilenameUtils.getName(formFields.get("image"));
+					String upImageExt = FilenameUtils.getExtension(formFields.get("image"));
+					
+					// ricavo lo user dalla sessione
+		      		HttpSession session = request.getSession();
+		      		User user = (User) session.getAttribute("user");
+					
+		      		
+					// ricavo la data attuale e la trasformo in formato SQL
+		      		Date utilDate = new Date();
+		      		java.sql.Timestamp dateTime = new java.sql.Timestamp(utilDate.getTime());
+		      		
+					// leggo l'immagine da salvare
+					BufferedImage upBuffImage = ImageIO.read(new File(tmpUploadPath + "/" + upImageName));		 
+					 
+					// cancello l'immagine temporanea
+					File deleteTmpFile = new File(tmpUploadPath + "/" + upImageName);
+					deleteTmpFile.delete();		      
+	
+		            
+					// creo un nuovo file nella cartella selfie/originalSize
+					File persUploadsO = new File(uploadOPath);
+					File upImageO = File.createTempFile("567", "." + upImageExt, persUploadsO);
+					String uploadedFileName = upImageO.getName();
+					String fileExtension = "." + FilenameUtils.getExtension(uploadedFileName);
+					
+					// scrivo l'immagine nel nuovo file persistente
+					ImageIO.write(upBuffImage, upImageExt, upImageO);
+					
+		        	//converto l' immagine in jpg
+				    if(!fileExtension.equals(".jpg"))
+				    {
+				    	BufferedImage PNGimage = ImageIO.read(upImageO);
+
+				    	BufferedImage JPGimage = new BufferedImage(PNGimage.getWidth(), PNGimage.getHeight(), BufferedImage.TYPE_INT_RGB);
+		       		  	JPGimage.createGraphics().drawImage(PNGimage, 0, 0, Color.WHITE, null);
+		       		  	ImageIO.write(JPGimage, "jpg", upImageO);
+				    
+				    }
+				    
+				    upBuffImage = ImageIO.read(upImageO);	
+					
+				    // creo un nuovo file nella cartella selfie/compressedSize
+					File upImage = new File (uploadCPath + "/" + upImageO.getName());
+					
+					
+					//ridimensiona l'immagine
+				    int ubiW = upBuffImage.getWidth();
+				    int ubiH = upBuffImage.getHeight();
+						   
+				    int riW = (ubiW > 1000) ? 1000 : ubiW;
+				    int riH = (ubiH*riW)/ubiW;
+				    			    
+				    int rtype = (upBuffImage.getType() == 0) ? BufferedImage.TYPE_INT_ARGB : upBuffImage.getType();
+				    
+				    BufferedImage Rimage = new BufferedImage(riW, riH, rtype);
+		            Graphics2D g = Rimage.createGraphics();
+		            g.drawImage(upBuffImage, 0, 0, riW, riH, null);
+		        	g.dispose();
+		            
 				
-				// ottengo la descrizione dell'immagine dal campo della form
-				String upImageDesc = formFields.get("description");
-				
-				// ricavo il nome dell'immagine e la sua estensione
-				String upImageName = FilenameUtils.getName(formFields.get("image"));
-				String upImageExt = FilenameUtils.getExtension(formFields.get("image"));
-				
-				// ricavo lo user dalla sessione
-	      		HttpSession session = request.getSession();
-	      		User user = (User) session.getAttribute("user");
-				
-	      		
-				// ricavo la data attuale e la trasformo in formato SQL
-	      		Date utilDate = new Date();
-	      		java.sql.Timestamp dateTime = new java.sql.Timestamp(utilDate.getTime());
-	      		
-				// leggo l'immagine da salvare
-				BufferedImage upBuffImage = ImageIO.read(new File(tmpUploadPath + "/" + upImageName));
-				
-				// cancello l'immagine temporanea
-				File deleteTmpFile = new File(tmpUploadPath + "/" + upImageName);
-				deleteTmpFile.delete();
-				
-				// creo un nuovo file nella cartella selfie
-				File persUploads = new File(uploadPath);
-				File upImage = File.createTempFile("567", "." + upImageExt, persUploads);
-				
-				// scrivo l'immagine nel nuovo file persistente
-				ImageIO.write(upBuffImage, upImageExt, upImage);
-				
-				// istanzio una nuova selfie e la valorizzo con le informazioni ricavate
-				Selfie selfie = new Selfie();
-				
-				selfie.setDescription(upImageDesc);
-				selfie.setUploader(user.getId_user());
-				selfie.setDate(dateTime);
-				selfie.setPicture(upImage.getName());
-				
-				UploadSelfie.upload(selfie);
-				
-				ajaxUpdateResult = "/mySelfie/protected/homepage.jsp";
-				
+					//comprimo l' immagine
+					BufferedImage Cimage = Rimage;
+				    OutputStream os =new FileOutputStream(upImage);
+	
+				    Iterator<ImageWriter>writers =  ImageIO.getImageWritersByFormatName("jpg");
+				    ImageWriter writer = (ImageWriter) writers.next();
+	
+				    ImageOutputStream ios = ImageIO.createImageOutputStream(os);
+				    writer.setOutput(ios);
+	
+				    ImageWriteParam param = writer.getDefaultWriteParam();
+				     
+				    param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+				    param.setCompressionQuality(0.3f);
+				    writer.write(null, new IIOImage(Cimage, null, null), param);
+				      
+				    os.close();
+				    ios.close();
+				    writer.dispose();
+				     
+				    
+					// istanzio una nuova selfie e la valorizzo con le informazioni ricavate
+					Selfie selfie = new Selfie();
+					
+					selfie.setDescription(upImageDesc);
+					selfie.setUploader(user.getId_user());
+					selfie.setDate(dateTime);
+					selfie.setPicture(upImage.getName());
+					selfie.setLocation(location);
+					
+					int id_selfie = SelfieUtils.uploadSelfie(selfie, hashtags, usertags);
+					
+					Connection connect = ConnectionManager.getConnection();
+					
+	            	// scorre tutti gli hashtags che devono essere messi nella selfie
+	            	for (String hashtag : hashtags) {
+	    				
+	    				// se l'hashtag esiste
+	    				if(HashtagUtils.exist(hashtag, connect))
+	    				{
+	    					// ricava il suo id
+	    					int id_hashtag = HashtagUtils.getId(hashtag, connect);
+	    					// inserisce il tag
+	    					HashtagUtils.hashtagInSelfie(id_selfie, id_hashtag, connect);
+	    				}
+	    				// se l'hashtag NON esiste
+	    				else
+	    				{
+	    					// crea un nuovo hashtag e si fa ritornare l'id
+	    					int id_hashtag = HashtagUtils.newHashTag(hashtag, connect);
+	    					// inserisce il tag
+	    					HashtagUtils.hashtagInSelfie(id_selfie, id_hashtag, connect);
+	    					
+	    				}
+	    				
+	    			}
+	            	
+	            	// scorre tutti gli usertags che devono essere messi nella selfie
+	            	for (String usertag : usertags) {
+	            		
+	            		// controlla se lo user esiste
+	            		if(UserUtils.exist(usertag, connect))
+	            		{
+	            			// ricava il suo id
+	            			int id_user = UserUtils.getId(usertag, connect);
+	            			// inserisce il tag
+	            			int uts = UsertagsUtils.userTagSelfie(id_user, id_selfie, connect);
+	    					// se lo user taggato non sono io
+	            			if(id_user != user.getId_user()){
+	            				// mando una notifica agli utenti taggati
+	            				NotificationUtils.setTagNotification(id_user, uts);
+	            			}
+	            		}
+	            	}
+					
+					ajaxUpdateResult = "/mySelfie/protected/homepage.jsp";
+				}
 				break;
 
 			}
